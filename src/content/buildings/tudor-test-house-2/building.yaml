@@ -1,0 +1,37 @@
+# Building #2. Fields marked TODO are placeholders; replace them with real values.
+number: 2
+name: Tudor Test House
+location: TODO City, State
+type: Single-family residence
+# squareFeet: 3200      # TODO: uncomment and set once known
+# lotSize: 0.18 acres   # TODO: uncomment and set once known
+description: >
+  A three-level Tudor Revival with half-timbered gables, a brick entry porch
+  under a steep front gable, and a slate-gray shingle roof. The main level
+  opens from the foyer to an office, dining area, and kitchen, then into a
+  breakfast nook and a living room with a fireplace and a covered patio. Upstairs
+  are the primary suite and two bedrooms; the lower level holds a garage and a
+  recreation room.
+
+# Transparent-background version of the isometric image, used on the homepage.
+cutout: ./cutout.png
+
+photos:
+  - src: ./Tudor Test House Isometric.jpg
+    alt: Isometric illustration of a cream and dark-timbered Tudor house with a brick entry, gray shingle roof, and landscaped yard
+    caption: Isometric view
+
+floorPlans:
+  - src: ./floorplan-level-1.png
+    alt: Lower floor plan showing a garage, storage, utility room, bath, extra room, and recreation room
+    caption: Level 1
+  - src: ./floorplan-level-2.png
+    alt: Main floor plan showing foyer, office, dining area, kitchen, pantry, breakfast nook, living room, and covered patio
+    caption: Level 2
+  - src: ./floorplan-level-3.png
+    alt: Upper floor plan showing primary bedroom with bath and walk-in closet, two bedrooms, two baths, and laundry
+    caption: Level 3
+
+model:
+  src: /models/tudor-house.glb
+  alt: 3D model of the Tudor Test House

@@ -37,7 +37,7 @@ const facts = [
     <div class="primary">
       {
         data.model ? (
-          <ModelViewer src={data.model.src} alt={data.model.alt} poster={data.photos[0].src.src} />
+          <ModelViewer src={data.model.src} alt={data.model.alt} poster={(data.cutout ?? data.photos[0].src).src} />
         ) : (
           <Image src={data.photos[0].src} alt={data.photos[0].alt} widths={[800, 1400]} sizes="(min-width: 960px) 720px, 100vw" class="hero" />
         )

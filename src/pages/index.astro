@@ -1,115 +1,38 @@
 ---
 import { getCollection } from 'astro:content';
-import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import { formatNumber, formatSquareFeet } from '../lib/format';
+import DragCanvas from '../components/DragCanvas.astro';
+import FloatingBuilding from '../components/FloatingBuilding.astro';
 
 const buildings = (await getCollection('buildings')).sort((a, b) => a.data.number - b.data.number);
 ---
 
-<Base>
-  <section class="intro">
-    <h1>Buildings</h1>
-    <p>{buildings.length} {buildings.length === 1 ? 'entry' : 'entries'}</p>
-  </section>
-
-  <ul class="grid">
+<Base fullBleed>
+  <h1 class="sr-only">Buildings</h1>
+  <DragCanvas>
     {
-      buildings.map(({ id, data }) => (
-        <li>
-          <a href={`/buildings/${id}/`} class="card">
-            <Image
-              src={data.photos[0].src}
-              alt={data.photos[0].alt}
-              widths={[400, 800]}
-              sizes="(min-width: 720px) 360px, 100vw"
-              class="thumb"
-            />
-            <div class="meta">
-              <span class="num">{formatNumber(data.number)}</span>
-              <h2>{data.name}</h2>
-              <p>
-                {[data.type, data.location, formatSquareFeet(data.squareFeet)].filter(Boolean).join(' · ')}
-              </p>
-            </div>
-          </a>
-        </li>
+      buildings.map(({ id, data }, i) => (
+        <div data-canvas-item>
+          <FloatingBuilding
+            href={`/buildings/${id}/`}
+            name={data.name}
+            image={data.cutout ?? data.photos[0].src}
+            alt={data.photos[0].alt}
+            delay={-i * 2.3}
+          />
+        </div>
       ))
     }
-  </ul>
+  </DragCanvas>
 </Base>
 
 <style>
-  .intro {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 1.5rem;
-  }
-
-  .intro h1 {
-    margin: 0;
-    font-size: 2rem;
-  }
-
-  .intro p {
-    margin: 0;
-    color: var(--muted);
-  }
-
-  .grid {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .card {
-    display: block;
-    height: 100%;
-    text-decoration: none;
-    color: inherit;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
     overflow: hidden;
-    transition:
-      transform 0.15s,
-      box-shadow 0.15s;
-  }
-
-  .card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
-  }
-
-  .thumb {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    background: #fff;
-  }
-
-  .meta {
-    padding: 1rem 1.1rem 1.25rem;
-  }
-
-  .num {
-    font-size: 0.75rem;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .meta h2 {
-    margin: 0.2rem 0 0.35rem;
-    font-size: 1.15rem;
-  }
-
-  .meta p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.9rem;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 </style>

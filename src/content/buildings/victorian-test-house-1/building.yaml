@@ -11,6 +11,9 @@ description: >
   from the porch and foyer into a living room with a fireplace, then a dining
   room and a kitchen that opens onto the rear deck.
 
+# Transparent-background version of the isometric image, used on the homepage.
+cutout: ./cutout.png
+
 photos:
   - src: ./isometric.jpg
     alt: Isometric illustration of a mint-green Victorian house with a gray shingle roof, front porch, and purple fence
@@ -24,6 +27,7 @@ floorPlans:
     alt: Second floor plan showing two bedrooms, a bath, stairs, and a long hall
     caption: Level 2
 
+# The earlier untextured model (/models/victorian-test-house-1.glb) is kept in public/models but unused.
 model:
-  src: /models/victorian-test-house-1.glb
+  src: /models/victorian-cottage-26.glb
   alt: 3D model of the Victorian Test House

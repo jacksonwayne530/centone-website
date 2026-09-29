@@ -1,12 +1,16 @@
 ---
 import '../styles/global.css';
+import { Image } from 'astro:assets';
+import logo from '../content/logo/logo.jpg';
 
 interface Props {
   title?: string;
   description?: string;
+  /** Page content fills the whole screen below the header (no footer, no page scroll). */
+  fullBleed?: boolean;
 }
 
-const { title, description = 'A catalog of well-designed buildings.' } = Astro.props;
+const { title, description = 'A catalog of well-designed buildings.', fullBleed = false } = Astro.props;
 const fullTitle = title ? `${title} · Centone` : 'Centone';
 ---
 
@@ -19,16 +23,25 @@ const fullTitle = title ? `${title} · Centone` : 'Centone';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{fullTitle}</title>
   </head>
-  <body>
+  <body class:list={{ 'full-bleed': fullBleed }}>
     <header class="site-header">
-      <a href="/" class="wordmark">Centone</a>
-      <span class="tagline">A catalog of well-designed buildings</span>
+      <div class="site-header-inner">
+        <a href="/" class="wordmark">
+          <Image src={logo} alt="" width={128} height={128} class="logo" loading="eager" />
+          <span>Centone</span>
+        </a>
+        <span class="tagline">A catalog of well-designed buildings</span>
+      </div>
     </header>
     <main>
       <slot />
     </main>
-    <footer class="site-footer">
-      <p>© {new Date().getFullYear()} Centone</p>
-    </footer>
+    {
+      !fullBleed && (
+        <footer class="site-footer">
+          <p>© {new Date().getFullYear()} Centone</p>
+        </footer>
+      )
+    }
   </body>
 </html>

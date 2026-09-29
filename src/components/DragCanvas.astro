@@ -1,0 +1,313 @@
+---
+// A draggable canvas in the style of the Apple Watch app grid.
+//
+// - Items (children with [data-canvas-item]) are laid out in a hexagonal spiral from the center,
+//   so the layout grows naturally as buildings are added.
+// - Drag with mouse, touch, or trackpad; releases keep some momentum.
+// - Items shrink the farther they are from the middle of the screen (the fisheye effect).
+// - Panning is bounded: past the edge it stretches like a rubber band, then springs back,
+//   so a building can't be dragged completely off screen.
+---
+
+<div class="stage" data-canvas>
+  <div class="world">
+    <slot />
+  </div>
+</div>
+
+<script>
+  // Tuning
+  const SPACING_X = 1.05; // horizontal gap between neighbors, as a multiple of item width
+  const SPACING_Y = 0.78; // vertical gap between rows, as a multiple of item width
+  const KEEP_VISIBLE = 0.32; // at the pan limit, the outermost item's center stays this far inside the screen (fraction of width/height)
+  const FISHEYE_MIN = 0.55; // smallest scale an item shrinks to near the edges
+  const FRICTION = 0.94; // momentum decay per frame after release
+  const SPRING = 0.14; // how quickly an over-stretched canvas snaps back
+  const DRAG_THRESHOLD = 6; // px of movement before a press counts as a drag (not a click)
+
+  // Axial hex coordinates in spiral order: center, then ring 1 (starting to the right), ring 2...
+  function hexSpiral(count: number): Array<[number, number]> {
+    const dirs: Array<[number, number]> = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
+    const out: Array<[number, number]> = [[0, 0]];
+    for (let k = 1; out.length < count; k++) {
+      let q = dirs[0][0] * k;
+      let r = dirs[0][1] * k;
+      for (let side = 0; side < 6; side++) {
+        const [dq, dr] = dirs[(side + 2) % 6];
+        for (let step = 0; step < k; step++) {
+          out.push([q, r]);
+          q += dq;
+          r += dr;
+        }
+      }
+    }
+    return out.slice(0, count);
+  }
+
+  // Resistance past the bounds: grows slower the farther you pull.
+  function rubber(value: number, min: number, max: number, size: number): number {
+    const band = (over: number) => (1 - 1 / ((over * 0.55) / size + 1)) * size;
+    if (value < min) return min - band(min - value);
+    if (value > max) return max + band(value - max);
+    return value;
+  }
+
+  const clamp = (v: number, lo: number, hi: number) => Math.min(Math.max(v, lo), hi);
+
+  document.querySelectorAll<HTMLElement>('[data-canvas]').forEach((stage) => {
+    const world = stage.querySelector<HTMLElement>('.world')!;
+    const items = [...stage.querySelectorAll<HTMLElement>('[data-canvas-item]')];
+    const coords = hexSpiral(items.length);
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Layout state
+    let vw = 0;
+    let vh = 0;
+    let itemW = 0;
+    let positions: Array<{ x: number; y: number }> = [];
+    let bounds = { minX: 0, maxX: 0, minY: 0, maxY: 0 }; // allowed pan range
+
+    // Pan state. `raw` is where the finger says we are; `pan` is after rubber-banding.
+    let raw = { x: 0, y: 0 };
+    let vel = { x: 0, y: 0 };
+    let dragging = false;
+    let frame = 0;
+
+    function layout() {
+      const prevCenter = vw ? { x: raw.x - vw / 2, y: raw.y - vh / 2 } : null;
+      vw = stage.clientWidth;
+      vh = stage.clientHeight;
+      // Phones: one building fills most of the width and its neighbors peek in from the sides.
+      itemW = clamp(vw < 640 ? vw * 0.62 : Math.min(vw * 0.36, vh * 0.6), 160, 460);
+
+      positions = coords.map(([q, r]) => ({
+        x: (q + r / 2) * itemW * SPACING_X,
+        y: r * itemW * SPACING_Y,
+      }));
+      items.forEach((el, i) => {
+        el.style.width = `${itemW}px`;
+        el.style.left = `${positions[i].x}px`;
+        el.style.top = `${positions[i].y}px`;
+      });
+
+      const xs = positions.map((p) => p.x);
+      const ys = positions.map((p) => p.y);
+      const [minX, maxX, minY, maxY] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+      const keepX = vw * KEEP_VISIBLE;
+      const keepY = vh * KEEP_VISIBLE;
+      // Start with everything centered if it fits on screen; otherwise center building #1.
+      const fits = maxX - minX + itemW <= vw && maxY - minY + itemW <= vh;
+      const center = fits
+        ? { x: vw / 2 - (minX + maxX) / 2, y: vh / 2 - (minY + maxY) / 2 }
+        : { x: vw / 2, y: vh / 2 };
+      // Pan limits keep at least the outermost item near the screen. If all items fit, the
+      // range still allows a little play around the centered position.
+      bounds = {
+        minX: Math.min(keepX - maxX, center.x),
+        maxX: Math.max(vw - keepX - minX, center.x),
+        minY: Math.min(keepY - maxY, center.y),
+        maxY: Math.max(vh - keepY - minY, center.y),
+      };
+
+      raw = prevCenter
+        ? { x: clamp(prevCenter.x + vw / 2, bounds.minX, bounds.maxX), y: clamp(prevCenter.y + vh / 2, bounds.minY, bounds.maxY) }
+        : center;
+      render();
+    }
+
+    function currentPan() {
+      return {
+        x: rubber(raw.x, bounds.minX, bounds.maxX, vw),
+        y: rubber(raw.y, bounds.minY, bounds.maxY, vh),
+      };
+    }
+
+    function render() {
+      const pan = currentPan();
+      world.style.transform = `translate3d(${pan.x}px, ${pan.y}px, 0)`;
+
+      // Fisheye: scale each item by its distance from the middle of the screen.
+      const radius = Math.hypot(vw, vh) / 2;
+      items.forEach((el, i) => {
+        const dx = pan.x + positions[i].x - vw / 2;
+        const dy = pan.y + positions[i].y - vh / 2;
+        const t = clamp(Math.hypot(dx, dy * 1.3) / radius, 0, 1);
+        const scale = 1 - (1 - FISHEYE_MIN) * t * t;
+        el.style.setProperty('--fisheye', scale.toFixed(3));
+        el.style.opacity = (0.35 + 0.65 * scale ** 2).toFixed(3);
+      });
+    }
+
+    // Momentum + spring-back loop. Runs only while something is moving.
+    function tick() {
+      frame = 0;
+      if (dragging) return;
+      raw.x += vel.x;
+      raw.y += vel.y;
+      vel.x *= FRICTION;
+      vel.y *= FRICTION;
+
+      // Outside the bounds: kill momentum and spring back toward the edge.
+      const tx = clamp(raw.x, bounds.minX, bounds.maxX);
+      const ty = clamp(raw.y, bounds.minY, bounds.maxY);
+      if (tx !== raw.x) {
+        vel.x *= 0.5;
+        raw.x += (tx - raw.x) * SPRING;
+      }
+      if (ty !== raw.y) {
+        vel.y *= 0.5;
+        raw.y += (ty - raw.y) * SPRING;
+      }
+
+      render();
+      const moving = Math.abs(vel.x) > 0.05 || Math.abs(vel.y) > 0.05 || Math.abs(tx - raw.x) > 0.3 || Math.abs(ty - raw.y) > 0.3;
+      if (moving) frame = requestAnimationFrame(tick);
+      else {
+        raw = { x: tx, y: ty };
+        render();
+      }
+    }
+
+    function startMotion() {
+      if (!frame) frame = requestAnimationFrame(tick);
+    }
+
+    // Pointer dragging. Pointer capture starts only once the press becomes a drag,
+    // so ordinary clicks still reach the building links.
+    let press: { id: number; x: number; y: number; lastX: number; lastY: number; lastT: number } | null = null;
+    let suppressClick = false;
+
+    stage.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      press = { id: e.pointerId, x: e.clientX, y: e.clientY, lastX: e.clientX, lastY: e.clientY, lastT: e.timeStamp };
+      suppressClick = false;
+      // Grabbing a moving canvas stops it, and a stretched one stays where it's held.
+      const pan = currentPan();
+      raw = { ...pan };
+      vel = { x: 0, y: 0 };
+    });
+
+    stage.addEventListener('pointermove', (e) => {
+      if (!press || e.pointerId !== press.id) return;
+      if (!dragging) {
+        if (Math.hypot(e.clientX - press.x, e.clientY - press.y) < DRAG_THRESHOLD) return;
+        dragging = true;
+        suppressClick = true;
+        stage.setPointerCapture(e.pointerId);
+        stage.classList.add('dragging');
+      }
+      const dx = e.clientX - press.lastX;
+      const dy = e.clientY - press.lastY;
+      const dt = Math.max(e.timeStamp - press.lastT, 1);
+      raw.x += dx;
+      raw.y += dy;
+      // Velocity in px per frame (~16ms), smoothed.
+      vel.x = vel.x * 0.6 + ((dx / dt) * 16) * 0.4;
+      vel.y = vel.y * 0.6 + ((dy / dt) * 16) * 0.4;
+      press.lastX = e.clientX;
+      press.lastY = e.clientY;
+      press.lastT = e.timeStamp;
+      render();
+    });
+
+    function endPress(e: PointerEvent) {
+      if (!press || e.pointerId !== press.id) return;
+      // A pause before letting go means no fling.
+      if (e.timeStamp - press.lastT > 80 || reduceMotion) vel = { x: 0, y: 0 };
+      press = null;
+      if (dragging) {
+        dragging = false;
+        stage.classList.remove('dragging');
+      }
+      startMotion();
+    }
+    stage.addEventListener('pointerup', endPress);
+    stage.addEventListener('pointercancel', endPress);
+
+    // Don't follow a link at the end of a drag.
+    stage.addEventListener(
+      'click',
+      (e) => {
+        if (suppressClick) {
+          e.preventDefault();
+          e.stopPropagation();
+          suppressClick = false;
+        }
+      },
+      true,
+    );
+
+    // Trackpad two-finger scrolling and mouse wheels pan the canvas.
+    stage.addEventListener(
+      'wheel',
+      (e) => {
+        e.preventDefault();
+        const scale = e.deltaMode === 1 ? 16 : 1;
+        const pan = currentPan();
+        raw = { x: pan.x - e.deltaX * scale, y: pan.y - e.deltaY * scale };
+        vel = { x: 0, y: 0 };
+        render();
+        startMotion();
+      },
+      { passive: false },
+    );
+
+    // Keyboard users: bring the focused building to the middle.
+    // (Mouse clicks also focus links; moving the canvas then would swallow the click.)
+    stage.addEventListener('focusin', (e) => {
+      if (!(e.target as HTMLElement).matches(':focus-visible')) return;
+      const i = items.findIndex((el) => el.contains(e.target as Node));
+      if (i < 0) return;
+      raw = {
+        x: clamp(vw / 2 - positions[i].x, bounds.minX, bounds.maxX),
+        y: clamp(vh / 2 - positions[i].y, bounds.minY, bounds.maxY),
+      };
+      vel = { x: 0, y: 0 };
+      render();
+    });
+
+    new ResizeObserver(layout).observe(stage);
+    layout();
+    stage.classList.add('ready');
+  });
+</script>
+
+<style>
+  .stage {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    touch-action: none;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .stage.dragging {
+    cursor: grabbing;
+  }
+
+  /* Hover magnification is distracting mid-drag. */
+  .stage.dragging :global(a) {
+    pointer-events: none;
+  }
+
+  .world {
+    position: absolute;
+    left: 0;
+    top: 0;
+    will-change: transform;
+    /* Hidden until the first layout so items don't flash in the corner. */
+    visibility: hidden;
+  }
+
+  .stage.ready .world {
+    visibility: visible;
+  }
+
+  .world > :global([data-canvas-item]) {
+    position: absolute;
+    transform: translate(-50%, -50%) scale(var(--fisheye, 1));
+    will-change: transform, opacity;
+  }
+</style>

@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "cutout": "node scripts/cutout.mjs"
   },
   "dependencies": {
     "@google/model-viewer": "^4.3.1",
@@ -17,5 +18,8 @@
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
   }
 }

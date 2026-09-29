@@ -63,30 +63,59 @@ h3 {
   letter-spacing: -0.01em;
 }
 
+/* The rule under the header spans the full screen width; the content stays centered. */
 .site-header {
-  max-width: var(--max);
-  width: 100%;
-  margin: 0 auto;
-  padding: 1.25rem 1rem;
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-  flex-wrap: wrap;
   border-bottom: 1px solid var(--line);
 }
 
+.site-header-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 .wordmark {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: 2.5rem;
+  line-height: 1;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink);
   text-decoration: none;
 }
 
+/* A little taller than the wordmark's capital letters. */
+.logo {
+  width: 1.15em;
+  height: 1.15em;
+  border-radius: 5px;
+}
+
+/* Full-bleed pages (the homepage) fill the screen below the header with no page scroll. */
+body.full-bleed {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.full-bleed main {
+  max-width: none;
+  padding: 0;
+  display: flex;
+  min-height: 0;
+}
+
 .tagline {
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 1.25rem;
 }
 
 .site-footer {

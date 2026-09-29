@@ -20,6 +20,9 @@ const buildings = defineCollection({
       squareFeet: z.number().positive().optional(),
       lotSize: z.string().optional(),
       description: z.string(),
+      // Isometric image with a transparent background, shown floating on the homepage.
+      // Generate it with: npm run cutout -- <path-to-isometric-image>
+      cutout: image().optional(),
       photos: z
         .array(z.object({ src: image(), alt: z.string(), caption: z.string().optional() }))
         .min(1),
