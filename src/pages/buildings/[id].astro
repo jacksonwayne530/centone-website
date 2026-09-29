@@ -1,0 +1,203 @@
+---
+// Shared template for every building. One page is generated per folder in src/content/buildings/.
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import ModelViewer from '../../components/ModelViewer.astro';
+import { formatNumber, formatSquareFeet } from '../../lib/format';
+
+export async function getStaticPaths() {
+  const buildings = await getCollection('buildings');
+  return buildings.map((building) => ({ params: { id: building.id }, props: { building } }));
+}
+
+interface Props {
+  building: CollectionEntry<'buildings'>;
+}
+
+const { data } = Astro.props.building;
+
+const facts = [
+  ['Location', data.location],
+  ['Type', data.type],
+  ['Square footage', formatSquareFeet(data.squareFeet)],
+  ['Lot size', data.lotSize],
+].filter((f): f is [string, string] => Boolean(f[1]));
+---
+
+<Base title={data.name} description={data.description}>
+  <a href="/" class="back">← All buildings</a>
+
+  <header class="head">
+    <span class="num">{formatNumber(data.number)}</span>
+    <h1>{data.name}</h1>
+  </header>
+
+  <div class="layout">
+    <div class="primary">
+      {
+        data.model ? (
+          <ModelViewer src={data.model.src} alt={data.model.alt} poster={data.photos[0].src.src} />
+        ) : (
+          <Image src={data.photos[0].src} alt={data.photos[0].alt} widths={[800, 1400]} sizes="(min-width: 960px) 720px, 100vw" class="hero" />
+        )
+      }
+    </div>
+
+    <aside class="details">
+      <dl>
+        {
+          facts.map(([label, value]) => (
+            <div>
+              <dt>{label}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="description">{data.description}</p>
+    </aside>
+  </div>
+
+  <section>
+    <h2>Photos</h2>
+    <div class="gallery">
+      {
+        data.photos.map((photo) => (
+          <figure>
+            <Image src={photo.src} alt={photo.alt} widths={[600, 1200]} sizes="(min-width: 720px) 50vw, 100vw" />
+            {photo.caption && <figcaption>{photo.caption}</figcaption>}
+          </figure>
+        ))
+      }
+    </div>
+  </section>
+
+  {
+    data.floorPlans.length > 0 && (
+      <section>
+        <h2>Floor plans</h2>
+        <div class="gallery plans">
+          {data.floorPlans.map((plan) => (
+            <figure>
+              <Image src={plan.src} alt={plan.alt} />
+              {plan.caption && <figcaption>{plan.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .back {
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .head {
+    margin: 1rem 0 1.5rem;
+  }
+
+  .num {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .head h1 {
+    margin: 0.2rem 0 0;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+  }
+
+  .layout {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: 2fr 1fr;
+      align-items: start;
+    }
+  }
+
+  .hero {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+
+  dl {
+    margin: 0 0 1.25rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  dl div {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.6rem;
+  }
+
+  dt {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  dd {
+    margin: 0.15rem 0 0;
+    font-weight: 500;
+  }
+
+  .description {
+    margin: 0;
+  }
+
+  section {
+    margin-top: 3rem;
+  }
+
+  section h2 {
+    font-size: 1.25rem;
+    margin: 0 0 1rem;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
+  figure {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .plans figure {
+    background: #fff;
+    padding: 1rem;
+  }
+
+  .plans img {
+    margin: 0 auto;
+    max-height: 640px;
+    width: auto;
+  }
+
+  figcaption {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .plans figcaption {
+    padding: 0.75rem 0 0;
+    color: #6b675f;
+  }
+</style>

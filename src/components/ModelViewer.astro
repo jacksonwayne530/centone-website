@@ -1,0 +1,110 @@
+---
+// Interactive 3D viewer for .glb / .gltf files, powered by Google's <model-viewer>.
+// Drag to orbit, scroll or pinch to zoom, right-drag to pan.
+interface Props {
+  src: string;
+  alt: string;
+  poster?: string;
+}
+
+const { src, alt, poster } = Astro.props;
+---
+
+<div class="viewer">
+  <model-viewer
+    src={src}
+    alt={alt}
+    poster={poster}
+    camera-controls
+    auto-rotate
+    auto-rotate-delay="3000"
+    interaction-prompt="auto"
+    shadow-intensity="1"
+    exposure="1"
+    environment-image="neutral"
+    loading="lazy"
+    reveal="auto"
+    touch-action="pan-y"
+  >
+    <div class="progress" slot="progress-bar"><div class="progress-fill"></div></div>
+    <button class="fullscreen" type="button" aria-label="Toggle fullscreen">⛶</button>
+  </model-viewer>
+  <p class="hint">Drag to rotate · Scroll to zoom · Right-drag to pan</p>
+</div>
+
+<script>
+  import '@google/model-viewer';
+
+  document.querySelectorAll('.viewer model-viewer').forEach((mv) => {
+    const fill = mv.querySelector<HTMLElement>('.progress-fill');
+    const bar = mv.querySelector<HTMLElement>('.progress');
+    mv.addEventListener('progress', (e) => {
+      const p = (e as CustomEvent<{ totalProgress: number }>).detail.totalProgress;
+      if (fill) fill.style.width = `${p * 100}%`;
+      if (bar) bar.hidden = p >= 1;
+    });
+
+    mv.querySelector('.fullscreen')?.addEventListener('click', () => {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else mv.requestFullscreen();
+    });
+  });
+</script>
+
+<style>
+  .viewer {
+    margin: 0;
+  }
+
+  model-viewer {
+    width: 100%;
+    height: min(70vh, 560px);
+    background: radial-gradient(circle at 50% 40%, var(--surface), var(--bg));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    position: relative;
+    --poster-color: transparent;
+  }
+
+  model-viewer:fullscreen {
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background: var(--line);
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0;
+    background: var(--accent);
+    transition: width 0.2s;
+  }
+
+  .fullscreen {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+
+  .hint {
+    margin: 0.5rem 0 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>

@@ -1,0 +1,29 @@
+# Building #1. Fields marked TODO are placeholders; replace them with real values.
+number: 1
+name: Victorian Test House
+location: TODO City, State
+type: Single-family residence
+# squareFeet: 1800      # TODO: uncomment and set once known
+# lotSize: 0.12 acres   # TODO: uncomment and set once known
+description: >
+  A compact two-story Victorian with a wraparound front porch, bay windows,
+  fish-scale shingle gables, and a steep hipped roof. The ground floor flows
+  from the porch and foyer into a living room with a fireplace, then a dining
+  room and a kitchen that opens onto the rear deck.
+
+photos:
+  - src: ./isometric.jpg
+    alt: Isometric illustration of a mint-green Victorian house with a gray shingle roof, front porch, and purple fence
+    caption: Isometric view
+
+floorPlans:
+  - src: ./floorplan-level-1.png
+    alt: First floor plan showing porch, foyer, living room, dining room, bedroom, bath, kitchen, laundry, and deck
+    caption: Level 1
+  - src: ./floorplan-level-2.png
+    alt: Second floor plan showing two bedrooms, a bath, stairs, and a long hall
+    caption: Level 2
+
+model:
+  src: /models/victorian-test-house-1.glb
+  alt: 3D model of the Victorian Test House
