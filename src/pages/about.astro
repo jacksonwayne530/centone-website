@@ -80,6 +80,12 @@ const buildings = (await getCollection('buildings')).sort((a, b) => a.data.numbe
 </Base>
 
 <style>
+  /* Wider than the default reading column, and left-aligned with the other pages. */
+  article.prose {
+    max-width: 58rem;
+    margin-left: 0;
+  }
+
   .hero {
     display: flex;
     align-items: center;
