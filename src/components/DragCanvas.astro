@@ -253,7 +253,10 @@
         stage.classList.add('dragging');
       }
       suppressClick = true;
-      stage.setPointerCapture(id);
+      // The pointer may already be gone (e.g. a finger lifted mid-gesture); capture is optional.
+      try {
+        stage.setPointerCapture(id);
+      } catch {}
     }
 
     function startPinch() {
