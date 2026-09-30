@@ -264,24 +264,35 @@ const ranges = (list: Range[]) => JSON.stringify(list.map((r) => [r.min, Number.
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.6rem;
+    row-gap: 0.4rem;
     padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1rem, 2.5vw, 2.5rem) 0;
   }
 
-  .pill-wrap {
+  .pill-wrap,
+  .view-all {
     position: relative;
   }
+
+  /* Frameless controls separated by short vertical rules. */
+  .filters > * + *::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 1.1rem;
+    border-left: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
+    transform: translateY(-50%);
+  }
+
 
   .pill {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    min-width: 9.5rem;
-    padding: 0.7rem 1.5rem;
-    border: 1px solid var(--ink);
-    border-radius: 999px;
-    background: var(--bg);
+    gap: 0.45rem;
+    padding: 0.55rem 1.1rem;
+    border: none;
+    background: none;
     color: var(--ink);
     font: inherit;
     font-size: 0.9rem;
@@ -289,19 +300,20 @@ const ranges = (list: Range[]) => JSON.stringify(list.map((r) => [r.min, Number.
     letter-spacing: 0.06em;
     text-transform: uppercase;
     cursor: pointer;
-    transition:
-      background-color 0.2s,
-      color 0.2s;
+    transition: color 0.2s;
+  }
+
+  .filters > :first-child .pill {
+    padding-left: 0;
   }
 
   .pill:hover,
   .pill[aria-expanded='true'] {
-    background: color-mix(in srgb, var(--ink) 6%, var(--bg));
+    color: var(--accent);
   }
 
   .pill.active {
-    background: var(--ink);
-    color: var(--bg);
+    font-weight: 700;
   }
 
   .count:not(:empty) {
@@ -311,8 +323,8 @@ const ranges = (list: Range[]) => JSON.stringify(list.map((r) => [r.min, Number.
     height: 1.3rem;
     padding: 0 0.3rem;
     border-radius: 999px;
-    background: var(--bg);
-    color: var(--ink);
+    background: var(--ink);
+    color: var(--bg);
     font-size: 0.72rem;
     letter-spacing: 0;
   }
@@ -336,7 +348,7 @@ const ranges = (list: Range[]) => JSON.stringify(list.map((r) => [r.min, Number.
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    padding: 0.7rem 0.5rem;
+    padding: 0.55rem 1.1rem;
     border: none;
     background: none;
     color: var(--ink);
@@ -518,13 +530,9 @@ const ranges = (list: Range[]) => JSON.stringify(list.map((r) => [r.min, Number.
       gap: 0.45rem;
     }
 
-    .pill {
-      min-width: 0;
-      padding: 0.5rem 0.95rem;
-      font-size: 0.75rem;
-    }
-
+    .pill,
     .view-all {
+      padding: 0.45rem 0.8rem;
       font-size: 0.75rem;
     }
   }

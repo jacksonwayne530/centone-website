@@ -64,6 +64,11 @@ const articles = await getArticles();
     text-decoration: none;
   }
 
+  /* Thin rules between essays. */
+  li + li .item {
+    border-top: 1px solid var(--ink);
+  }
+
   .meta {
     display: grid;
     align-content: start;
