@@ -1,6 +1,7 @@
 ---
 title: Count the Intersections
 description: Street connectivity may be the most important number in neighborhood design, and almost nobody regulates it.
+cover: ./covers/count-the-intersections.svg
 date: 2026-09-30
 order: 1
 ---

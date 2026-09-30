@@ -1,6 +1,7 @@
 ---
 title: EVs Are Necessary. They Aren't the Goal.
 description: Electric cars cut tailpipe emissions. Cities built for walking, cycling, and transit solve the problems electrification can't touch.
+cover: ./covers/evs-are-not-the-goal.svg
 date: 2026-09-30
 order: 3
 ---

@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import { getArticles, readingTime, formatDate } from '../../lib/knowledge';
 
@@ -16,11 +17,13 @@ const articles = await getArticles();
       articles.map((article) => (
         <li>
           <a href={`/knowledge/${article.id}/`} class="item">
-            <p class="meta">
-              <time datetime={article.data.date.toISOString()}>{formatDate(article.data.date)}</time>
-              <span>{readingTime(article)}</span>
-            </p>
+            <Image src={article.data.cover} alt="" width={400} height={400} class="thumb" />
             <div class="text">
+              <p class="meta">
+                <time datetime={article.data.date.toISOString()}>{formatDate(article.data.date)}</time>
+                <span aria-hidden="true">·</span>
+                <span>{readingTime(article)}</span>
+              </p>
               <h2>{article.data.title}</h2>
               <p class="dek">{article.data.description}</p>
               <span class="more">Read essay →</span>
@@ -57,8 +60,9 @@ const articles = await getArticles();
   /* Frameless rows on the page background: date on the left, essay on the right. */
   .item {
     display: grid;
-    grid-template-columns: 13rem 1fr;
-    gap: 0.5rem 2.5rem;
+    grid-template-columns: 11rem 1fr;
+    align-items: center;
+    gap: 0.5rem 2.25rem;
     padding: 2rem 0;
     color: inherit;
     text-decoration: none;
@@ -69,11 +73,23 @@ const articles = await getArticles();
     border-top: 1px solid var(--ink);
   }
 
+  .thumb {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .item:hover .thumb,
+  .item:focus-visible .thumb {
+    transform: scale(1.03);
+  }
+
   .meta {
-    display: grid;
-    align-content: start;
-    gap: 0.2rem;
-    margin: 0.45rem 0 0;
+    display: flex;
+    gap: 0.5rem;
+    margin: 0 0 0.4rem;
     font-size: 0.9rem;
     color: var(--muted);
   }
@@ -112,14 +128,18 @@ const articles = await getArticles();
 
   @media (max-width: 720px) {
     .item {
-      grid-template-columns: 1fr;
+      grid-template-columns: 5.5rem 1fr;
+      align-items: start;
+      gap: 0.5rem 1rem;
       padding: 1.5rem 0;
     }
 
-    .meta {
-      display: flex;
-      gap: 0.75rem;
-      margin: 0;
+    .item h2 {
+      font-size: 1.3rem;
+    }
+
+    .dek {
+      font-size: 1rem;
     }
   }
 </style>

@@ -57,8 +57,10 @@ const buildings = defineCollection({
 // Cite sources with Markdown footnotes ([^1]); they render as a "Sources" list.
 const knowledge = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/knowledge' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
+    // Square illustration (SVG or image) shown as the thumbnail and beside the essay title.
+    cover: image(),
     description: z.string(),
     date: z.coerce.date(),
     // Tie-breaker for articles with the same date (lower comes first).

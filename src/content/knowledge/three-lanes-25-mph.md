@@ -1,6 +1,7 @@
 ---
 title: Three Lanes, 25 Miles an Hour
 description: Why almost no city street needs more than two travel lanes and a turn lane, or a speed limit above 25 mph.
+cover: ./covers/three-lanes-25-mph.svg
 date: 2026-09-30
 order: 2
 ---
