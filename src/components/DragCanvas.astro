@@ -61,9 +61,10 @@
 
   document.querySelectorAll<HTMLElement>('[data-canvas]').forEach((stage) => {
     const world = stage.querySelector<HTMLElement>('.world')!;
-    const items = [...stage.querySelectorAll<HTMLElement>('[data-canvas-item]')];
+    const allItems = [...stage.querySelectorAll<HTMLElement>('[data-canvas-item]')];
     const images = [...stage.querySelectorAll<HTMLImageElement>('[data-canvas-item] img')];
-    const coords = hexSpiral(items.length);
+    // Items currently shown (filters hide the rest with the `hidden` attribute).
+    let items = allItems.slice();
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Layout state (positions are in unzoomed world pixels)
@@ -84,7 +85,7 @@
 
     // Where the view is centered at the current zoom (the cluster, or building #1 on phones).
     function home() {
-      if (phone) return { x: vw / 2, y: vh / 2 };
+      if (phone || !positions.length) return { x: vw / 2, y: vh / 2 };
       const xs = positions.map((p) => p.x);
       const ys = positions.map((p) => p.y);
       return {
@@ -96,6 +97,10 @@
     // Pan limits keep at least the outermost item near the screen. If all items fit, the
     // range still allows a little play around the centered position.
     function computeBounds() {
+      if (!positions.length) {
+        bounds = { minX: vw / 2, maxX: vw / 2, minY: vh / 2, maxY: vh / 2 };
+        return;
+      }
       const xs = positions.map((p) => p.x * zoom);
       const ys = positions.map((p) => p.y * zoom);
       const keepX = vw * KEEP_VISIBLE;
@@ -113,14 +118,21 @@
       };
     }
 
-    function layout() {
-      const prevCenter = vw ? { x: raw.x - vw / 2, y: raw.y - vh / 2 } : null;
+    // `recenter`: jump back to the centered view (after filtering) instead of keeping the pan.
+    function layout(recenter = false) {
+      const prevCenter = vw && !recenter ? { x: raw.x - vw / 2, y: raw.y - vh / 2 } : null;
       vw = stage.clientWidth;
       vh = stage.clientHeight;
       phone = vw < 640;
+      if (!items.length) {
+        positions = [];
+        computeBounds();
+        render();
+        return;
+      }
 
       // Layout in units of one item width.
-      const unit = coords.map(([q, r]) => ({ x: (q + r / 2) * SPACING_X, y: r * SPACING_Y }));
+      const unit = hexSpiral(items.length).map(([q, r]) => ({ x: (q + r / 2) * SPACING_X, y: r * SPACING_Y }));
       const spanX = Math.max(...unit.map((p) => p.x)) - Math.min(...unit.map((p) => p.x)) + 1;
       const spanY = Math.max(...unit.map((p) => p.y)) - Math.min(...unit.map((p) => p.y));
 
@@ -141,6 +153,7 @@
       positions = unit.map((p) => ({ x: p.x * itemW, y: p.y * itemW }));
 
       computeBounds();
+      vel = recenter ? { x: 0, y: 0 } : vel;
       raw = prevCenter
         ? { x: clamp(prevCenter.x + vw / 2, bounds.minX, bounds.maxX), y: clamp(prevCenter.y + vh / 2, bounds.minY, bounds.maxY) }
         : home();
@@ -383,7 +396,13 @@
       render();
     });
 
-    new ResizeObserver(layout).observe(stage);
+    // Filters hide items and ask for a fresh layout of the ones left.
+    stage.addEventListener('canvas:relayout', () => {
+      items = allItems.filter((el) => !el.hidden);
+      layout(true);
+    });
+
+    new ResizeObserver(() => layout()).observe(stage);
     layout();
     stage.classList.add('ready');
   });
@@ -424,6 +443,9 @@
 
   .world > :global([data-canvas-item]) {
     position: absolute;
+    transition:
+      left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+      top 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
     transform: translate(-50%, -50%) scale(var(--fisheye, 1));
   }
 </style>

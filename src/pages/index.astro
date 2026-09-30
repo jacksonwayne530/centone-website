@@ -2,31 +2,53 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import DragCanvas from '../components/DragCanvas.astro';
+import FilterBar from '../components/FilterBar.astro';
 import FloatingBuilding from '../components/FloatingBuilding.astro';
 
 const buildings = (await getCollection('buildings')).sort((a, b) => a.data.number - b.data.number);
+const styles = [...new Set(buildings.map((b) => b.data.style))].sort();
 ---
 
 <Base fullBleed>
-  <h1 class="sr-only">Buildings</h1>
-  <DragCanvas>
-    {
-      buildings.map(({ id, data }, i) => (
-        <div data-canvas-item>
-          <FloatingBuilding
-            href={`/buildings/${id}/`}
-            name={data.name}
-            image={data.cutout ?? data.photos[0].src}
-            alt={data.photos[0].alt}
-            delay={-i * 2.3}
-          />
-        </div>
-      ))
-    }
-  </DragCanvas>
+  <h1 class="sr-only">Designs</h1>
+  <div class="home">
+    <FilterBar styles={styles} />
+    <DragCanvas>
+      {
+        buildings.map(({ id, data }, i) => (
+          <div
+            data-canvas-item
+            data-style={data.style}
+            data-beds={data.bedrooms}
+            data-baths={data.bathrooms}
+            data-sqft={data.squareFeet}
+            data-lot-width={data.lotWidth}
+            data-lot-depth={data.lotDepth}
+          >
+            <FloatingBuilding
+              href={`/buildings/${id}/`}
+              name={data.name}
+              image={data.cutout ?? data.photos[0].src}
+              alt={data.photos[0].alt}
+              delay={-i * 2.3}
+            />
+          </div>
+        ))
+      }
+    </DragCanvas>
+  </div>
 </Base>
 
 <style>
+  /* Filter bar on top, canvas filling the rest. */
+  .home {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
   .sr-only {
     position: absolute;
     width: 1px;

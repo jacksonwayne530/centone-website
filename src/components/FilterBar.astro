@@ -1,0 +1,531 @@
+---
+// Filter pills for the homepage canvas. Filters read data-* attributes on each
+// [data-canvas-item] (see pages/index.astro), hide the ones that don't match, and ask the
+// canvas to regroup the rest.
+interface Props {
+  styles: string[];
+}
+
+const { styles } = Astro.props;
+
+type Range = { label: string; min: number; max: number };
+const lotWidths: Range[] = [
+  { label: 'Under 45 ft', min: 0, max: 45 },
+  { label: '45–55 ft', min: 45, max: 55 },
+  { label: '55–65 ft', min: 55, max: 65 },
+  { label: '65 ft and up', min: 65, max: Infinity },
+];
+const lotDepths: Range[] = [
+  { label: 'Under 105 ft', min: 0, max: 105 },
+  { label: '105–115 ft', min: 105, max: 115 },
+  { label: '115 ft and up', min: 115, max: Infinity },
+];
+const sizes: Range[] = [
+  { label: 'Under 2,000 sq ft', min: 0, max: 2000 },
+  { label: '2,000–3,000 sq ft', min: 2000, max: 3000 },
+  { label: '3,000 sq ft and up', min: 3000, max: Infinity },
+];
+const minimums = [0, 2, 3, 4];
+
+// Ranges go to the script as [min, max) pairs; Infinity doesn't survive JSON, so use null.
+const ranges = (list: Range[]) => JSON.stringify(list.map((r) => [r.min, Number.isFinite(r.max) ? r.max : null]));
+---
+
+<div class="filters" data-filters data-lot-width={ranges(lotWidths)} data-lot-depth={ranges(lotDepths)} data-sqft={ranges(sizes)}>
+  <div class="pill-wrap">
+    <button type="button" class="pill" data-menu="style" aria-expanded="false">
+      Style<span class="count" data-count="style"></span><span class="caret" aria-hidden="true"></span>
+    </button>
+    <div class="menu" data-menu-panel="style" hidden>
+      <fieldset>
+        <legend class="sr-only">Style</legend>
+        {styles.map((s) => <label><input type="checkbox" data-filter="style" value={s} /> {s}</label>)}
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="pill-wrap">
+    <button type="button" class="pill" data-menu="lotWidth" aria-expanded="false">
+      Lot width<span class="count" data-count="lotWidth"></span><span class="caret" aria-hidden="true"></span>
+    </button>
+    <div class="menu" data-menu-panel="lotWidth" hidden>
+      <fieldset>
+        <legend class="sr-only">Lot width</legend>
+        {lotWidths.map((r, i) => <label><input type="checkbox" data-filter="lotWidth" value={i} /> {r.label}</label>)}
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="pill-wrap">
+    <button type="button" class="pill" data-menu="all" aria-expanded="false">
+      All filters<span class="count" data-count="all"></span><span class="caret" aria-hidden="true"></span>
+    </button>
+    <div class="menu menu-all" data-menu-panel="all" hidden>
+      <fieldset>
+        <legend>Style</legend>
+        <div class="options">
+          {styles.map((s) => <label><input type="checkbox" data-filter="style" value={s} /> {s}</label>)}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Bedrooms</legend>
+        <div class="segments">
+          {minimums.map((m) => <label class="segment"><input type="radio" name="beds" data-filter="beds" value={m} checked={m === 0} /><span>{m ? `${m}+` : 'Any'}</span></label>)}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Bathrooms</legend>
+        <div class="segments">
+          {minimums.map((m) => <label class="segment"><input type="radio" name="baths" data-filter="baths" value={m} checked={m === 0} /><span>{m ? `${m}+` : 'Any'}</span></label>)}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Size</legend>
+        <div class="options">
+          {sizes.map((r, i) => <label><input type="checkbox" data-filter="sqft" value={i} /> {r.label}</label>)}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Lot width</legend>
+        <div class="options">
+          {lotWidths.map((r, i) => <label><input type="checkbox" data-filter="lotWidth" value={i} /> {r.label}</label>)}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Lot depth</legend>
+        <div class="options">
+          {lotDepths.map((r, i) => <label><input type="checkbox" data-filter="lotDepth" value={i} /> {r.label}</label>)}
+        </div>
+      </fieldset>
+      <div class="menu-foot">
+        <button type="button" class="link" data-clear>Clear all</button>
+        <button type="button" class="apply" data-close-menu>Show <span data-result-count></span></button>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="view-all" data-clear>
+    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+      <rect x="1.5" y="1.5" width="5" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+      <rect x="9.5" y="1.5" width="5" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+      <rect x="1.5" y="9.5" width="5" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+      <rect x="9.5" y="9.5" width="5" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+    </svg>
+    View all
+  </button>
+</div>
+
+<p class="empty" data-empty hidden>
+  No homes match these filters. <button type="button" class="link" data-clear>View all</button>
+</p>
+
+<script>
+  type Pair = [number, number | null];
+
+  const bar = document.querySelector<HTMLElement>('[data-filters]');
+  const stage = document.querySelector<HTMLElement>('[data-canvas]');
+  if (bar && stage) {
+    const items = [...stage.querySelectorAll<HTMLElement>('[data-canvas-item]')];
+    const inputs = [...bar.querySelectorAll<HTMLInputElement>('input[data-filter]')];
+    const empty = document.querySelector<HTMLElement>('[data-empty]')!;
+    const rangeSets: Record<string, Pair[]> = {
+      lotWidth: JSON.parse(bar.dataset.lotWidth!),
+      lotDepth: JSON.parse(bar.dataset.lotDepth!),
+      sqft: JSON.parse(bar.dataset.sqft!),
+    };
+
+    // Filter state. Checkbox groups are sets (empty = no restriction); beds/baths are minimums.
+    const state = {
+      style: new Set<string>(),
+      lotWidth: new Set<number>(),
+      lotDepth: new Set<number>(),
+      sqft: new Set<number>(),
+      beds: 0,
+      baths: 0,
+    };
+
+    const inRanges = (value: number, key: string, chosen: Set<number>) =>
+      !chosen.size ||
+      [...chosen].some((i) => {
+        const [min, max] = rangeSets[key][i];
+        return value >= min && (max === null || value < max);
+      });
+
+    function matches(el: HTMLElement) {
+      const d = el.dataset;
+      return (
+        (!state.style.size || state.style.has(d.style!)) &&
+        inRanges(Number(d.lotWidth), 'lotWidth', state.lotWidth) &&
+        inRanges(Number(d.lotDepth), 'lotDepth', state.lotDepth) &&
+        inRanges(Number(d.sqft), 'sqft', state.sqft) &&
+        Number(d.beds) >= state.beds &&
+        Number(d.baths) >= state.baths
+      );
+    }
+
+    function setCount(key: string, n: number) {
+      const el = bar!.querySelector<HTMLElement>(`[data-count="${key}"]`)!;
+      el.textContent = n ? String(n) : '';
+      el.closest('.pill')!.classList.toggle('active', n > 0);
+    }
+
+    function apply() {
+      let shown = 0;
+      items.forEach((el) => {
+        el.hidden = !matches(el);
+        if (!el.hidden) shown++;
+      });
+      stage!.dispatchEvent(new CustomEvent('canvas:relayout'));
+      empty.hidden = shown > 0;
+
+      // Keep every copy of a control (pill menus and the All filters panel) in sync.
+      inputs.forEach((input) => {
+        const key = input.dataset.filter!;
+        if (key === 'beds' || key === 'baths') input.checked = Number(input.value) === state[key];
+        else if (key === 'style') input.checked = state.style.has(input.value);
+        else input.checked = (state[key as 'lotWidth' | 'lotDepth' | 'sqft']).has(Number(input.value));
+      });
+      setCount('style', state.style.size);
+      setCount('lotWidth', state.lotWidth.size);
+      setCount(
+        'all',
+        state.style.size + state.lotWidth.size + state.lotDepth.size + state.sqft.size + (state.beds ? 1 : 0) + (state.baths ? 1 : 0),
+      );
+      bar!.querySelectorAll('[data-result-count]').forEach((el) => {
+        el.textContent = `${shown} ${shown === 1 ? 'home' : 'homes'}`;
+      });
+    }
+
+    inputs.forEach((input) =>
+      input.addEventListener('change', () => {
+        const key = input.dataset.filter!;
+        if (key === 'beds' || key === 'baths') state[key] = Number(input.value);
+        else if (key === 'style') input.checked ? state.style.add(input.value) : state.style.delete(input.value);
+        else {
+          const set = state[key as 'lotWidth' | 'lotDepth' | 'sqft'];
+          input.checked ? set.add(Number(input.value)) : set.delete(Number(input.value));
+        }
+        apply();
+      }),
+    );
+
+    function clearAll() {
+      state.style.clear();
+      state.lotWidth.clear();
+      state.lotDepth.clear();
+      state.sqft.clear();
+      state.beds = 0;
+      state.baths = 0;
+      closeMenus();
+      apply();
+    }
+    document.querySelectorAll('[data-clear]').forEach((b) => b.addEventListener('click', clearAll));
+
+    // ---- Dropdown menus ----
+    const pills = [...bar.querySelectorAll<HTMLButtonElement>('[data-menu]')];
+
+    function closeMenus() {
+      pills.forEach((p) => p.setAttribute('aria-expanded', 'false'));
+      bar!.querySelectorAll<HTMLElement>('[data-menu-panel]').forEach((m) => (m.hidden = true));
+    }
+
+    pills.forEach((pill) =>
+      pill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const panel = bar!.querySelector<HTMLElement>(`[data-menu-panel="${pill.dataset.menu}"]`)!;
+        const wasOpen = !panel.hidden;
+        closeMenus();
+        if (wasOpen) return;
+        panel.hidden = false;
+        pill.setAttribute('aria-expanded', 'true');
+        // Keep the menu on screen on narrow windows.
+        panel.style.transform = '';
+        const overflow = panel.getBoundingClientRect().right - (window.innerWidth - 12);
+        if (overflow > 0) panel.style.transform = `translateX(${-overflow}px)`;
+      }),
+    );
+
+    bar.querySelectorAll('[data-close-menu]').forEach((b) => b.addEventListener('click', closeMenus));
+    bar.querySelectorAll('[data-menu-panel]').forEach((m) => m.addEventListener('click', (e) => e.stopPropagation()));
+    document.addEventListener('click', closeMenus);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMenus();
+    });
+
+    apply();
+  }
+</script>
+
+<style>
+  /* Its own row above the canvas; menus drop down over the canvas. */
+  .filters {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1rem, 2.5vw, 2.5rem) 0;
+  }
+
+  .pill-wrap {
+    position: relative;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 9.5rem;
+    padding: 0.7rem 1.5rem;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+
+  .pill:hover,
+  .pill[aria-expanded='true'] {
+    background: color-mix(in srgb, var(--ink) 6%, var(--bg));
+  }
+
+  .pill.active {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .count:not(:empty) {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.3rem;
+    height: 1.3rem;
+    padding: 0 0.3rem;
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 0.72rem;
+    letter-spacing: 0;
+  }
+
+  .caret {
+    width: 0.4rem;
+    height: 0.4rem;
+    margin-top: -0.2rem;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.2s;
+  }
+
+  .pill[aria-expanded='true'] .caret {
+    transform: rotate(-135deg);
+    margin-top: 0.2rem;
+  }
+
+  .view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.7rem 0.5rem;
+    border: none;
+    background: none;
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .view-all:hover {
+    color: var(--accent);
+  }
+
+  /* ---- Menus ---- */
+
+  .menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    min-width: 14rem;
+    padding: 0.9rem 1rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgb(0 0 0 / 0.14);
+  }
+
+  .menu-all {
+    width: min(26rem, calc(100vw - 2rem));
+    max-height: min(70dvh, 38rem);
+    overflow-y: auto;
+    padding: 1rem 1.25rem 0;
+  }
+
+  fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .menu-all fieldset {
+    padding: 0.25rem 0 1rem;
+  }
+
+  .menu-all fieldset + fieldset {
+    border-top: 1px solid var(--line);
+    padding-top: 0.9rem;
+  }
+
+  legend {
+    padding: 0;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  input[type='checkbox'] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--ink);
+  }
+
+  .options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    column-gap: 1rem;
+  }
+
+  /* Bedrooms / bathrooms: a row of pill segments. */
+  .segments {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .segment {
+    padding: 0;
+  }
+
+  .segment input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .segment span {
+    display: inline-block;
+    min-width: 3.4rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  .segment input:checked + span {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .segment input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .menu-foot {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 -1.25rem;
+    padding: 0.8rem 1.25rem;
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+  }
+
+  .link {
+    border: none;
+    background: none;
+    padding: 0;
+    color: var(--ink);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .apply {
+    padding: 0.55rem 1.2rem;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--bg);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .empty {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    margin: 0;
+    color: var(--muted);
+    font-size: 1.05rem;
+    text-align: center;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .filters {
+      gap: 0.45rem;
+    }
+
+    .pill {
+      min-width: 0;
+      padding: 0.5rem 0.95rem;
+      font-size: 0.75rem;
+    }
+
+    .view-all {
+      font-size: 0.75rem;
+    }
+  }
+</style>

@@ -17,8 +17,13 @@ const buildings = defineCollection({
       name: z.string(),
       location: z.string(),
       type: z.string(),
-      squareFeet: z.number().positive().optional(),
-      lotSize: z.string().optional(),
+      // Used by the homepage filters and shown on the building page.
+      style: z.string(),
+      bedrooms: z.number().int().nonnegative(),
+      bathrooms: z.number().nonnegative(), // 2.5 = two full baths and a half bath
+      squareFeet: z.number().positive(),
+      lotWidth: z.number().positive(), // feet
+      lotDepth: z.number().positive(), // feet
       description: z.string(),
       // Isometric image with a transparent background, shown floating on the homepage.
       // Generate it with: npm run cutout -- <path-to-isometric-image>

@@ -1,10 +1,15 @@
-# Building #2. Fields marked TODO are placeholders; replace them with real values.
+# Building #2. Specs below are estimates; replace them with real values when known.
 number: 2
 name: Tudor Test House
 location: Portland, OR
 type: Single-family residence
-# squareFeet: 3200      # TODO: uncomment and set once known
-# lotSize: 0.18 acres   # TODO: uncomment and set once known
+style: Tudor
+# Estimated from the floor plans (stair widths set the scale).
+bedrooms: 3
+bathrooms: 4.5 # .5 = half bath
+squareFeet: 3400
+lotWidth: 60 # feet
+lotDepth: 110 # feet
 description: >
   A three-level Tudor Revival with half-timbered gables, a brick entry porch
   under a steep front gable, and a slate-gray shingle roof. The main level

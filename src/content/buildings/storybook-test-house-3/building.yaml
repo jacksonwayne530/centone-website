@@ -1,10 +1,15 @@
-# Building #3. Fields marked TODO are placeholders; replace them with real values.
+# Building #3. Specs below are estimates; replace them with real values when known.
 number: 3
 name: Storybook Test House
 location: Pittsburgh, PA
 type: Single-family residence
-# squareFeet: 2400      # TODO: uncomment and set once known
-# lotSize: 0.15 acres   # TODO: uncomment and set once known
+style: Storybook
+# Estimated from the floor plans (stair widths set the scale).
+bedrooms: 3
+bathrooms: 2.5 # .5 = half bath
+squareFeet: 2800
+lotWidth: 70 # feet
+lotDepth: 120 # feet
 description: >
   A stone Storybook cottage with a steep, scalloped slate roof, a tall brick
   chimney, and a round turret with a conical roof framing the arched front door.

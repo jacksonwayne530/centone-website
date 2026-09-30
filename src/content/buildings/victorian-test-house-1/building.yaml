@@ -1,10 +1,15 @@
-# Building #1. Fields marked TODO are placeholders; replace them with real values.
+# Building #1. Specs below are estimates; replace them with real values when known.
 number: 1
 name: Victorian Test House
 location: Portland, OR
 type: Single-family residence
-# squareFeet: 1800      # TODO: uncomment and set once known
-# lotSize: 0.12 acres   # TODO: uncomment and set once known
+style: Victorian
+# Estimated from the floor plans (stair widths set the scale).
+bedrooms: 3
+bathrooms: 2 # .5 = half bath
+squareFeet: 1900
+lotWidth: 40 # feet
+lotDepth: 100 # feet
 description: >
   A compact two-story Victorian with a wraparound front porch, bay windows,
   fish-scale shingle gables, and a steep hipped roof. The ground floor flows
