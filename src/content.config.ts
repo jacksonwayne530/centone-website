@@ -1,5 +1,5 @@
 import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 // Each building lives in its own folder: src/content/buildings/<slug>/building.yaml
@@ -27,7 +27,17 @@ const buildings = defineCollection({
         .array(z.object({ src: image(), alt: z.string(), caption: z.string().optional() }))
         .min(1),
       floorPlans: z
-        .array(z.object({ src: image(), alt: z.string(), caption: z.string().optional() }))
+        .array(
+          z.object({
+            src: image(),
+            alt: z.string(),
+            caption: z.string().optional(),
+            // Multiplier that brings this plan to the same drawing scale as the building's
+            // other plans (e.g. 0.7 if the image was exported 1.4x larger). Staircases of the
+            // same real width should end up the same size on screen.
+            scale: z.number().positive().default(1),
+          }),
+        )
         .default([]),
       model: z
         .object({
@@ -38,4 +48,39 @@ const buildings = defineCollection({
     }),
 });
 
-export const collections = { buildings };
+// Knowledge articles: one Markdown file each in src/content/knowledge/. The file name is the URL.
+// Cite sources with Markdown footnotes ([^1]); they render as a "Sources" list.
+const knowledge = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/knowledge' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.coerce.date(),
+    // Tie-breaker for articles with the same date (lower comes first).
+    order: z.number().default(0),
+    draft: z.boolean().default(false),
+  }),
+});
+
+// Roadmap categories and their actions, all in one file: src/content/roadmap.yaml.
+const roadmap = defineCollection({
+  loader: file('src/content/roadmap.yaml'),
+  schema: z.object({
+    order: z.number(),
+    name: z.string(),
+    color: z.string(),
+    summary: z.string(),
+    actions: z
+      .array(
+        z.object({
+          title: z.string(),
+          summary: z.string(),
+          detail: z.string(),
+          examples: z.array(z.string()).default([]),
+        }),
+      )
+      .min(1),
+  }),
+});
+
+export const collections = { buildings, knowledge, roadmap };

@@ -1,0 +1,382 @@
+# Roadmap categories shown around the oval on /roadmap/.
+# Each category has a list of actions; each action expands to a longer description.
+# `order` sets the position around the disc (1 = front, then clockwise). Visitors can spin it.
+
+- id: zoning
+  order: 1
+  name: Zoning
+  color: '#1f6f7a'
+  summary: What can be built, and where. Most American cities ban the neighborhoods people love most.
+  actions:
+    - title: End single-family-only zoning
+      summary: Allow duplexes, triplexes, fourplexes, and townhouses on residential lots by right.
+      detail: >
+        Across most American cities, the majority of residential land allows only
+        one detached house per lot. That bans the "missing middle" housing (duplexes,
+        rowhouses, small apartment buildings) that fills many of the country's most
+        loved older neighborhoods. Legalizing these types by right, without special
+        hearings, adds homes gradually and at a scale that fits existing blocks.
+      examples:
+        - Minneapolis became the first major U.S. city to end single-family-only zoning citywide in its 2040 plan, approved in 2018.
+        - Oregon's HB 2001 (2019) requires larger cities to allow duplexes, triplexes, fourplexes, townhouses, and cottage clusters in residential areas.
+    - title: Legalize accessory dwelling units
+      summary: Let every lot add a backyard cottage or basement apartment, without parking or owner-occupancy mandates.
+      detail: >
+        Accessory dwelling units (ADUs) add housing with no new land or infrastructure.
+        Cities technically allow them in many places but smother them with rules:
+        minimum lot sizes, off-street parking requirements, owner-occupancy mandates,
+        and discretionary review. Remove those barriers and homeowners build them.
+      examples:
+        - After California passed a series of state ADU laws beginning in 2016, ADU permits grew from a trickle to tens of thousands a year.
+    - title: Shrink minimum lot sizes
+      summary: Allow small lots so homes can be built on less land, closer together.
+      detail: >
+        Minimum lot sizes quietly set a floor on how much land, and so how much money,
+        a home requires. Cutting them lets builders produce small-lot houses and
+        townhouses that are cheaper per home and support walkable density.
+      examples:
+        - Houston cut its minimum lot size from 5,000 to 1,400 square feet inside the 610 Loop in 1998 and extended it citywide in 2013, producing tens of thousands of townhouses.
+    - title: Allow corner stores and neighborhood shops
+      summary: Permit small shops, cafés, and offices within residential neighborhoods.
+      detail: >
+        Strict separation of uses puts daily errands out of walking range. Allowing
+        small-scale commercial uses on corners and along neighborhood streets, the
+        way nearly every pre-war neighborhood was built, puts a destination within a
+        few minutes' walk of most homes.
+    - title: Upzone around transit and job centers
+      summary: Allow apartments and mixed-use buildings near frequent transit and major employers.
+      detail: >
+        The land around rail stations and frequent bus lines is where new homes do the
+        most good: residents can reach jobs without a car, and transit gets the riders
+        it needs. Too often that land is zoned for detached houses or parking lots.
+      examples:
+        - Washington's HB 1110 (2023) requires cities to allow more homes per lot, with extra allowances near major transit stops.
+    - title: Adopt form-based codes
+      summary: Regulate the shape of buildings and how they meet the street, not just their uses.
+      detail: >
+        Form-based codes focus on what people actually experience: building height,
+        placement, frontage, and the relationship to the sidewalk. They give
+        neighbors predictability about what a new building will look like while
+        freeing up what happens inside it.
+
+- id: building-codes
+  order: 2
+  name: Building Codes
+  color: '#b8902a'
+  summary: The technical rules for how buildings are built, some of which quietly ban good small buildings.
+  actions:
+    - title: Allow single-stair apartment buildings
+      summary: Permit mid-rise apartments with one well-protected stair, as much of the world does.
+      detail: >
+        U.S. building codes generally require two stairways for apartment buildings
+        above three stories. That forces long double-loaded corridors, rules out small
+        lots, and makes family-sized units with windows on multiple sides hard to
+        build. Most of Europe and Asia allow a single stair up to much greater heights
+        with sprinklers and other fire protections.
+      examples:
+        - Seattle and New York City have long allowed single-stair residential buildings up to six stories.
+    - title: Build with mass timber
+      summary: Use engineered wood for mid- and high-rise buildings where codes now allow it.
+      detail: >
+        Cross-laminated timber and other mass-timber products store carbon, go up
+        quickly, and are well suited to the 5–12 story buildings cities need most. The
+        2021 International Building Code added new construction types allowing mass
+        timber buildings up to 18 stories.
+    - title: Create a code path for small apartment buildings
+      summary: Let 3–6 unit buildings be built under simpler rules than large apartment towers.
+      detail: >
+        Under U.S. codes, a fourplex is regulated much more like a large apartment
+        complex than like a house. That raises costs and scares off the small local
+        builders who used to build these buildings. A right-sized code path, with
+        sprinklers and sensible fire separation, would make small multifamily
+        buildings practical again.
+    - title: Offer pre-approved building plans
+      summary: Publish ready-to-permit designs for common small building types.
+      detail: >
+        Custom design and plan review are a large share of the cost and time of a small
+        project. A city-sponsored library of pre-approved plans for houses, ADUs, and
+        small multifamily buildings lets owners and small builders skip straight to
+        construction.
+      examples:
+        - South Bend, Indiana launched a pre-approved plan set for small residential buildings to make infill easier.
+    - title: Align elevator rules with international standards
+      summary: Adopt proven international elevator standards to cut the cost of small elevators.
+      detail: >
+        American elevators cost far more than comparable ones in Europe, partly because
+        of unique domestic standards and certification rules. Allowing elevators
+        certified to widely used international standards would make elevators
+        affordable for small buildings, improving accessibility and making mid-rise
+        housing more practical.
+
+- id: streets
+  order: 3
+  name: Streets & Speed
+  color: '#d9744f'
+  summary: The largest public space in any city. How it's designed decides who can safely use it.
+  actions:
+    - title: Set 20–25 mph default speed limits
+      summary: Lower citywide defaults to 25 mph on major streets and 20 mph on residential ones.
+      detail: >
+        A pedestrian's risk of death rises steeply with impact speed, from about 10
+        percent at 23 mph to 50 percent at 42 mph. Lower default limits work even before
+        streets are redesigned, and they work better alongside design changes.
+      examples:
+        - Boston's move from 30 to 25 mph cut the odds of vehicles exceeding 35 mph by about 29 percent.
+        - Helsinki, with 30 km/h limits on more than half its streets, went 12 months without a traffic death in 2024–25.
+    - title: Put four-lane streets on road diets
+      summary: Convert four-lane undivided streets to two travel lanes plus a center turn lane.
+      detail: >
+        The Federal Highway Administration finds these conversions reduce crashes by
+        19 to 47 percent and work well on streets carrying up to about 20,000 vehicles
+        a day. The space freed up can go to bike lanes, wider sidewalks, or parking.
+        Doing it when a street is repaved costs very little.
+    - title: Narrow travel lanes
+      summary: Use 10-foot lanes on city streets instead of highway-width lanes.
+      detail: >
+        Wide lanes encourage speeding and make crossings longer. City transportation
+        officials recommend 10-foot lanes on most urban streets, with the recovered
+        width going to people walking, cycling, and waiting for transit.
+    - title: Build proven safety countermeasures
+      summary: Raised crosswalks, curb extensions, daylighted corners, and head-start walk signals.
+      detail: >
+        These inexpensive fixes shorten crossing distances, slow turning drivers, and
+        make people on foot more visible. Leading pedestrian intervals, which give
+        walkers a few seconds' head start before cars get a green light, and raised
+        crosswalks are both on the Federal Highway Administration's list of proven
+        safety countermeasures.
+    - title: Require connected street networks
+      summary: Cap block lengths and require new development to connect to surrounding streets.
+      detail: >
+        Connected grids spread traffic across many small streets, shorten walking
+        trips, and are associated with fewer crashes and better health. New
+        subdivisions should meet a minimum intersection density or maximum block
+        length and leave stub-outs for future connections.
+    - title: Use automated speed enforcement
+      summary: Deploy speed cameras on the corridors where crashes concentrate.
+      detail: >
+        Cameras enforce limits consistently, without traffic stops, and can be focused
+        on school zones and high-injury corridors. Pair them with redesign so the
+        street itself encourages safe speeds.
+
+- id: parking
+  order: 4
+  name: Parking
+  color: '#7d4b66'
+  summary: Parking mandates quietly shape cities by spreading everything apart and raising the cost of housing.
+  actions:
+    - title: Eliminate parking minimums
+      summary: Stop requiring a fixed number of parking spaces for every new building.
+      detail: >
+        Minimum parking requirements force developers to build spaces whether or not
+        people need them, raising the cost of housing and businesses and spreading
+        destinations apart. Ending them doesn't ban parking. It lets owners decide how
+        much to build.
+      examples:
+        - Buffalo was the first major U.S. city to eliminate parking minimums citywide, in 2017, followed by Minneapolis, San José, Austin, and others.
+        - California's AB 2097 (2022) ended parking minimums near major transit statewide.
+    - title: Price curb parking by demand
+      summary: Set meter rates so a space or two is usually open on every block.
+      detail: >
+        Free or underpriced curb parking creates cruising, double-parking, and
+        congestion. Adjusting meter prices by block and time of day keeps spaces
+        available and puts the curb to its most valuable use.
+      examples:
+        - San Francisco's SFpark program pioneered demand-based meter pricing in the early 2010s.
+    - title: Create parking benefit districts
+      summary: Return parking meter revenue to the neighborhood where it's collected.
+      detail: >
+        People resist paid parking when the money disappears into a general fund. When
+        the revenue pays for visible local improvements like sidewalks, street trees,
+        lighting, and cleaning, businesses and residents have a reason to support it.
+      examples:
+        - Old Pasadena used meter revenue to fund a revival of its historic downtown in the 1990s.
+    - title: Unbundle parking from rent
+      summary: Rent or sell parking spaces separately from homes and offices.
+      detail: >
+        When parking is bundled into rent, everyone pays for it whether they own a car
+        or not. Pricing it separately lowers housing costs for people who don't need a
+        space and gives everyone a reason to consider whether they do.
+    - title: Offer parking cash-out
+      summary: Let employees who don't use a subsidized parking spot take the value in cash instead.
+      detail: >
+        Free workplace parking is a large, invisible subsidy for driving to work.
+        Offering its cash value to employees who walk, bike, carpool, or take transit
+        levels the playing field without taking anything away.
+      examples:
+        - California has required many employers that lease parking to offer cash-out since 1992.
+
+- id: transit
+  order: 5
+  name: Transit & Cycling
+  color: '#3f8f74'
+  summary: Frequent transit and safe bike networks make car-free trips the easy choice.
+  actions:
+    - title: Redesign bus networks around frequency
+      summary: Build a grid of routes that come often enough that riders don't need a schedule.
+      detail: >
+        Frequency is freedom: a bus every 10–15 minutes is useful for everyday life in
+        a way a bus every hour is not. Many cities' networks are sprawling legacies
+        that spread service thin. A redesign concentrates it into a frequent grid.
+      examples:
+        - Houston's 2015 system reimagining rebuilt its bus network around frequent routes without increasing its operating budget.
+    - title: Give buses their own lanes and signal priority
+      summary: Keep buses out of traffic with dedicated lanes, queue jumps, and smart signals.
+      detail: >
+        A bus stuck in traffic is slow, unreliable, and expensive to run. A dedicated
+        lane can move up to 8,000 people an hour, several times what a general traffic
+        lane moves. Signal priority keeps buses moving through intersections.
+      examples:
+        - New York's 14th Street busway, launched in 2019, sped up crosstown buses by restricting private through-traffic.
+    - title: Build connected protected bike networks
+      summary: Create a continuous network of protected bike lanes, not isolated segments.
+      detail: >
+        Most people will only cycle where they feel safe, and a bike lane that ends
+        abruptly doesn't feel safe. Cities that build a connected, physically protected
+        network quickly see cycling grow, often far faster than expected.
+      examples:
+        - Seville built a connected network of protected bike lanes in just a few years in the late 2000s and saw cycling multiply.
+    - title: Bring down transit construction costs
+      summary: Adopt the practices of countries that build transit for a fraction of U.S. costs.
+      detail: >
+        American cities pay several times more per mile for rail transit than many
+        peer countries. Research such as NYU's Transit Costs Project points to fixable
+        causes: overbuilt stations, weak in-house expertise, poor procurement, and
+        slow, adversarial processes.
+    - title: Plan homes and jobs around stations
+      summary: Surround transit stops with housing, shops, and offices instead of parking.
+      detail: >
+        Transit works best when many people live and work within a short walk of it.
+        Station-area plans should allow dense, mixed-use development and replace park-
+        and-ride lots over time.
+
+- id: land-tax
+  order: 6
+  name: Land & Taxes
+  color: '#a0522d'
+  summary: How land is taxed shapes what gets built on it, or whether anything does.
+  actions:
+    - title: Shift property taxes toward land value
+      summary: Tax land more and buildings less, through a split-rate tax or a land value tax.
+      detail: >
+        A conventional property tax penalizes improvements: build something better and
+        your taxes go up. Taxing land value instead encourages owners to put valuable
+        land to productive use rather than holding it vacant or as surface parking,
+        and it can't be passed on to tenants the way building taxes can.
+      examples:
+        - Pittsburgh taxed land at a higher rate than buildings from 1913 until 2001.
+    - title: Capture the value transit creates
+      summary: Fund transit with a share of the land value it creates around stations.
+      detail: >
+        New transit raises nearby land values, often dramatically. Value capture tools
+        like special assessments, tax increment financing, and joint development let
+        the public recoup part of that gain to pay for the line.
+      examples:
+        - Hong Kong's MTR funds much of its rail system through its "Rail plus Property" model, developing land above and around stations.
+    - title: Discourage vacant land and surface parking
+      summary: Stop letting well-located land sit empty at a low tax bill.
+      detail: >
+        Vacant lots and surface parking in downtowns and near transit are often taxed
+        lightly because the buildings on them are worth little. Vacancy fees, land
+        value taxation, and ending parking mandates all push this land toward uses
+        that add homes, jobs, and tax revenue.
+    - title: Put public land to work for housing
+      summary: Use surplus public land for housing and neighborhood-serving uses.
+      detail: >
+        Cities, transit agencies, and school districts own large amounts of
+        underused land. Making it available for housing, particularly mixed-income
+        and affordable housing, is one of the most direct levers a city has.
+
+- id: finance
+  order: 7
+  name: Finance
+  color: '#3b5a8a'
+  summary: Who pays for growth, who profits, and whether the math works for the long run.
+  actions:
+    - title: Measure tax value per acre
+      summary: Compare how much tax revenue different development patterns produce per acre of land.
+      detail: >
+        Walkable, mixed-use blocks often generate far more tax revenue per acre than
+        big-box stores or low-density subdivisions, while needing less infrastructure
+        per dollar of value. Mapping value per acre shows cities which development
+        patterns actually pay their way.
+    - title: Account for long-term infrastructure costs
+      summary: Weigh the lifetime maintenance cost of new roads and pipes before approving growth.
+      detail: >
+        New subdivisions often arrive with streets, pipes, and pumps paid for up front
+        by developers, but the city inherits the cost of maintaining and eventually
+        replacing them. Development that doesn't generate enough revenue to cover
+        those long-term obligations becomes a hidden liability.
+    - title: Support small-scale developers
+      summary: Make it possible for local people to build small infill projects.
+      detail: >
+        Small buildings used to be built by local tradespeople and small investors.
+        Today, financing, codes, and approvals favor large projects by large firms.
+        Training, small-project lending, and simpler rules can rebuild a local
+        development ecosystem.
+      examples:
+        - The Incremental Development Alliance trains small developers to build modest infill projects in their own neighborhoods.
+    - title: Build public and mixed-income housing
+      summary: Use public financing to build permanently mixed-income homes, as Vienna does.
+      detail: >
+        A public developer can build high-quality mixed-income housing that stays
+        affordable permanently, recycling rents and financing into more projects.
+        Vienna's long tradition of municipal and limited-profit housing shows what the
+        model can do at scale.
+      examples:
+        - Montgomery County, Maryland's Housing Production Fund uses a revolving fund to build mixed-income apartments.
+    - title: Make mixed-use buildings financeable
+      summary: Fix lending rules that penalize buildings with shops below and homes above.
+      detail: >
+        Many mortgage and loan programs are built for single-use buildings and limit
+        how much commercial space a residential building can have. That makes the
+        classic main-street building, with a storefront below and apartments above,
+        harder to finance than it should be.
+
+- id: governance
+  order: 8
+  name: Governance & Permitting
+  color: '#6b6b8e'
+  summary: The process can matter as much as the rules. Delay and discretion kill good projects.
+  actions:
+    - title: Approve code-compliant projects by right
+      summary: If a project meets the rules, approve it administratively, without a hearing.
+      detail: >
+        Discretionary review lets a handful of objectors delay or kill projects that
+        already comply with the code, adding cost and risk to every building. By-right
+        approval gives builders certainty and gives the public a real say where it
+        belongs: in writing the rules.
+      examples:
+        - California's SB 35 (2017) created streamlined, ministerial approval for qualifying housing in cities that fall short of their housing goals.
+    - title: Set permit deadlines
+      summary: Require cities to decide on permits within a fixed time, or the permit is deemed approved.
+      detail: >
+        Months of waiting translate directly into higher costs and fewer projects.
+        Clear deadlines, published review times, and consequences for missing them
+        make permitting predictable.
+    - title: Reform environmental review for infill
+      summary: Stop using environmental review laws to block homes where they do the most good.
+      detail: >
+        Infill housing near jobs and transit is among the best things a region can do
+        for the environment, yet laws like California's CEQA have often been used to
+        delay it. Exempting infill homes from project-by-project review aligns the
+        process with the environmental goal.
+    - title: Hold cities to state housing goals
+      summary: Set housing targets at the state level, with real consequences for cities that ignore them.
+      detail: >
+        Every city benefits when its neighbors build housing, but each one faces local
+        pressure not to. State targets with enforcement, such as losing local control
+        over approvals, correct that imbalance.
+      examples:
+        - California's "builder's remedy" allows projects to bypass local zoning in cities without a compliant housing plan.
+    - title: Pilot changes quickly and cheaply
+      summary: Test street redesigns with paint, posts, and planters before rebuilding in concrete.
+      detail: >
+        Quick-build projects let cities try a protected bike lane, plaza, or road diet
+        in weeks instead of years, measure the results, and adjust before investing in
+        permanent construction.
+    - title: Publish the results
+      summary: Track and publish permit times, housing production, and traffic safety by neighborhood.
+      detail: >
+        What gets measured gets managed. Public dashboards of permit timelines, homes
+        built, and injuries on each street make progress visible and hold officials
+        accountable.

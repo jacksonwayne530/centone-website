@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "cutout": "node scripts/cutout.mjs"
+    "cutout": "node scripts/cutout.mjs",
+    "floorplans": "node scripts/floorplans.mjs"
   },
   "dependencies": {
     "@google/model-viewer": "^4.3.1",

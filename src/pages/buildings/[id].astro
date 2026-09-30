@@ -1,7 +1,7 @@
 ---
 // Shared template for every building. One page is generated per folder in src/content/buildings/.
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import ModelViewer from '../../components/ModelViewer.astro';
 import { formatNumber, formatSquareFeet } from '../../lib/format';
@@ -23,6 +23,22 @@ const facts = [
   ['Square footage', formatSquareFeet(data.squareFeet)],
   ['Lot size', data.lotSize],
 ].filter((f): f is [string, string] => Boolean(f[1]));
+
+// Floor plans are drawn as masks filled with the text color, so the linework matches the theme.
+const plans = await Promise.all(
+  data.floorPlans.map(async (plan) => ({
+    ...plan,
+    url: (await getImage({ src: plan.src, format: 'webp' })).src,
+    width: Math.round(plan.src.width * plan.scale),
+    height: Math.round(plan.src.height * plan.scale),
+  })),
+);
+// At most two plans per row, so labels stay readable. The shared scale is set by the widest pair.
+const PLANS_PER_ROW = 2;
+const widest = [...plans].sort((a, b) => b.width - a.width);
+const planRowTotal = widest.slice(0, PLANS_PER_ROW).reduce((sum, p) => sum + p.width, 0);
+const planRowGaps = Math.min(plans.length, PLANS_PER_ROW) - 1;
+const planMax = widest[0]?.width ?? 0;
 ---
 
 <Base title={data.name} description={data.description}>
@@ -42,6 +58,28 @@ const facts = [
           <Image src={data.photos[0].src} alt={data.photos[0].alt} widths={[800, 1400]} sizes="(min-width: 960px) 720px, 100vw" class="hero" />
         )
       }
+
+      {
+        plans.length > 0 && (
+          <section
+            class="plans"
+            aria-label="Floor plans"
+            style={`--total: ${planRowTotal}; --widest: ${planMax}; --gaps: ${planRowGaps}`}
+          >
+            {plans.map((plan) => (
+              <figure style={`--w: ${plan.width}`}>
+                <div
+                  class="plan"
+                  role="img"
+                  aria-label={plan.alt}
+                  style={`aspect-ratio: ${plan.width} / ${plan.height}; --plan: url("${plan.url}")`}
+                />
+                {plan.caption && <figcaption>{plan.caption}</figcaption>}
+              </figure>
+            ))}
+          </section>
+        )
+      }
     </div>
 
     <aside class="details">
@@ -59,35 +97,6 @@ const facts = [
     </aside>
   </div>
 
-  <section>
-    <h2>Photos</h2>
-    <div class="gallery">
-      {
-        data.photos.map((photo) => (
-          <figure>
-            <Image src={photo.src} alt={photo.alt} widths={[600, 1200]} sizes="(min-width: 720px) 50vw, 100vw" />
-            {photo.caption && <figcaption>{photo.caption}</figcaption>}
-          </figure>
-        ))
-      }
-    </div>
-  </section>
-
-  {
-    data.floorPlans.length > 0 && (
-      <section>
-        <h2>Floor plans</h2>
-        <div class="gallery plans">
-          {data.floorPlans.map((plan) => (
-            <figure>
-              <Image src={plan.src} alt={plan.alt} />
-              {plan.caption && <figcaption>{plan.caption}</figcaption>}
-            </figure>
-          ))}
-        </div>
-      </section>
-    )
-  }
 </Base>
 
 <style>
@@ -156,48 +165,45 @@ const facts = [
     margin: 0;
   }
 
-  section {
-    margin-top: 3rem;
-  }
-
-  section h2 {
-    font-size: 1.25rem;
-    margin: 0 0 1rem;
-  }
-
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.25rem;
-  }
-
-  figure {
-    margin: 0;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    overflow: hidden;
+  /* All plans are drawn at one shared scale (--px = size of one image pixel), shrunk as needed
+     to fit two per row, and never enlarged past the images' own resolution. */
+  .plans {
+    --gap: 2.5rem;
+    container-type: inline-size;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: var(--gap);
+    margin-top: 2.5rem;
   }
 
   .plans figure {
-    background: #fff;
-    padding: 1rem;
+    /* Slightly under the exact fit so rounding never pushes the second plan onto a new row. */
+    --px: min(1px, (100cqw - var(--gaps) * var(--gap) - 2px) / var(--total));
+    flex: none;
+    width: calc(var(--w) * var(--px));
+    margin: 0;
   }
 
-  .plans img {
-    margin: 0 auto;
-    max-height: 640px;
-    width: auto;
+  /* Narrow screens: stack the plans, sized so the widest one fills the width. */
+  @container (max-width: 560px) {
+    .plans figure {
+      --px: min(1px, 100cqw / var(--widest));
+    }
+  }
+
+  .plan {
+    width: 100%;
+    background: var(--ink);
+    -webkit-mask: var(--plan) center / contain no-repeat;
+    mask: var(--plan) center / contain no-repeat;
   }
 
   figcaption {
-    padding: 0.6rem 0.9rem;
+    margin-top: 0.75rem;
+    text-align: center;
     font-size: 0.85rem;
     color: var(--muted);
-  }
-
-  .plans figcaption {
-    padding: 0.75rem 0 0;
-    color: #6b675f;
   }
 </style>

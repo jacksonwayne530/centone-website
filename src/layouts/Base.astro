@@ -12,6 +12,15 @@ interface Props {
 
 const { title, description = 'A catalog of well-designed buildings.', fullBleed = false } = Astro.props;
 const fullTitle = title ? `${title} · Centone` : 'Centone';
+
+const current = Astro.url.pathname;
+const nav = [
+  // Designs is the homepage of floating buildings; building pages count as part of it.
+  { href: '/', label: 'Designs', active: current === '/' || current.startsWith('/buildings/') },
+  { href: '/roadmap/', label: 'Roadmap', active: current.startsWith('/roadmap/') },
+  { href: '/knowledge/', label: 'Knowledge', active: current.startsWith('/knowledge/') },
+  { href: '/about/', label: 'About', active: current.startsWith('/about/') },
+];
 ---
 
 <!doctype html>
@@ -31,6 +40,15 @@ const fullTitle = title ? `${title} · Centone` : 'Centone';
           <span>Centone</span>
         </a>
         <span class="tagline">A catalog of well-designed buildings</span>
+        <nav class="site-nav" aria-label="Main">
+          {
+            nav.map(({ href, label, active }) => (
+              <a href={href} aria-current={active ? 'page' : undefined}>
+                {label}
+              </a>
+            ))
+          }
+        </nav>
       </div>
     </header>
     <main>

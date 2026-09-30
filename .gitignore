@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Original photos (HEIC files carry GPS location data); only processed copies are published
+src/content/about/*.HEIC
+src/content/about/*.heic

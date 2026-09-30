@@ -1,0 +1,75 @@
+---
+// Shared template for every Knowledge article in src/content/knowledge/.
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getArticles, readingTime, formatDate, type Article } from '../../lib/knowledge';
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return articles.map((article) => ({ params: { id: article.id }, props: { article } }));
+}
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+---
+
+<Base title={article.data.title} description={article.data.description}>
+  <article class="prose">
+    <a href="/knowledge/" class="back">← Knowledge</a>
+    <header>
+      <h1>{article.data.title}</h1>
+      <p class="dek">{article.data.description}</p>
+      <p class="meta">
+        <time datetime={article.data.date.toISOString()}>{formatDate(article.data.date)}</time>
+        <span aria-hidden="true">·</span>
+        <span>{readingTime(article)}</span>
+      </p>
+    </header>
+    <Content />
+  </article>
+</Base>
+
+<style>
+  /* A bit wider than the default reading column. */
+  article.prose {
+    max-width: 48rem;
+  }
+
+  .back {
+    display: inline-block;
+    margin: 0.5rem 0 1.5rem;
+    font-size: 0.95rem;
+    text-decoration: none;
+  }
+
+  header {
+    margin-bottom: 2.25rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5vw, 3rem);
+    line-height: 1.1;
+    margin: 0 0 0.75rem;
+  }
+
+  .dek {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  .meta {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+</style>

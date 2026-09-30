@@ -1,0 +1,126 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import portrait from '../content/about/jackson.jpg';
+
+const buildings = (await getCollection('buildings')).sort((a, b) => a.data.number - b.data.number);
+---
+
+<Base title="About" description="Who's behind Centone, and why it exists.">
+  <article class="prose">
+    <header class="hero">
+      <Image
+        src={portrait}
+        alt="Jackson"
+        widths={[240, 480]}
+        sizes="(min-width: 640px) 200px, 160px"
+        class="portrait"
+        loading="eager"
+      />
+      <div>
+        <h1 class="sr-only">About</h1>
+        <p class="lede">
+          Hi, I'm Jackson. Centone is where I collect buildings worth learning from, and the ideas
+          that make places like them possible.
+        </p>
+      </div>
+    </header>
+
+    <h2>Why buildings, and why rules</h2>
+    <p>
+      Good buildings don't happen by accident. Whether a corner store, a rowhouse, or a small
+      apartment building can exist on a given block is decided long before anyone draws it, by
+      zoning codes, building codes, street standards, and the way we pay for all of it. Many of the
+      neighborhoods people love most would be illegal to build in most American cities today.
+    </p>
+    <p>
+      I'm interested in both halves of that: the buildings themselves, room by room, and the rules
+      that decide whether we get more of them.
+    </p>
+
+    <h2>What's here</h2>
+    <ul>
+      <li>
+        <a href="/">Buildings</a>. A growing catalog of houses I admire, each with an isometric
+        drawing, scaled floor plans, and a 3D model you can spin. So far:{' '}
+        {
+          buildings.map((b, i) => (
+            <>
+              <a href={`/buildings/${b.id}/`}>{b.data.name}</a> ({b.data.location})
+              {i < buildings.length - 2 ? ', ' : i === buildings.length - 2 ? ', and ' : '.'}
+            </>
+          ))
+        }
+      </li>
+      <li>
+        <a href="/roadmap/">Roadmap</a>. The policy changes that would make well-designed places
+        normal again, organized by category, from zoning and building codes to parking, transit,
+        and finance.
+      </li>
+      <li>
+        <a href="/knowledge/">Knowledge</a>. Essays on the ideas behind the roadmap, with sources.
+      </li>
+    </ul>
+
+    <h2>What I believe</h2>
+    <ul>
+      <li>
+        Streets are a city's largest public space, and they should be designed first for the
+        people walking, cycling, and living along them.
+      </li>
+      <li>A car should be an option, not a requirement for everyday life.</li>
+      <li>
+        Neighborhoods should be allowed to grow gradually, one small building at a time, the way
+        the best ones always have.
+      </li>
+      <li>Good design shouldn't be a luxury. The rules should make it the default.</li>
+    </ul>
+  </article>
+</Base>
+
+<style>
+  .hero {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin: 1rem 0 2rem;
+  }
+
+  .portrait {
+    flex: none;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  /* The page title stays for screen readers but isn't shown. */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .lede {
+    font-size: 1.35rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.25rem;
+    }
+
+    .portrait {
+      width: 160px;
+      height: 160px;
+    }
+  }
+</style>

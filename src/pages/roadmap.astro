@@ -1,0 +1,638 @@
+---
+// Categories sit around a disc seen in perspective: the front of the disc (bottom) is closer, so
+// those categories draw larger. Drag anywhere on the disc to spin it. Clicking a category opens a
+// centered window listing its actions; each action expands to show what it means and examples.
+// Content lives in src/content/roadmap.yaml.
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const categories = (await getCollection('roadmap')).sort((a, b) => a.data.order - b.data.order);
+const n = categories.length;
+
+// Initial layout (the script takes over and keeps it in sync while spinning). Category 1 starts
+// at the front of the disc and the rest follow clockwise. These match the desktop values in CSS.
+const RX = 42;
+const RY = 32;
+const DEPTH_MIN = 0.72;
+const FRONT_BOOST = 0.18;
+const FRONT_FOCUS = 8;
+const place = (angle: number, boost = true) => {
+  const s = Math.sin(angle);
+  const depth = DEPTH_MIN + (1 - DEPTH_MIN) * ((s + 1) / 2) + (boost ? FRONT_BOOST * Math.max(0, s) ** FRONT_FOCUS : 0);
+  return `left: ${(50 + Math.cos(angle) * RX).toFixed(2)}%; top: ${(50 + s * RY).toFixed(2)}%; --depth: ${depth.toFixed(3)}; z-index: ${Math.round(depth * 100)}`;
+};
+const baseAngle = (i: number) => Math.PI / 2 + (i / n) * Math.PI * 2;
+const DOTS = 48;
+---
+
+<Base title="Roadmap" description="A roadmap of policy changes for building better cities, by category.">
+  <div class="roadmap">
+    <header class="intro">
+      <h1>Roadmap</h1>
+      <p>{n} areas where better rules make better places. Drag to spin, then pick one.</p>
+    </header>
+
+    <section class="stage" aria-label="Roadmap categories" data-dot-count={DOTS}>
+      <div class="oval" aria-hidden="true"></div>
+      <div class="oval inner" aria-hidden="true"></div>
+
+      {
+        Array.from({ length: DOTS }, (_, i) => (
+          <span class="dot" aria-hidden="true" style={`${place((i / DOTS) * Math.PI * 2, false)}; z-index: 0`} />
+        ))
+      }
+
+      {
+        categories.map((c, i) => (
+          <button
+            type="button"
+            class="node"
+            data-open={c.id}
+            data-angle={baseAngle(i)}
+            aria-haspopup="dialog"
+            style={`${place(baseAngle(i))}; --c: ${c.data.color}`}
+          >
+            <span class="disc">
+              <span class="node-name">{c.data.name}</span>
+            </span>
+          </button>
+        ))
+      }
+    </section>
+  </div>
+
+  {
+    categories.map((c) => (
+      <dialog class="panel" id={`panel-${c.id}`} data-category={c.id} aria-labelledby={`title-${c.id}`} style={`--c: ${c.data.color}`}>
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Roadmap</p>
+            <h2 id={`title-${c.id}`}>{c.data.name}</h2>
+            <p class="panel-summary">{c.data.summary}</p>
+          </div>
+          <button type="button" class="close" data-close aria-label="Close">
+            ×
+          </button>
+        </div>
+        <ol class="actions">
+          {c.data.actions.map((a, i) => (
+            <li>
+              <details class="action">
+                <summary>
+                  <span class="num">{i + 1}</span>
+                  <span class="action-text">
+                    <span class="action-title">{a.title}</span>
+                    <span class="action-summary">{a.summary}</span>
+                  </span>
+                  <span class="chevron" aria-hidden="true" />
+                </summary>
+                <div class="action-body">
+                  <p>{a.detail}</p>
+                  {a.examples.length > 0 && (
+                    <>
+                      <p class="examples-label">In practice</p>
+                      <ul class="examples">
+                        {a.examples.map((e) => (
+                          <li>{e}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </div>
+              </details>
+            </li>
+          ))}
+        </ol>
+      </dialog>
+    ))
+  }
+</Base>
+
+<script>
+  // ---- Spinning disc ----
+  const DEPTH_MIN = 0.72; // scale of categories at the back of the disc (front = 1)
+  const FRONT_BOOST = 0.18; // extra scale for the category right at the front and center
+  const FRONT_FOCUS = 8; // how narrowly that boost is focused on the front (higher = narrower)
+  const FRICTION = 0.95; // spin momentum decay per frame after release
+  const DRAG_THRESHOLD = 6; // px before a press counts as a drag rather than a click
+
+  const stage = document.querySelector<HTMLElement>('.stage')!;
+  const nodes = [...stage.querySelectorAll<HTMLButtonElement>('.node')];
+  const dots = [...stage.querySelectorAll<HTMLElement>('.dot')];
+  const nodeAngles = nodes.map((el) => Number(el.dataset.angle));
+  const dotAngles = dots.map((_, i) => (i / dots.length) * Math.PI * 2);
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let spin = 0;
+  let vel = 0;
+  let frame = 0;
+
+  // Radii of the disc, as percentages of the stage (set in CSS so they can change on phones).
+  function radii() {
+    const cs = getComputedStyle(stage);
+    return { rx: parseFloat(cs.getPropertyValue('--rx')), ry: parseFloat(cs.getPropertyValue('--ry')) };
+  }
+  let { rx, ry } = radii();
+
+  // `isNode`: categories get the front-center boost and stack by depth; rim dots don't.
+  function position(el: HTMLElement, angle: number, isNode = true) {
+    const s = Math.sin(angle);
+    const depth =
+      DEPTH_MIN + (1 - DEPTH_MIN) * ((s + 1) / 2) + (isNode ? FRONT_BOOST * Math.max(0, s) ** FRONT_FOCUS : 0);
+    el.style.left = `${50 + Math.cos(angle) * rx}%`;
+    el.style.top = `${50 + s * ry}%`;
+    el.style.setProperty('--depth', depth.toFixed(3));
+    if (isNode) el.style.zIndex = String(Math.round(depth * 100) + 1);
+  }
+
+  function render() {
+    nodes.forEach((el, i) => position(el, nodeAngles[i] + spin));
+    dots.forEach((el, i) => position(el, dotAngles[i] + spin, false));
+  }
+
+  function tick() {
+    frame = 0;
+    if (Math.abs(vel) < 0.0004) return;
+    spin += vel;
+    vel *= FRICTION;
+    render();
+    frame = requestAnimationFrame(tick);
+  }
+
+  // The pointer's angle around the disc, so dragging "grabs" the disc and turns it.
+  function angleAt(e: PointerEvent) {
+    const r = stage.getBoundingClientRect();
+    const nx = (e.clientX - (r.left + r.width / 2)) / ((r.width * rx) / 100);
+    const ny = (e.clientY - (r.top + r.height / 2)) / ((r.height * ry) / 100);
+    return { a: Math.atan2(ny, nx), dist: Math.hypot(nx, ny) };
+  }
+
+  let press: { x: number; y: number; angle: number; t: number } | null = null;
+  let dragging = false;
+  let suppressClick = false;
+
+  stage.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    press = { x: e.clientX, y: e.clientY, angle: angleAt(e).a, t: e.timeStamp };
+    suppressClick = false;
+    vel = 0;
+  });
+
+  stage.addEventListener('pointermove', (e) => {
+    if (!press) return;
+    if (!dragging) {
+      if (Math.hypot(e.clientX - press.x, e.clientY - press.y) < DRAG_THRESHOLD) return;
+      dragging = true;
+      suppressClick = true;
+      stage.setPointerCapture(e.pointerId);
+      stage.classList.add('spinning');
+    }
+    const { a, dist } = angleAt(e);
+    let d = a - press.angle;
+    if (d > Math.PI) d -= Math.PI * 2;
+    if (d < -Math.PI) d += Math.PI * 2;
+    // Right at the middle the angle swings wildly; ignore movement there.
+    if (dist > 0.2) {
+      spin += d;
+      const dt = Math.max(e.timeStamp - press.t, 1);
+      vel = vel * 0.5 + (d / dt) * 16 * 0.5;
+      render();
+    }
+    press.angle = a;
+    press.t = e.timeStamp;
+  });
+
+  function endPress(e: PointerEvent) {
+    if (!press) return;
+    if (e.timeStamp - press.t > 80 || reduceMotion) vel = 0;
+    press = null;
+    if (dragging) {
+      dragging = false;
+      stage.classList.remove('spinning');
+      if (!frame) frame = requestAnimationFrame(tick);
+    }
+  }
+  stage.addEventListener('pointerup', endPress);
+  stage.addEventListener('pointercancel', endPress);
+
+  // Don't open a category at the end of a spin.
+  stage.addEventListener(
+    'click',
+    (e) => {
+      if (suppressClick) {
+        e.preventDefault();
+        e.stopPropagation();
+        suppressClick = false;
+      }
+    },
+    true,
+  );
+
+  new ResizeObserver(() => {
+    ({ rx, ry } = radii());
+    render();
+  }).observe(stage);
+  render();
+
+  // ---- Category windows ----
+  const panels = new Map(
+    [...document.querySelectorAll<HTMLDialogElement>('dialog.panel')].map((d) => [d.dataset.category!, d]),
+  );
+
+  function open(id: string, updateHash = true) {
+    const panel = panels.get(id);
+    if (!panel) return;
+    panels.forEach((p) => p.open && p.close());
+    panel.showModal();
+    panel.scrollTop = 0;
+    if (updateHash) history.replaceState(null, '', `#${id}`);
+  }
+
+  nodes.forEach((btn) => btn.addEventListener('click', () => open(btn.dataset.open!)));
+
+  panels.forEach((panel) => {
+    panel.querySelector('[data-close]')?.addEventListener('click', () => panel.close());
+    // Clicking the dimmed backdrop (outside the window) closes it.
+    panel.addEventListener('click', (e) => {
+      if (e.target === panel) panel.close();
+    });
+    panel.addEventListener('close', () => {
+      if (location.hash === `#${panel.dataset.category}`) history.replaceState(null, '', location.pathname);
+      document.querySelector<HTMLButtonElement>(`.node[data-open="${panel.dataset.category}"]`)?.focus({ preventScroll: true });
+    });
+  });
+
+  // Deep links like /roadmap/#parking open that category.
+  if (location.hash) open(location.hash.slice(1), false);
+</script>
+
+<style>
+  /* Title and disc together fill the window below the header, centered vertically. */
+  .roadmap {
+    min-height: calc(100dvh - 9.5rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: -1rem;
+  }
+
+  .intro {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .intro h1 {
+    font-size: clamp(1.6rem, 3.5vw, 2rem);
+    margin: 0 0 0.2rem;
+  }
+
+  .intro p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.98rem;
+  }
+
+  /* ---- The disc ---- */
+
+  .stage {
+    /* Radii as a percentage of the stage's width / height. */
+    --rx: 42;
+    --ry: 32;
+    --node: 150px;
+    position: relative;
+    /* Never taller than the space left in the window, so the whole disc stays in view. */
+    width: min(100%, 1040px, calc((100dvh - 15rem) * 16 / 8.5));
+    aspect-ratio: 16 / 8.5;
+    margin: 0 auto;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .stage.spinning {
+    cursor: grabbing;
+  }
+
+  .oval {
+    position: absolute;
+    left: calc(50% - var(--rx) * 1%);
+    top: calc(50% - var(--ry) * 1%);
+    width: calc(var(--rx) * 2%);
+    height: calc(var(--ry) * 2%);
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--surface) 55%, transparent), transparent);
+  }
+
+  .oval.inner {
+    left: calc(50% - var(--rx) * 0.62%);
+    top: calc(50% - var(--ry) * 0.62%);
+    width: calc(var(--rx) * 1.24%);
+    height: calc(var(--ry) * 1.24%);
+    border: 1px dashed var(--line);
+    background: none;
+  }
+
+  /* Small marks around the rim, so the disc visibly turns. */
+  .dot {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--muted);
+    opacity: calc((var(--depth) - 0.6) * 1.2);
+    transform: translate(-50%, -50%) scale(var(--depth));
+    pointer-events: none;
+    z-index: 0;
+  }
+
+
+  /* ---- Category nodes ---- */
+
+  /* The button is placed and depth-scaled by the script (no transition, so spinning stays
+     smooth); the disc inside handles hover magnification. */
+  .node {
+    position: absolute;
+    width: var(--node);
+    height: var(--node);
+    transform: translate(-50%, -50%) scale(var(--depth, 1));
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    font: inherit;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .stage.spinning .node {
+    cursor: grabbing;
+  }
+
+  .disc {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid color-mix(in srgb, var(--c) 80%, transparent);
+    box-shadow:
+      0 0 14px 2px color-mix(in srgb, var(--c) 40%, transparent),
+      inset 0 0 12px color-mix(in srgb, var(--c) 28%, transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0.6rem;
+    transition:
+      transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 0.35s;
+  }
+
+  .node:hover .disc,
+  .node:focus-visible .disc {
+    transform: scale(1.2);
+    box-shadow:
+      0 0 26px 6px color-mix(in srgb, var(--c) 50%, transparent),
+      inset 0 0 16px color-mix(in srgb, var(--c) 36%, transparent);
+  }
+
+  .node:hover,
+  .node:focus-visible {
+    z-index: 200 !important;
+    outline: none;
+  }
+
+  /* No hover growth mid-spin. */
+  .stage.spinning .node .disc {
+    transform: none;
+  }
+
+  .node-name {
+    font-weight: 650;
+    font-size: 1.18rem;
+    line-height: 1.15;
+    text-align: center;
+  }
+
+
+  /* Phones: a rounder disc with smaller nodes so everything still fits and reads. */
+  @media (max-width: 700px) {
+    .roadmap {
+      min-height: 0;
+      margin-top: 0;
+    }
+
+    .stage {
+      width: min(100%, calc((100dvh - 15rem) / 0.9));
+      --rx: 39;
+      --ry: 31;
+      --node: 84px;
+      aspect-ratio: 1 / 0.9;
+    }
+
+    .node-name {
+      font-size: 0.82rem;
+    }
+  }
+
+  /* ---- Category window (centered) ---- */
+
+  .panel {
+    margin: auto;
+    width: min(700px, calc(100vw - 2rem));
+    max-height: min(85dvh, 900px);
+    padding: 0;
+    border: 1.5px solid color-mix(in srgb, var(--c) 55%, var(--line));
+    border-radius: 14px;
+    background: var(--bg);
+    color: var(--ink);
+    box-shadow: 0 24px 70px rgb(0 0 0 / 0.25);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .panel[open] {
+    animation: pop-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .panel::backdrop {
+    background: rgb(0 0 0 / 0.35);
+    backdrop-filter: blur(2px);
+  }
+
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel[open] {
+      animation: none;
+    }
+  }
+
+  .panel-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.5rem 1.5rem 1.25rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .panel-kicker {
+    margin: 0;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: color-mix(in srgb, var(--c) 75%, var(--ink));
+    font-weight: 700;
+  }
+
+  .panel h2 {
+    margin: 0.2rem 0 0.4rem;
+    font-size: 1.8rem;
+  }
+
+  .panel-summary {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .close {
+    flex: none;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: none;
+    color: var(--ink);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .close:hover {
+    background: var(--line);
+  }
+
+  .actions {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 1.5rem 1.5rem;
+  }
+
+  .actions li + li {
+    border-top: 1px solid var(--line);
+  }
+
+  .action summary {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+    padding: 1rem 0;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .action summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .num {
+    flex: none;
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 50%;
+    border: 1.5px solid color-mix(in srgb, var(--c) 70%, transparent);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+
+  .action-text {
+    flex: 1;
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .action-title {
+    font-weight: 650;
+    line-height: 1.3;
+  }
+
+  .action-summary {
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+
+  .chevron {
+    flex: none;
+    width: 0.6rem;
+    height: 0.6rem;
+    margin-top: 0.45rem;
+    border-right: 2px solid var(--muted);
+    border-bottom: 2px solid var(--muted);
+    transform: rotate(45deg);
+    transition: transform 0.2s;
+  }
+
+  .action[open] .chevron {
+    transform: rotate(-135deg);
+  }
+
+  .action-body {
+    padding: 0 0 1.1rem 2.6rem;
+    line-height: 1.6;
+  }
+
+  .action-body p {
+    margin: 0 0 0.8rem;
+  }
+
+  .examples-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: color-mix(in srgb, var(--c) 75%, var(--ink));
+    margin-bottom: 0.4rem !important;
+  }
+
+  .examples {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .examples li {
+    margin-bottom: 0.35rem;
+  }
+
+  @media (max-width: 700px) {
+    .panel-head {
+      padding: 1.25rem 1.1rem 1rem;
+    }
+
+    .actions {
+      padding: 0.25rem 1.1rem 1.25rem;
+    }
+
+    .action-body {
+      padding-left: 0;
+    }
+  }
+</style>
