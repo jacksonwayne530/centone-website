@@ -44,7 +44,7 @@ const planRowGaps = Math.min(plans.length, PLANS_PER_ROW) - 1;
 const planMax = widest[0]?.width ?? 0;
 ---
 
-<Base title={data.name} description={data.description}>
+<Base title={data.name} description={data.description} wide>
   <a href="/" class="back">← All buildings</a>
 
   <header class="head">
@@ -132,7 +132,8 @@ const planMax = widest[0]?.width ?? 0;
 
   @media (min-width: 960px) {
     .layout {
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: minmax(0, 2.2fr) minmax(18rem, 1fr);
+      gap: 3.5rem;
       align-items: start;
     }
   }

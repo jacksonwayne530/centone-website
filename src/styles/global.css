@@ -97,6 +97,13 @@ h3 {
   border-radius: 5px;
 }
 
+/* Wide pages (building details): more room side to side, edges aligned with the header. */
+body.wide main {
+  max-width: 1480px;
+  padding-left: clamp(1rem, 2.5vw, 2.5rem);
+  padding-right: clamp(1rem, 2.5vw, 2.5rem);
+}
+
 /* Full-bleed pages (the homepage) fill the screen below the header with no page scroll. */
 body.full-bleed {
   height: 100vh;

@@ -8,9 +8,11 @@ interface Props {
   description?: string;
   /** Page content fills the whole screen below the header (no footer, no page scroll). */
   fullBleed?: boolean;
+  /** Use a wider content area (building detail pages). */
+  wide?: boolean;
 }
 
-const { title, description = 'A catalog of well-designed buildings.', fullBleed = false } = Astro.props;
+const { title, description = 'A catalog of well-designed buildings.', fullBleed = false, wide = false } = Astro.props;
 const fullTitle = title ? `${title} · Centone` : 'Centone';
 
 const current = Astro.url.pathname;
@@ -32,7 +34,7 @@ const nav = [
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{fullTitle}</title>
   </head>
-  <body class:list={{ 'full-bleed': fullBleed }}>
+  <body class:list={{ 'full-bleed': fullBleed, wide }}>
     <header class="site-header">
       <div class="site-header-inner">
         <a href="/" class="wordmark">
