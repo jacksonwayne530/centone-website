@@ -21,10 +21,11 @@
   const SPACING_X = 1.05; // horizontal gap between neighbors, as a multiple of item width
   const SPACING_Y = 0.78; // vertical gap between rows, as a multiple of item width
   const KEEP_VISIBLE = 0.32; // at the pan limit, the outermost item's center stays this far inside the screen (fraction of width/height)
-  const FISHEYE_MIN = 0.55; // smallest scale an item shrinks to near the edges
+  const FISHEYE_MIN = 0.8; // smallest scale an item shrinks to near the edges (kept mild so sizes stay comparable)
   const FRICTION = 0.94; // momentum decay per frame after release
   const SPRING = 0.14; // how quickly an over-stretched canvas snaps back
   const DRAG_THRESHOLD = 6; // px of movement before a press counts as a drag (not a click)
+  const BASELINE = 0.42; // ground line below a cell's center, as a fraction of item width
   const MIN_ZOOM = 0.5;
   const MAX_ZOOM = 2.5;
   const WHEEL_ZOOM_SPEED = 0.0015; // per pixel of mouse-wheel scroll
@@ -81,6 +82,7 @@
     let vel = { x: 0, y: 0 };
     let dragging = false;
     let frame = 0;
+    let maxSize = 1; // largest relative item size currently shown
     let sizedFor = 0; // largest on-screen image width requested so far (keeps zoomed images sharp)
 
     // Where the view is centered at the current zoom (the cluster, or building #1 on phones).
@@ -131,22 +133,31 @@
         return;
       }
 
-      // Layout in units of one item width.
-      const unit = hexSpiral(items.length).map(([q, r]) => ({ x: (q + r / 2) * SPACING_X, y: r * SPACING_Y }));
-      const spanX = Math.max(...unit.map((p) => p.x)) - Math.min(...unit.map((p) => p.x)) + 1;
+      // Relative sizes (data-size, median building = 1) set each item's width. Grid spacing
+      // leans toward the largest item so big buildings don't crowd their neighbors.
+      const sizes = items.map((el) => Number(el.dataset.size) || 1);
+      maxSize = Math.max(...sizes);
+      const meanSize = sizes.reduce((a, b) => a + b, 0) / sizes.length;
+      const spread = (meanSize + maxSize) / 2;
+
+      // Layout in units of one (median) item width.
+      const unit = hexSpiral(items.length).map(([q, r]) => ({ x: (q + r / 2) * SPACING_X * spread, y: r * SPACING_Y * spread }));
+      const spanX = Math.max(...unit.map((p) => p.x)) - Math.min(...unit.map((p) => p.x)) + maxSize;
       const spanY = Math.max(...unit.map((p) => p.y)) - Math.min(...unit.map((p) => p.y));
 
       // Phones: one building fills most of the width and its neighbors peek in from the sides.
       // Larger screens: shrink buildings (down to a floor) so the whole cluster fits if it can.
       const preferred = phone ? vw * 0.62 : Math.min(vw * 0.36, vh * 0.6);
+      // Items hang from a baseline (their ground line) so taller buildings grow upward.
       const place = (w: number) =>
         items.forEach((el, i) => {
-          el.style.width = `${w}px`;
+          el.style.width = `${w * sizes[i]}px`;
           el.style.left = `${unit[i].x * w}px`;
-          el.style.top = `${unit[i].y * w}px`;
+          el.style.top = `${(unit[i].y + BASELINE) * w}px`;
         });
       place(preferred);
       const heightRatio = Math.max(...items.map((el) => el.offsetHeight)) / preferred || 1;
+      // (heightRatio already includes each item's own size.)
       const fitW = Math.min((vw * 0.94) / spanX, (vh * 0.94) / (spanY + heightRatio));
       itemW = clamp(phone ? preferred : Math.min(preferred, fitW), phone ? 160 : 240, 460);
       place(itemW);
@@ -183,7 +194,7 @@
       });
 
       // When zoomed in, ask the browser for higher-resolution images so they stay sharp.
-      const shown = Math.ceil(itemW * zoom);
+      const shown = Math.ceil(itemW * maxSize * zoom);
       if (shown > sizedFor * 1.2) {
         sizedFor = shown;
         images.forEach((img) => (img.sizes = `${shown}px`));
@@ -446,9 +457,10 @@
 
   .world > :global([data-canvas-item]) {
     position: absolute;
+    transform-origin: 50% 100%;
     transition:
       left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
       top 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-    transform: translate(-50%, -50%) scale(var(--fisheye, 1));
+    transform: translate(-50%, -100%) scale(var(--fisheye, 1));
   }
 </style>

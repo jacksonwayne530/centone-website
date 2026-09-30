@@ -4,9 +4,12 @@ import Base from '../layouts/Base.astro';
 import DragCanvas from '../components/DragCanvas.astro';
 import FilterBar from '../components/FilterBar.astro';
 import FloatingBuilding from '../components/FloatingBuilding.astro';
+import { relativeSizes } from '../lib/scale';
 
 const buildings = (await getCollection('buildings')).sort((a, b) => a.data.number - b.data.number);
 const styles = [...new Set(buildings.map((b) => b.data.style))].sort();
+// Log-compressed relative sizes, so bigger buildings read bigger without taking over the page.
+const sizes = relativeSizes(buildings.map((b) => b.data));
 ---
 
 <Base fullBleed>
@@ -18,6 +21,7 @@ const styles = [...new Set(buildings.map((b) => b.data.style))].sort();
         buildings.map(({ id, data }, i) => (
           <div
             data-canvas-item
+            data-size={sizes[i].toFixed(3)}
             data-style={data.style}
             data-beds={data.bedrooms}
             data-baths={data.bathrooms}

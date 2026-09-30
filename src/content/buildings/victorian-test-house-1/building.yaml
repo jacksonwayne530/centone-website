@@ -7,6 +7,7 @@ style: Victorian
 # Estimated from the floor plans (stair widths set the scale).
 bedrooms: 3
 bathrooms: 2 # .5 = half bath
+stories: 2 # sets the building's size on the homepage
 squareFeet: 1900
 lotWidth: 40 # feet
 lotDepth: 100 # feet

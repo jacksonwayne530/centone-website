@@ -7,9 +7,10 @@ style: Storybook
 # Estimated from the floor plans (stair widths set the scale).
 bedrooms: 3
 bathrooms: 2.5 # .5 = half bath
+stories: 2 # sets the building's size on the homepage
 squareFeet: 2800
-lotWidth: 70 # feet
-lotDepth: 120 # feet
+lotWidth: 60 # feet
+lotDepth: 100 # feet
 description: >
   A stone Storybook cottage with a steep, scalloped slate roof, a tall brick
   chimney, and a round turret with a conical roof framing the arched front door.

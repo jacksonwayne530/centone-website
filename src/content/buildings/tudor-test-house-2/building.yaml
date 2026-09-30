@@ -7,6 +7,7 @@ style: Tudor
 # Estimated from the floor plans (stair widths set the scale).
 bedrooms: 3
 bathrooms: 4.5 # .5 = half bath
+stories: 3 # sets the building's size on the homepage
 squareFeet: 3400
 lotWidth: 60 # feet
 lotDepth: 110 # feet

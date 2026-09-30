@@ -21,6 +21,7 @@ const buildings = defineCollection({
       style: z.string(),
       bedrooms: z.number().int().nonnegative(),
       bathrooms: z.number().nonnegative(), // 2.5 = two full baths and a half bath
+      stories: z.number().positive(), // above-grade floors (count a tower or tall attic); sets homepage size
       squareFeet: z.number().positive(),
       lotWidth: z.number().positive(), // feet
       lotDepth: z.number().positive(), // feet

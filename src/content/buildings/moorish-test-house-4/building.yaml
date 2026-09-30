@@ -7,6 +7,7 @@ style: Moorish
 # Estimated from the floor plans (stair widths set the scale).
 bedrooms: 3
 bathrooms: 3.5 # .5 = half bath
+stories: 4 # sets the building's size on the homepage
 squareFeet: 3300
 lotWidth: 45 # feet
 lotDepth: 110 # feet
