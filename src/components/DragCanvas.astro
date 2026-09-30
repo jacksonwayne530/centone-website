@@ -1,8 +1,8 @@
 ---
 // A draggable canvas in the style of the Apple Watch app grid.
 //
-// - Items (children with [data-canvas-item]) are laid out in a hexagonal spiral from the center,
-//   so the layout grows naturally as buildings are added.
+// - Items (children with [data-canvas-item]) are laid out in balanced, slightly staggered rows
+//   with even gaps between them. Bigger items (data-size) sit toward the middle.
 // - Drag with mouse or touch; releases keep some momentum.
 // - Scroll wheel / trackpad zooms around the cursor; on touch screens, pinch with two fingers.
 // - Items shrink the farther they are from the middle of the screen (the fisheye effect).
@@ -18,36 +18,24 @@
 
 <script>
   // Tuning
-  const SPACING_X = 1.05; // horizontal gap between neighbors, as a multiple of item width
-  const SPACING_Y = 0.78; // vertical gap between rows, as a multiple of item width
+  const GAP_X = 0.12; // space between neighbors in a row, as a fraction of a median item's width
+  const GAP_Y = 0.04; // space between rows, same units
+  const STAGGER = 0.2; // alternate rows shift by this much, so the layout doesn't look like a table
   const KEEP_VISIBLE = 0.32; // at the pan limit, the outermost item's center stays this far inside the screen (fraction of width/height)
   const FISHEYE_MIN = 0.8; // smallest scale an item shrinks to near the edges (kept mild so sizes stay comparable)
   const FRICTION = 0.94; // momentum decay per frame after release
   const SPRING = 0.14; // how quickly an over-stretched canvas snaps back
   const DRAG_THRESHOLD = 6; // px of movement before a press counts as a drag (not a click)
-  const BASELINE = 0.42; // ground line below a cell's center, as a fraction of item width
   const MIN_ZOOM = 0.5;
   const MAX_ZOOM = 2.5;
   const WHEEL_ZOOM_SPEED = 0.0015; // per pixel of mouse-wheel scroll
   const PINCH_ZOOM_SPEED = 0.01; // per pixel of trackpad pinch (reported as ctrl + wheel)
 
-  // Axial hex coordinates in spiral order: center, then ring 1 (starting to the right), ring 2...
-  function hexSpiral(count: number): Array<[number, number]> {
-    const dirs: Array<[number, number]> = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
-    const out: Array<[number, number]> = [[0, 0]];
-    for (let k = 1; out.length < count; k++) {
-      let q = dirs[0][0] * k;
-      let r = dirs[0][1] * k;
-      for (let side = 0; side < 6; side++) {
-        const [dq, dr] = dirs[(side + 2) % 6];
-        for (let step = 0; step < k; step++) {
-          out.push([q, r]);
-          q += dq;
-          r += dr;
-        }
-      }
-    }
-    return out.slice(0, count);
+  // Balanced rows for n items: wider than tall, counts differing by at most one (e.g. 6 → 3+3, 7 → 4+3).
+  function rowCounts(n: number): number[] {
+    const perRow = Math.ceil(Math.sqrt(n * 1.5));
+    const rows = Math.ceil(n / perRow);
+    return Array.from({ length: rows }, (_, r) => Math.floor(n / rows) + (r < n % rows ? 1 : 0));
   }
 
   // Resistance past the bounds: grows slower the farther you pull.
@@ -83,11 +71,16 @@
     let dragging = false;
     let frame = 0;
     let maxSize = 1; // largest relative item size currently shown
+    let focusIndex = 0; // item in the most central spot (phones start centered on it)
     let sizedFor = 0; // largest on-screen image width requested so far (keeps zoomed images sharp)
 
     // Where the view is centered at the current zoom (the cluster, or building #1 on phones).
     function home() {
-      if (phone || !positions.length) return { x: vw / 2, y: vh / 2 };
+      if (!positions.length) return { x: vw / 2, y: vh / 2 };
+      if (phone) {
+        const p = positions[focusIndex];
+        return { x: vw / 2 - p.x * zoom, y: vh / 2 - p.y * zoom };
+      }
       const xs = positions.map((p) => p.x);
       const ys = positions.map((p) => p.y);
       return {
@@ -133,35 +126,57 @@
         return;
       }
 
-      // Relative sizes (data-size, median building = 1) set each item's width. Grid spacing
-      // leans toward the largest item so big buildings don't crowd their neighbors.
+      // Relative sizes (data-size, median building = 1) set each item's width.
       const sizes = items.map((el) => Number(el.dataset.size) || 1);
       maxSize = Math.max(...sizes);
-      const meanSize = sizes.reduce((a, b) => a + b, 0) / sizes.length;
-      const spread = (meanSize + maxSize) / 2;
 
-      // Layout in units of one (median) item width.
-      const unit = hexSpiral(items.length).map(([q, r]) => ({ x: (q + r / 2) * SPACING_X * spread, y: r * SPACING_Y * spread }));
-      const spanX = Math.max(...unit.map((p) => p.x)) - Math.min(...unit.map((p) => p.x)) + maxSize;
-      const spanY = Math.max(...unit.map((p) => p.y)) - Math.min(...unit.map((p) => p.y));
+      // Spots in balanced rows, ranked from the middle outward; the biggest items take the most
+      // central spots (ties keep catalog order).
+      const counts = rowCounts(items.length);
+      const spots = counts.flatMap((k, r) =>
+        Array.from({ length: k }, (_, c) => ({ r, c, d: Math.hypot(c - (k - 1) / 2, (r - (counts.length - 1) / 2) * 1.2) })),
+      );
+      const rankedSpots = spots.map((_, i) => i).sort((a, b) => spots[a].d - spots[b].d);
+      const bySize = items.map((_, i) => i).sort((a, b) => sizes[b] - sizes[a]);
+      const spotOf: number[] = [];
+      bySize.forEach((item, rank) => (spotOf[item] = rankedSpots[rank]));
+      focusIndex = bySize[0];
 
-      // Phones: one building fills most of the width and its neighbors peek in from the sides.
+      // Place items for a given median item width w: rows of actual widths with even gaps,
+      // stacked by actual heights. Items hang from their ground line so tall ones grow upward.
+      const arrange = (w: number) => {
+        items.forEach((el, i) => (el.style.width = `${w * sizes[i]}px`));
+        const heights = items.map((el) => el.offsetHeight);
+        const rows = counts.map((_, r) => items.map((_, i) => i).filter((i) => spots[spotOf[i]].r === r).sort((a, b) => spots[spotOf[a]].c - spots[spotOf[b]].c));
+        const rowHeights = rows.map((row) => Math.max(...row.map((i) => heights[i])));
+        const totalH = rowHeights.reduce((a, b) => a + b, 0) + GAP_Y * w * (rows.length - 1);
+        const pos: Array<{ x: number; y: number }> = [];
+        let maxRowW = 0;
+        let baseline = -totalH / 2;
+        rows.forEach((row, r) => {
+          baseline += rowHeights[r] + (r ? GAP_Y * w : 0);
+          const rowW = row.reduce((sum, i) => sum + w * sizes[i], 0) + GAP_X * w * (row.length - 1);
+          const shift = rows.length > 1 ? (r % 2 ? 1 : -1) * STAGGER * w * 0.5 : 0;
+          maxRowW = Math.max(maxRowW, rowW + Math.abs(shift) * 2);
+          let x = -rowW / 2 + shift;
+          row.forEach((i) => {
+            const iw = w * sizes[i];
+            items[i].style.left = `${x + iw / 2}px`;
+            items[i].style.top = `${baseline}px`;
+            pos[i] = { x: x + iw / 2, y: baseline - heights[i] / 2 };
+            x += iw + GAP_X * w;
+          });
+        });
+        return { pos, width: maxRowW, height: totalH };
+      };
+
+      // Phones: buildings stay large and the rest of the cluster is a drag away.
       // Larger screens: shrink buildings (down to a floor) so the whole cluster fits if it can.
       const preferred = phone ? vw * 0.62 : Math.min(vw * 0.36, vh * 0.6);
-      // Items hang from a baseline (their ground line) so taller buildings grow upward.
-      const place = (w: number) =>
-        items.forEach((el, i) => {
-          el.style.width = `${w * sizes[i]}px`;
-          el.style.left = `${unit[i].x * w}px`;
-          el.style.top = `${(unit[i].y + BASELINE) * w}px`;
-        });
-      place(preferred);
-      const heightRatio = Math.max(...items.map((el) => el.offsetHeight)) / preferred || 1;
-      // (heightRatio already includes each item's own size.)
-      const fitW = Math.min((vw * 0.94) / spanX, (vh * 0.94) / (spanY + heightRatio));
-      itemW = clamp(phone ? preferred : Math.min(preferred, fitW), phone ? 160 : 240, 460);
-      place(itemW);
-      positions = unit.map((p) => ({ x: p.x * itemW, y: p.y * itemW }));
+      const trial = arrange(preferred);
+      const fitW = preferred * Math.min((vw * 0.94) / trial.width, (vh * 0.92) / trial.height);
+      itemW = clamp(phone ? preferred : Math.min(preferred, fitW), phone ? 160 : 200, 460);
+      positions = arrange(itemW).pos;
 
       computeBounds();
       vel = recenter ? { x: 0, y: 0 } : vel;
