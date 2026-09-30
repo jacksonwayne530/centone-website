@@ -1,15 +1,15 @@
 # Building #5. Specs below are estimates; replace them with real values when known.
 number: 5
 name: Italianate Test House
-location: Location TBD # TODO: set the city
+location: San Francisco, CA
 type: Single-family residence
 style: Italianate
 # Estimated from the floor plans (stair widths set the scale).
 bedrooms: 4
 bathrooms: 3.5 # .5 = half bath
 squareFeet: 3100
-lotWidth: 40 # feet
-lotDepth: 110 # feet
+lotWidth: 35 # feet
+lotDepth: 100 # feet
 description: >
   A cream-painted Italianate with a hipped slate roof, a bracketed cornice, a
   pedimented front door, and a three-story round turret on the corner. A central
