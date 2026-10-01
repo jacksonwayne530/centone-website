@@ -89,8 +89,10 @@ const roadmap = defineCollection({
         z.object({
           title: z.string(),
           summary: z.string(),
-          detail: z.string(),
-          examples: z.array(z.string()).default([]),
+          today: z.string(), // the rule as it stands now, with its specifics
+          change: z.string(), // the specific change
+          examples: z.array(z.string()).default([]), // precedents: where it's been done
+          sources: z.array(z.object({ title: z.string(), url: z.string().startsWith('https://') })).default([]),
         }),
       )
       .min(1),

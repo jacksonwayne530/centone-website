@@ -1,382 +1,1008 @@
-# Roadmap categories shown around the oval on /roadmap/.
-# Each category has a list of actions; each action expands to a longer description.
-# `order` sets the position around the disc (1 = front, then clockwise). Visitors can spin it.
+# Roadmap categories shown around the disc on /roadmap/.
+# Each action names the rule as it stands today, the specific change, precedents (where it's been
+# done), and sources. `order` sets the position around the disc (1 = front, then clockwise).
 
 - id: zoning
   order: 1
   name: Zoning
   color: '#1f6f7a'
-  summary: What can be built, and where. Most American cities ban the neighborhoods people love most.
+  summary: >-
+    What can be built, and where. Most new housing is ruled out by a few numbers in the code: units
+    per lot, minimum lot size, setbacks, and the list of allowed uses.
   actions:
-    - title: End single-family-only zoning
-      summary: Allow duplexes, triplexes, fourplexes, and townhouses on residential lots by right.
-      detail: >
-        Across most American cities, the majority of residential land allows only
-        one detached house per lot. That bans the "missing middle" housing (duplexes,
-        rowhouses, small apartment buildings) that fills many of the country's most
-        loved older neighborhoods. Legalizing these types by right, without special
-        hearings, adds homes gradually and at a scale that fits existing blocks.
+    - title: Allow 2–6 homes on every residential lot
+      summary: >-
+        Legalize duplexes through sixplexes by right, and bar cities from holding them to stricter
+        rules than a detached house.
+      today: >-
+        In most U.S. cities, the majority of residential land allows only one detached house per
+        lot. Where duplexes or fourplexes are nominally allowed, density caps (a minimum lot area
+        per unit), larger minimum lots, and conditional-use hearings usually rule them out.
+      change: >-
+        Allow several homes per lot by right in every residential zone, with no unit-density cap,
+        and give middle housing the same setbacks, height, lot coverage, and review as a detached
+        house. Let allowed floor area grow with the number of units.
       examples:
-        - Minneapolis became the first major U.S. city to end single-family-only zoning citywide in its 2040 plan, approved in 2018.
-        - Oregon's HB 2001 (2019) requires larger cities to allow duplexes, triplexes, fourplexes, townhouses, and cottage clusters in residential areas.
-    - title: Legalize accessory dwelling units
-      summary: Let every lot add a backyard cottage or basement apartment, without parking or owner-occupancy mandates.
-      detail: >
-        Accessory dwelling units (ADUs) add housing with no new land or infrastructure.
-        Cities technically allow them in many places but smother them with rules:
-        minimum lot sizes, off-street parking requirements, owner-occupancy mandates,
-        and discretionary review. Remove those barriers and homeowners build them.
+        - >-
+          Oregon HB 2001 (2019) and OAR 660-046 require larger cities to allow duplexes through
+          fourplexes, townhouses, and cottage clusters. A triplex can't be required to have a lot
+          over 5,000 sq ft, a fourplex one over 7,000, and density caps can't apply to either.
+        - >-
+          Washington HB 1110 (2023) requires cities over 75,000 to allow 4 homes per lot, or 6
+          within a quarter mile of major transit or with 2 affordable units. Cities of 25,000 to
+          75,000 must allow 2, or 4 near transit or with 1 affordable unit.
+        - >-
+          Portland permitted more than 1,400 middle-housing and ADU units in former single-family
+          zones from August 2021 to June 2024. New middle-housing units sold for $250,000–$300,000
+          less than new detached houses.
+      sources:
+        - title: OAR 660-046-0220, middle housing siting standards
+          url: https://oregon.public.law/rules/oar_660-046-0220
+        - title: Washington HB 1110, session law
+          url: https://lawfilesext.leg.wa.gov/biennium/2023-24/Pdf/Bills/Session%20Laws/House/1110-S2.SL.pdf
+        - title: Portland middle housing progress report (2025)
+          url: https://www.portland.gov/bps/planning/rip2/news/2025/2/4/portland-sees-significant-production-middle-housing-resulting
+
+    - title: Cut minimum lot sizes to 3,000 sq ft or less
+      summary: >-
+        Small lots and narrow frontages let builders put houses and townhouses on less land, at
+        lower prices.
+      today: >-
+        Single-family zones commonly require lots of 5,000 sq ft or more and 50 feet or more of
+        frontage. That sets a floor on how much land, and so how much money, each new home needs,
+        and rules out rowhouses and small-lot cottages.
+      change: >-
+        Cap minimum lots at about 3,000 sq ft and frontages at 30 feet, limit front setbacks to 15
+        feet and side setbacks to 5, and allow fee-simple townhouse lots well below that.
       examples:
-        - After California passed a series of state ADU laws beginning in 2016, ADU permits grew from a trickle to tens of thousands a year.
-    - title: Shrink minimum lot sizes
-      summary: Allow small lots so homes can be built on less land, closer together.
-      detail: >
-        Minimum lot sizes quietly set a floor on how much land, and so how much money,
-        a home requires. Cutting them lets builders produce small-lot houses and
-        townhouses that are cheaper per home and support walkable density.
+        - >-
+          Houston cut its by-right minimum lot from 5,000 to 3,500 sq ft inside Loop 610 in 1998,
+          allowed lots averaging 1,400 sq ft under conditions, and extended the reform citywide in
+          2013. Nearly 80,000 small-lot homes followed.
+        - >-
+          Texas SB 15 (2025) bars cities over 150,000 from requiring lots larger than 3,000 sq ft,
+          wider than 30 feet, or deeper than 75 feet in new subdivisions of 5 acres or more, with
+          setbacks capped at 15, 10, and 5 feet and parking at one space per home.
+      sources:
+        - title: Learning from Houston's townhouse reforms (Mercatus)
+          url: https://www.mercatus.org/research/policy-briefs/learning-houstons-townhouse-reforms
+        - title: Texas SB 15, enrolled text
+          url: https://capitol.texas.gov/tlodocs/89R/billtext/html/SB00015F.htm
+
+    - title: Allow apartments on commercial land
+      summary: >-
+        Make housing a by-right use wherever offices and stores are allowed, at real densities.
+      today: >-
+        Most commercial zoning, including miles of strip corridors and half-empty malls, bans
+        housing outright or requires a rezoning, with hearings, delay, and a political veto.
+      change: >-
+        Allow multifamily and mixed-use buildings by right in commercial zones, with floors on
+        density (at least 36 homes per acre) and height (at least 45 feet), no required
+        ground-floor retail, and parking capped at one space per home.
       examples:
-        - Houston cut its minimum lot size from 5,000 to 1,400 square feet inside the 610 Loop in 1998 and extended it citywide in 2013, producing tens of thousands of townhouses.
-    - title: Allow corner stores and neighborhood shops
-      summary: Permit small shops, cafés, and offices within residential neighborhoods.
-      detail: >
-        Strict separation of uses puts daily errands out of walking range. Allowing
-        small-scale commercial uses on corners and along neighborhood streets, the
-        way nearly every pre-war neighborhood was built, puts a destination within a
-        few minutes' walk of most homes.
-    - title: Upzone around transit and job centers
-      summary: Allow apartments and mixed-use buildings near frequent transit and major employers.
-      detail: >
-        The land around rail stations and frequent bus lines is where new homes do the
-        most good: residents can reach jobs without a car, and transit gets the riders
-        it needs. Too often that land is zoned for detached houses or parking lots.
+        - >-
+          Texas SB 840 (2025) makes housing a by-right use on commercial, office, retail, and
+          warehouse land in the state's largest cities, at the greater of 36 units per acre or the
+          city's highest residential density, at least 45 feet tall, with no more than one parking
+          space per unit.
+      sources:
+        - title: Texas SB 840 and SB 2477 briefing (Foley)
+          url: https://www.foley.com/insights/publications/2025/11/client-briefing-texas-senate-bill-840-and-texas-senate-bill-2477-89th-legislatu/
+
+    - title: Upzone around rail stations by statute
+      summary: >-
+        Set state minimums for height and density within half a mile of frequent rail, so zoning
+        follows the transit investment.
+      today: >-
+        Land around stations is often zoned for detached houses or surface parking, and every
+        upzoning is fought parcel by parcel at city hall.
+      change: >-
+        Write by-right height, density, and floor-area minimums near stations into state law,
+        stepping down with distance from the platform and with the level of service.
       examples:
-        - Washington's HB 1110 (2023) requires cities to allow more homes per lot, with extra allowances near major transit stops.
-    - title: Adopt form-based codes
-      summary: Regulate the shape of buildings and how they meet the street, not just their uses.
-      detail: >
-        Form-based codes focus on what people actually experience: building height,
-        placement, frontage, and the relationship to the sidewalk. They give
-        neighbors predictability about what a new building will look like while
-        freeing up what happens inside it.
+        - >-
+          California SB 79 (2025, effective July 1, 2026), near heavy rail, allows 75 feet, 120
+          homes per acre, and 3.5 FAR within a quarter mile, 65 feet and 100 per acre out to half a
+          mile, and 95 feet within 200 feet of the station. Light rail and BRT get a lower tier.
+        - >-
+          Massachusetts' MBTA Communities Act requires towns served by the T to zone at least one
+          district for multifamily housing by right at 15 or more homes per acre, near a station
+          where there is one.
+      sources:
+        - title: Summary of SB 79 (Rutan & Tucker)
+          url: https://www.rutan.com/summary-of-sb-79-overriding-local-zoning-laws-for-transit-oriented-housing-development/
+        - title: Multi-family zoning requirement for MBTA communities (Mass.gov)
+          url: https://www.mass.gov/info-details/multi-family-zoning-requirement-for-mbta-communities
+
+    - title: Make ADUs ministerial and fee-light
+      summary: >-
+        Approve backyard cottages and basement apartments on a shot clock, without owner-occupancy,
+        parking, or impact-fee traps.
+      today: >-
+        Many cities allow ADUs on paper but require the owner to live on site, add off-street
+        parking, meet a large minimum lot, pay full impact fees, or go through discretionary
+        review. Any one of these can sink most projects.
+      change: >-
+        Approve ADUs ministerially within 60 days or deem them approved, allow two per lot, drop
+        owner-occupancy and parking mandates, and waive impact fees on small units.
+      examples:
+        - >-
+          California approves ADUs ministerially within 60 days or deems them approved, bans
+          owner-occupancy rules, and charges no impact fees on ADUs under 750 sq ft. It permitted
+          30,231 ADUs in 2024, about 26% of all new homes permitted in the state.
+        - >-
+          Washington HB 1337 (2023) allows two ADUs per lot in urban growth areas, bans
+          owner-occupancy rules, caps ADU impact fees at 50% of a house's, and bars parking
+          mandates within half a mile of major transit.
+      sources:
+        - title: Accessory dwelling units (California HCD)
+          url: https://www.hcd.ca.gov/building-standards/adu
+        - title: Encouraging ADUs (MRSC)
+          url: https://mrsc.org/stay-informed/mrsc-insight/april-2025/encouraging-adus
+
+    - title: Legalize corner stores
+      summary: Let small shops and cafés open on residential blocks without a rezoning.
+      today: >-
+        Residential use tables list no commercial uses, so a corner café needs a rezoning or a
+        conditional use permit. Even where shops are allowed, parking minimums and
+        change-of-occupancy upgrades make small conversions impractical.
+      change: >-
+        Allow small retail and food uses, around 2,500 sq ft or less, by right in residential
+        zones, exempt them from parking minimums, and regulate hours, deliveries, and noise with
+        clear standards instead of hearings.
+      examples:
+        - >-
+          Seattle (effective January 21, 2026) allows shops and cafés up to 2,500 sq ft throughout
+          its Neighborhood Residential zones, not just on corners, closed from 10 p.m. to 6 a.m.
+      sources:
+        - title: Seattle clears way for cafes, markets in residential zones (Axios)
+          url: https://www.axios.com/local/seattle/2026/02/18/seattle-residential-zoning-cafes-markets-corner-stores
 
 - id: building-codes
   order: 2
   name: Building Codes
   color: '#b8902a'
-  summary: The technical rules for how buildings are built, some of which quietly ban good small buildings.
+  summary: >-
+    The model codes draw hard lines at three units, three stories, and one stair. A handful of
+    sections decide whether small buildings can be built at all.
   actions:
-    - title: Allow single-stair apartment buildings
-      summary: Permit mid-rise apartments with one well-protected stair, as much of the world does.
-      detail: >
-        U.S. building codes generally require two stairways for apartment buildings
-        above three stories. That forces long double-loaded corridors, rules out small
-        lots, and makes family-sized units with windows on multiple sides hard to
-        build. Most of Europe and Asia allow a single stair up to much greater heights
-        with sprinklers and other fire protections.
+    - title: Allow single-stair buildings up to six stories
+      summary: >-
+        One protected stair for 4–6 story apartments, with sprinklers, small floors, and short
+        travel distances, as most of the world allows.
+      today: >-
+        IBC Table 1006.3.4(1) allows one exit stair in an apartment building only through the third
+        story, with at most 4 units per story and 125 feet of travel. The 2027 IBC adds a fourth
+        story if each floor is 4,000 sq ft or less. Above that, a second stair and the corridor
+        between them take about 7% of the floor area, add 6–13% to construction cost, and need a
+        wider, assembled lot.
+      change: >-
+        Allow one stair up to six stories with at most 4 units per floor, NFPA 13 sprinklers, a
+        2-hour stair enclosure, 1-hour corridors, automatic smoke detection and alarm, and a
+        125-foot travel limit.
       examples:
-        - Seattle and New York City have long allowed single-stair residential buildings up to six stories.
-    - title: Build with mass timber
-      summary: Use engineered wood for mid- and high-rise buildings where codes now allow it.
-      detail: >
-        Cross-laminated timber and other mass-timber products store carbon, go up
-        quickly, and are well suited to the 5–12 story buildings cities need most. The
-        2021 International Building Code added new construction types allowing mass
-        timber buildings up to 18 stories.
-    - title: Create a code path for small apartment buildings
-      summary: Let 3–6 unit buildings be built under simpler rules than large apartment towers.
-      detail: >
-        Under U.S. codes, a fourplex is regulated much more like a large apartment
-        complex than like a house. That raises costs and scares off the small local
-        builders who used to build these buildings. A right-sized code path, with
-        sprinklers and sensible fire separation, would make small multifamily
-        buildings practical again.
-    - title: Offer pre-approved building plans
-      summary: Publish ready-to-permit designs for common small building types.
-      detail: >
-        Custom design and plan review are a large share of the cost and time of a small
-        project. A city-sponsored library of pre-approved plans for houses, ADUs, and
-        small multifamily buildings lets owners and small builders skip straight to
-        construction.
+        - >-
+          Seattle has allowed six-story single-stair buildings since 1977 (4 units per floor,
+          pressurized stair, NFPA 13 sprinklers). Pew found no fire death from 2012 to 2024 in a
+          modern 4–6 story single-stair building in Seattle or New York in which the lack of a
+          second stair played a role.
+        - >-
+          Montana (SB 213) and Texas (SB 2835) passed six-story laws in 2025, Colorado (HB25-1273)
+          requires cities over 100,000 to allow five stories by December 2027, and Michigan
+          followed in July 2026.
+      sources:
+        - title: Small single-stairway apartment buildings have strong safety record (Pew)
+          url: https://www.pew.org/-/media/assets/2025/05/single-stair_report_summary.pdf
+        - title: 2027 IBC single-exit limit raised to four stories (CBNA)
+          url: https://centerforbuilding.org/article/2027-ibc-single-exit-height-limit-to-be-raised-to-four-stories
+        - title: Texas SB 2835, enrolled text
+          url: https://capitol.texas.gov/tlodocs/89R/billtext/html/SB02835F.htm
+
+    - title: Put 3–8 unit buildings under the residential code
+      summary: Stop regulating a fourplex like a 200-unit apartment complex.
+      today: >-
+        The International Residential Code covers only one- and two-family homes and townhouses. A
+        third stacked unit moves a building into the IBC as Group R-2, with commercial plan review,
+        engineered design, fire-rated separations and exits, and NFPA 13R sprinklers. The Fair
+        Housing Act's accessibility rules then begin at four units.
+      change: >-
+        Create a residential-code path for 3–8 units with fixed safety requirements, including
+        1-hour separations between homes, sprinklers scaled to building size, interconnected smoke
+        and CO alarms, and caps on stories and floor area.
       examples:
-        - South Bend, Indiana launched a pre-approved plan set for small residential buildings to make infill easier.
-    - title: Align elevator rules with international standards
-      summary: Adopt proven international elevator standards to cut the cost of small elevators.
-      detail: >
-        American elevators cost far more than comparable ones in Europe, partly because
-        of unique domestic standards and certification rules. Allowing elevators
-        certified to widely used international standards would make elevators
-        affordable for small buildings, improving accessibility and making mid-rise
-        housing more practical.
+        - >-
+          Memphis and Shelby County (2021) review 3–6 unit buildings under their residential code,
+          and Dallas (April 2025) allows 3–8 unit buildings up to three stories under its version.
+        - >-
+          North Carolina (HB 488, 2023) moved triplexes and fourplexes into its state residential
+          code.
+      sources:
+        - title: Your city legalized triplexes. The building code said no (CNU)
+          url: https://www.cnu.org/publicsquare/2026/04/01/your-city-legalized-triplexes-building-code-said-no
+        - title: Dallas approves ordinance for 1 to 8 dwelling units (NLC)
+          url: https://www.nlc.org/article/2025/07/08/dallas-city-leaders-approve-landmark-ordinance-to-support-missing-middle-housing/
+
+    - title: Right-size elevators
+      summary: >-
+        Accept European-standard elevators and rethink the rule that every car fit a 7-foot
+        stretcher lying flat.
+      today: >-
+        IBC 3002.4 requires an elevator that fits a 24 × 84 inch stretcher in buildings four or
+        more stories tall. With the U.S.-only ASME A17.1 standard, cars run about twice the size of
+        European ones, shafts take about 76 sq ft per floor versus 41, and a basic four-stop
+        elevator costs about $158,000 in New York versus $36,000 in Switzerland.
+      change: >-
+        Accept elevators certified to EN 81-20/50 (being replaced by EN ISO 8100-1), and allow the
+        European 1.1 × 2.1 m stretcher car or a smaller accessible car in mid-rise buildings, so
+        small buildings can afford an elevator at all.
+      examples:
+        - >-
+          Most of the world builds to EN 81, a global market of about 10 million elevators, while
+          A17.1 serves about 1 million in the U.S. and Canada. The 84-inch stretcher rule dates to
+          a 1988 code change, lengthened in 2006.
+      sources:
+        - title: Why mid-rise elevators cost 3× as much in North America (CBNA)
+          url: https://morehousing.substack.com/p/elevator-report
+
+    - title: Publish pre-approved plans
+      summary: >-
+        Approve common small buildings from a library of permit-ready plans, in days rather than
+        months.
+      today: >-
+        Every small project pays for custom design and a full plan review, even when nearly the
+        same building has been approved many times before.
+      change: >-
+        Keep a library of pre-reviewed plans for ADUs, cottages, rowhouses, and small multiplexes,
+        approve them on a short clock, and review only site-specific items like foundations and
+        utility connections.
+      examples:
+        - >-
+          California AB 1332 (2023) required every city and county to run an ADU pre-approval
+          program by January 1, 2025, and to decide applications using a pre-approved plan within
+          30 days.
+        - >-
+          South Bend, Indiana offers free pre-approved plans from ADUs up to a six-unit building,
+          and permitted 79 homes in 64 buildings with them in under four years.
+      sources:
+        - title: AB 1332 (NYU Furman Center)
+          url: https://www.furmancenter.org/enacted-legislation/ab-1332/
+        - title: Pre-approved plans (City of South Bend)
+          url: https://southbendin.gov/bsb/preapprovedplans/
 
 - id: streets
   order: 3
   name: Streets & Speed
   color: '#d9744f'
-  summary: The largest public space in any city. How it's designed decides who can safely use it.
+  summary: >-
+    How fast people drive, and how often they die, is set by design standards, fire codes, and
+    state rules on who may set a speed limit.
   actions:
-    - title: Set 20–25 mph default speed limits
-      summary: Lower citywide defaults to 25 mph on major streets and 20 mph on residential ones.
-      detail: >
-        A pedestrian's risk of death rises steeply with impact speed, from about 10
-        percent at 23 mph to 50 percent at 42 mph. Lower default limits work even before
-        streets are redesigned, and they work better alongside design changes.
+    - title: Let cities set 20–25 mph limits
+      summary: >-
+        End the 85th-percentile ratchet and give cities authority to set limits by ordinance.
+      today: >-
+        Speed zones are set by engineering study, traditionally at the speed 85% of drivers don't
+        exceed, which ratchets limits up as people speed. Most states require that study before a
+        city can lower a limit. A pedestrian's risk of death is 10% at 23 mph, 25% at 32, 50% at
+        42, and 75% at 50.
+      change: >-
+        Let cities set 20 mph on residential streets and 25 mph on urban arterials by ordinance,
+        and follow the MUTCD 11th edition, which says the 85th percentile shouldn't set limits on
+        urban arterials without weighing pedestrians, crashes, and land use.
       examples:
-        - Boston's move from 30 to 25 mph cut the odds of vehicles exceeding 35 mph by about 29 percent.
-        - Helsinki, with 30 km/h limits on more than half its streets, went 12 months without a traffic death in 2024–25.
-    - title: Put four-lane streets on road diets
-      summary: Convert four-lane undivided streets to two travel lanes plus a center turn lane.
-      detail: >
-        The Federal Highway Administration finds these conversions reduce crashes by
-        19 to 47 percent and work well on streets carrying up to about 20,000 vehicles
-        a day. The space freed up can go to bike lanes, wider sidewalks, or parking.
-        Doing it when a street is repaved costs very little.
-    - title: Narrow travel lanes
-      summary: Use 10-foot lanes on city streets instead of highway-width lanes.
-      detail: >
-        Wide lanes encourage speeding and make crossings longer. City transportation
-        officials recommend 10-foot lanes on most urban streets, with the recovered
-        width going to people walking, cycling, and waiting for transit.
-    - title: Build proven safety countermeasures
-      summary: Raised crosswalks, curb extensions, daylighted corners, and head-start walk signals.
-      detail: >
-        These inexpensive fixes shorten crossing distances, slow turning drivers, and
-        make people on foot more visible. Leading pedestrian intervals, which give
-        walkers a few seconds' head start before cars get a green light, and raised
-        crosswalks are both on the Federal Highway Administration's list of proven
-        safety countermeasures.
-    - title: Require connected street networks
-      summary: Cap block lengths and require new development to connect to surrounding streets.
-      detail: >
-        Connected grids spread traffic across many small streets, shorten walking
-        trips, and are associated with fewer crashes and better health. New
-        subdivisions should meet a minimum intersection density or maximum block
-        length and leave stub-outs for future connections.
-    - title: Use automated speed enforcement
-      summary: Deploy speed cameras on the corridors where crashes concentrate.
-      detail: >
-        Cameras enforce limits consistently, without traffic stops, and can be focused
-        on school zones and high-injury corridors. Pair them with redesign so the
-        street itself encourages safe speeds.
+        - >-
+          Washington lets local governments set 20 mph on non-arterial streets without an
+          engineering study (RCW 46.61.415). California AB 43 (2021) lets cities cut limits 5 mph
+          on high-injury corridors and set 20–25 mph in business districts.
+        - >-
+          Boston lowered its default limit from 30 to 25 mph in January 2017 under Massachusetts'
+          2016 Municipal Modernization Act.
+      sources:
+        - title: Impact speed and a pedestrian's risk of severe injury or death (AAA Foundation)
+          url: https://aaafoundation.org/research/impact-speed-pedestrians-risk-severe-injury-death/
+        - title: MUTCD 11th edition speed setting (NACTO)
+          url: https://nacto.org/wp-content/uploads/2024-0424-NACTO-MUTCD-Webinar-2-Speed-Setting.pdf
+
+    - title: Narrow lanes and convert four-lane streets
+      summary: >-
+        Make 10-foot lanes the urban default, and turn four-lane undivided streets into three lanes
+        when they're repaved.
+      today: >-
+        Many state and city standards default to 11–12 foot lanes, though AASHTO's Green Book
+        allows 10 to 12 feet on urban arterials. Four-lane undivided streets mix left turns,
+        weaving, and speeding; converting them to two lanes plus a center turn lane cuts crashes
+        19–47%.
+      change: >-
+        Default to 10-foot through lanes on streets of 35 mph or less (11 feet for a curb bus or
+        truck lane), and convert four-lane undivided streets carrying up to about 20,000 vehicles
+        a day when they're resurfaced, using the width for bike lanes or sidewalks.
+      examples:
+        - >-
+          A Johns Hopkins study of 1,100+ street segments in seven cities found 12-foot lanes had
+          about 50% more crashes than 9-foot lanes, and recommended 10 feet as the standard for
+          low-speed urban streets.
+        - >-
+          FHWA dropped road diets, bike lanes, and speed cameras from its proven safety
+          countermeasures list in July 2026, citing congestion. The crash research behind them is
+          unchanged.
+      sources:
+        - title: Lane width flexibility in the AASHTO Green Book (FHWA)
+          url: https://www.fhwa.dot.gov/planning/css/resources/lanewidth/
+        - title: Study finds 12-foot lanes are deadlier than 10-foot ones (Streetsblog)
+          url: https://cal.streetsblog.org/2023/11/13/study-wide-are-deadlier-so-why-do-many-dots-build-them-anyway
+        - title: Bike lanes and speed cameras disappear from DOT's list (NPR)
+          url: https://www.npr.org/2026/07/16/nx-s1-5893672/dot-bike-lanes-speed-cameras-safety-measures
+
+    - title: Rewrite fire-access rules that force wide streets
+      summary: Reconcile fire-code road widths with narrow, slow neighborhood streets.
+      today: >-
+        IFC 503.2.1 requires a 20-foot clear fire access road, and Appendix D105 requires 26 feet,
+        running 15–30 feet from the building, for any building over 30 feet tall. Applied to public
+        streets with parking on both sides, those widths produce wide, fast residential streets and
+        block mid-rise infill on narrow ones.
+      change: >-
+        Write street standards jointly with the fire marshal. Count parking gaps and intersections
+        as passing room, and accept sprinklers and standpipes in place of aerial-ladder access for
+        small-footprint buildings. Appendix D applies only where a jurisdiction adopts it, so it
+        can be amended locally.
+      sources:
+        - title: International Fire Code, Chapter 5 (ICC)
+          url: https://codes.iccsafe.org/content/IFC2021P1/chapter-5-fire-service-features
+
+    - title: Build the crossings that work
+      summary: >-
+        Leading walk signals, refuge islands, beacons, and daylighted corners wherever people
+        cross.
+      today: >-
+        Most crossings get paint and a push button. FHWA's crash data shows what works: refuge
+        islands cut pedestrian crashes 56%, pedestrian hybrid beacons 55%, rapid flashing beacons
+        47%, intersection lighting 42%, high-visibility crosswalks 40%, and a 3–7 second leading
+        walk interval 13%.
+      change: >-
+        Give pedestrians a leading interval and an automatic walk phase at every signal in walkable
+        areas, add refuge islands on multilane crossings over 9,000 vehicles a day or 35 mph, and
+        keep the last 20 feet before each crosswalk clear with posts or curb extensions.
+      examples:
+        - >-
+          California AB 413 (2023) bans stopping within 20 feet of a crosswalk approach, or 15 feet
+          with a curb extension. Citations began in 2025.
+        - >-
+          Hoboken, New Jersey physically daylighted its corners and has had no traffic death since
+          January 2017.
+      sources:
+        - title: Leading pedestrian interval (FHWA)
+          url: https://highways.dot.gov/safety/proven-safety-countermeasures/leading-pedestrian-interval
+        - title: Medians and pedestrian refuge islands (FHWA)
+          url: https://highways.dot.gov/safety/proven-safety-countermeasures/medians-and-pedestrian-refuge-islands-urban-and-suburban-areas
+        - title: Hoboken celebrates 9 years without a traffic death (Planetizen)
+          url: https://www.planetizen.com/news/2026/04/137297-hoboken-celebrates-9-years-without-traffic-death
+
+    - title: Automate speed enforcement
+      summary: Speed cameras on high-injury corridors and school zones, with graduated fines.
+      today: >-
+        Many states don't authorize speed cameras, which leaves enforcement to occasional traffic
+        stops.
+      change: >-
+        Pass enabling laws for 24/7 cameras on high-injury corridors and school zones, ticketing
+        at 11 mph over, with fines that rise with speed, warnings for first offenses, and
+        reductions for low-income drivers.
+      examples:
+        - >-
+          New York City has run its cameras 24/7 since August 2022, and its DOT reports speeding
+          at camera locations down 94%.
+        - >-
+          San Francisco's cameras (AB 645 pilot, 2025) cut speeding of more than 10 mph over by 72%
+          on average at the first 15 sites. Fines run from $50 at 11 mph over to $500 at 100 mph.
+      sources:
+        - title: Initial speed camera evaluation (SFMTA)
+          url: https://www.sfmta.com/blog/our-speed-cameras-are-working-initial-evaluation-shows-drivers-are-slowing-down
+        - title: NYC speed cameras reduce speeding by 94% (6sqft)
+          url: https://www.6sqft.com/nyc-speed-cameras-reduce-speeding-by-94-new-report-says/
+
+    - title: Replace auto level of service with VMT
+      summary: Stop making infill projects widen roads to keep car delay at grade C or D.
+      today: >-
+        Traffic studies grade intersections by car delay, from A to F, and require turn lanes or
+        widenings to keep them at C or D. Infill projects end up paying to make streets wider and
+        faster.
+      change: >-
+        Measure transportation impact as vehicle miles traveled per resident or worker, which
+        rewards homes near jobs and transit, and remove delay thresholds from zoning and
+        concurrency rules.
+      examples:
+        - >-
+          California SB 743 (2013) removed car delay as a CEQA impact; vehicle miles traveled has
+          been the statewide metric since July 1, 2020.
+      sources:
+        - title: SB 743, LOS to VMT transition (MTC)
+          url: https://mtc.ca.gov/planning/transportation/driving-congestion-environment/sb-743-los-vmt-transition
 
 - id: parking
   order: 4
   name: Parking
   color: '#7d4b66'
-  summary: Parking mandates quietly shape cities by spreading everything apart and raising the cost of housing.
+  summary: >-
+    A space in a parking structure costs about $33,000 to build. Minimums force that cost into
+    every building, whether or not anyone needs the space.
   actions:
-    - title: Eliminate parking minimums
-      summary: Stop requiring a fixed number of parking spaces for every new building.
-      detail: >
-        Minimum parking requirements force developers to build spaces whether or not
-        people need them, raising the cost of housing and businesses and spreading
-        destinations apart. Ending them doesn't ban parking. It lets owners decide how
-        much to build.
+    - title: Repeal parking minimums
+      summary: >-
+        Stop requiring parking, and let owners, tenants, and lenders decide how much to build.
+      today: >-
+        Codes often require one to two spaces per apartment and more for shops. The median parking
+        structure cost $33,300 per space to build in 2026, and a garage space adds about $1,700 a
+        year, roughly 17%, to rent.
+      change: >-
+        Repeal minimums citywide while keeping accessible-parking rules, or at least near transit
+        and for small homes, small businesses, and affordable housing.
       examples:
-        - Buffalo was the first major U.S. city to eliminate parking minimums citywide, in 2017, followed by Minneapolis, San José, Austin, and others.
-        - California's AB 2097 (2022) ended parking minimums near major transit statewide.
-    - title: Price curb parking by demand
-      summary: Set meter rates so a space or two is usually open on every block.
-      detail: >
-        Free or underpriced curb parking creates cruising, double-parking, and
-        congestion. Adjusting meter prices by block and time of day keeps spaces
-        available and puts the curb to its most valuable use.
-      examples:
-        - San Francisco's SFpark program pioneered demand-based meter pricing in the early 2010s.
-    - title: Create parking benefit districts
-      summary: Return parking meter revenue to the neighborhood where it's collected.
-      detail: >
-        People resist paid parking when the money disappears into a general fund. When
-        the revenue pays for visible local improvements like sidewalks, street trees,
-        lighting, and cleaning, businesses and residents have a reason to support it.
-      examples:
-        - Old Pasadena used meter revenue to fund a revival of its historic downtown in the 1990s.
+        - >-
+          Austin became the largest U.S. city to end parking minimums for every use in November
+          2023.
+        - >-
+          California AB 2097 (2022) bans minimums within half a mile of major transit. Oregon bars
+          them within 3/4 mile of rail and 1/2 mile of frequent transit in its eight metro areas.
+        - >-
+          Washington SB 5184 (2025) caps mandates at 0.5 space per apartment, 1 per house, and 2
+          per 1,000 sq ft of commercial space, with none for homes under 1,200 sq ft, shops under
+          3,000, or affordable housing.
+      sources:
+        - title: 2026 parking structure cost outlook (WGI)
+          url: https://www.parking-mobility.org/news/wgi-releases-2026-parking-structure-cost-outlook/
+        - title: The hidden cost of bundled parking (ACCESS)
+          url: https://accessmagazine.org/spring-2017/the-hidden-cost-of-bundled-parking/
+        - title: How Washington State won parking reform (Sightline)
+          url: https://www.sightline.org/2025/05/16/how-washington-state-won-parking-reform/
+
     - title: Unbundle parking from rent
-      summary: Rent or sell parking spaces separately from homes and offices.
-      detail: >
-        When parking is bundled into rent, everyone pays for it whether they own a car
-        or not. Pricing it separately lowers housing costs for people who don't need a
-        space and gives everyone a reason to consider whether they do.
-    - title: Offer parking cash-out
-      summary: Let employees who don't use a subsidized parking spot take the value in cash instead.
-      detail: >
-        Free workplace parking is a large, invisible subsidy for driving to work.
-        Offering its cash value to employees who walk, bike, carpool, or take transit
-        levels the playing field without taking anything away.
+      summary: Lease parking separately so households without cars stop paying for it.
+      today: >-
+        Parking is usually built into rent. Nationally, about 708,000 car-free renter households
+        pay for garage spaces they don't use, roughly $440 million a year.
+      change: >-
+        Require new buildings of 16 or more units to lease spaces separately from homes for the
+        life of the building.
       examples:
-        - California has required many employers that lease parking to offer cash-out since 1992.
+        - >-
+          California AB 1317 (2023) requires separate parking charges in buildings of 16+ units
+          completed from 2025 on, in ten counties including Los Angeles, Alameda, and Santa Clara.
+          Individual garages and affordable projects are exempt.
+      sources:
+        - title: Governor signs law mandating unbundled parking (CAA)
+          url: https://caanet.org/governor-signs-law-mandating-unbundled-parking-fees-for-new-apartments/
+
+    - title: Cash out employer parking
+      summary: >-
+        Give commuters the cash value of a space they don't use, and stop the tax code from
+        favoring parking.
+      today: >-
+        Federal tax law lets employers provide up to $340 a month (2026) of parking tax-free.
+        Workers who'd rather have the cash are taxed on it, so the subsidy steers people to drive.
+      change: >-
+        Require employers that pay for parking to offer the same value as cash or transit benefits,
+        and cap the parking exclusion well below the transit one.
+      examples:
+        - >-
+          California requires employers of 50 or more in air-quality nonattainment areas that
+          subsidize leased parking to offer cash instead (Health and Safety Code 43845).
+        - >-
+          Since 2023, D.C. has required employers with 20 or more employees that provide parking to
+          offer an equal clean-air transportation benefit, pay a compliance fee, or adopt a
+          transportation plan.
+      sources:
+        - title: California's parking cash-out law (CARB)
+          url: https://ww2.arb.ca.gov/resources/documents/californias-parking-cash-out-law
+        - title: IRS 2026 transportation fringe limits (APA)
+          url: https://payroll.org/news-resources/news/news-detail/2025/10/10/irs-announces-2026-colas-for-transportation-fringes-fsa-deferrals
+
+    - title: Price the curb by block and hour
+      summary: >-
+        Set meter rates to keep a space or two open on every block, and spend the money there.
+      today: >-
+        Free or flat-rate curb parking fills up, so drivers circle, double-park, and block bus and
+        bike lanes.
+      change: >-
+        Adjust rates block by block every few months to target 60–80% occupancy, and return net
+        revenue to the district for sidewalks, trees, lighting, and cleaning.
+      examples:
+        - >-
+          SFpark (2011–2013) cut the average time to find a space 43%, from 11.6 to 6.6 minutes,
+          and cut miles driven while searching 30% and double-parking 22%. Average meter rates
+          fell slightly.
+      sources:
+        - title: SFpark evaluation summary (SFMTA)
+          url: https://www.sfmta.com/sites/default/files/reports-and-documents/2018/04/sfpark_eval_summary_2014.pdf
 
 - id: transit
   order: 5
   name: Transit & Cycling
   color: '#3f8f74'
-  summary: Frequent transit and safe bike networks make car-free trips the easy choice.
+  summary: >-
+    Frequency, speed, and cost per mile decide whether transit is useful. Most of the fixes are
+    operating rules and design standards rather than new money.
   actions:
-    - title: Redesign bus networks around frequency
-      summary: Build a grid of routes that come often enough that riders don't need a schedule.
-      detail: >
-        Frequency is freedom: a bus every 10–15 minutes is useful for everyday life in
-        a way a bus every hour is not. Many cities' networks are sprawling legacies
-        that spread service thin. A redesign concentrates it into a frequent grid.
+    - title: Redesign bus networks around 15-minute service
+      summary: >-
+        Concentrate service into a grid of routes that come every 15 minutes or better, all day,
+        every day.
+      today: >-
+        Many U.S. networks spread buses thin across routes that come every 30–60 minutes, which
+        works only for trips planned around a timetable.
+      change: >-
+        Put most service hours into a frequent grid (every 15 minutes or better, 15 or more hours
+        a day, seven days a week) with easy transfers, and keep coverage routes for the rest.
       examples:
-        - Houston's 2015 system reimagining rebuilt its bus network around frequent routes without increasing its operating budget.
-    - title: Give buses their own lanes and signal priority
-      summary: Keep buses out of traffic with dedicated lanes, queue jumps, and smart signals.
-      detail: >
-        A bus stuck in traffic is slow, unreliable, and expensive to run. A dedicated
-        lane can move up to 8,000 people an hour, several times what a general traffic
-        lane moves. Signal priority keeps buses moving through intersections.
+        - >-
+          Houston rebuilt every route overnight in August 2015 without increasing its operating
+          budget. The share of riders with frequent service rose from 25% to 72%, on 22 frequent
+          lines.
+      sources:
+        - title: Houston METRO's reimagining plan approved (Human Transit)
+          url: https://humantransit.org/2015/02/houston-metros-transit-system-reimagining-plan-approved.html
+        - title: Houston Metro redesign shows promise (Planetizen)
+          url: https://www.planetizen.com/node/83006/houston-metro-redesign-shows-promise
+
+    - title: Give buses their own lanes, enforced by camera
+      summary: >-
+        Bus-only lanes, signal priority, all-door boarding, and cameras that ticket cars blocking
+        them.
+      today: >-
+        A general traffic lane moves 600–1,600 people an hour; a bus lane can move up to 8,000. Bus
+        lanes without enforcement fill with parked, loading, and turning cars.
+      change: >-
+        Convert lanes to bus-only on frequent corridors, add signal priority and queue jumps, allow
+        all-door boarding with off-board payment, and let bus-mounted cameras ticket vehicles in
+        bus lanes and stops.
       examples:
-        - New York's 14th Street busway, launched in 2019, sped up crosstown buses by restricting private through-traffic.
-    - title: Build connected protected bike networks
-      summary: Create a continuous network of protected bike lanes, not isolated segments.
-      detail: >
-        Most people will only cycle where they feel safe, and a bike lane that ends
-        abruptly doesn't feel safe. Cities that build a connected, physically protected
-        network quickly see cycling grow, often far faster than expected.
+        - >-
+          New York's 14th Street busway (2019) cut bus travel times 22–47% and raised M14 ridership
+          24% on weekdays, while car trips on nearby streets took 0–2 minutes longer at peak.
+        - >-
+          California AB 917 (2021) lets transit agencies statewide use forward-facing bus cameras
+          to cite cars in bus lanes and bus stops.
+      sources:
+        - title: Transit Street Design Guide excerpt (NACTO, via Strong Towns)
+          url: https://archive.strongtowns.org/journal/2016/5/23/excerpt-from-nacto-transit-street-design-guide
+        - title: NY finds that car-free transitways work (Streetsblog)
+          url: https://cal.streetsblog.org/2019/12/18/ny-finds-that-car-free-transitways-work
+
+    - title: Cut rail construction costs
+      summary: >-
+        Rebuild in-house engineering, size stations to the train, and standardize designs.
+      today: >-
+        New York's Second Avenue Subway Phase 2 is projected at close to $4 billion per mile, about
+        11 times the global average. Phase 1's 86th Street station box is nearly 1,000 feet long
+        for a 615-foot platform, where peers build boxes 3–20% longer than the platform, and
+        station contracts made up 77% of $3.16 billion in Phase 1 contracts.
+      change: >-
+        Staff agencies with in-house engineers instead of relying on consultants, keep station
+        boxes close to platform length, use cut-and-cover stations and standard designs, and update
+        work rules on crew sizes.
       examples:
-        - Seville built a connected network of protected bike lanes in just a few years in the late 2000s and saw cycling multiply.
-    - title: Bring down transit construction costs
-      summary: Adopt the practices of countries that build transit for a fraction of U.S. costs.
-      detail: >
-        American cities pay several times more per mile for rail transit than many
-        peer countries. Research such as NYU's Transit Costs Project points to fixable
-        causes: overbuilt stations, weak in-house expertise, poor procurement, and
-        slow, adversarial processes.
-    - title: Plan homes and jobs around stations
-      summary: Surround transit stops with housing, shops, and offices instead of parking.
-      detail: >
-        Transit works best when many people live and work within a short walk of it.
-        Station-area plans should allow dense, mixed-use development and replace park-
-        and-ride lots over time.
+        - >-
+          NYU's Transit Costs Project found Phase 1 paid $656 million in consultant fees, and traced
+          the cost gap to agency capacity, procurement, and design choices rather than wages alone.
+      sources:
+        - title: Transit Costs Project (NYU Marron Institute)
+          url: https://transitcosts.com/
+        - title: Why it costs $4 billion per mile of subway track (Vital City)
+          url: https://www.vitalcitynyc.org/why-it-costs-4-billion-per-mile-of-subway-track/
+
+    - title: Build a connected, protected bike network
+      summary: >-
+        Separate bikes physically on any street over 25 mph or 6,000 cars a day, and build the
+        network in one push.
+      today: >-
+        Bike lanes go where they're easy, as paint-only stripes that end at the hard intersections.
+        Most people won't ride a network with gaps, so use stays low and the lanes look unneeded.
+      change: >-
+        Adopt the NACTO All Ages & Abilities standard, with protected lanes wherever traffic tops
+        25 mph or 6,000 vehicles a day or there's more than one lane each way, and build a minimum
+        grid all at once.
+      examples:
+        - >-
+          Seville built an 80 km protected grid in 18 months starting in 2006, reaching 120 km by
+          2010 for about €32 million. Daily bike trips rose from about 6,000 to more than 70,000.
+      sources:
+        - title: Designing for All Ages & Abilities (NACTO)
+          url: https://nacto.org/wp-content/uploads/NACTO_Designing-for-All-Ages-Abilities.pdf
+        - title: Six secrets of Seville's lightning bike network (PeopleForBikes)
+          url: https://www.peopleforbikes.org/news/six-secrets-man-planned-sevillas-lightning-bike-network
+
+    - title: Zone transit land for housing
+      summary: >-
+        Give agencies zoning power over their own station land, starting with the parking lots.
+      today: >-
+        Transit agencies own acres of station parking under local zoning that allows little else.
+      change: >-
+        Let agencies set by-right standards on their own land near stations (minimum density and
+        height, maximum parking) that take effect where cities don't conform.
+      examples:
+        - >-
+          California AB 2923 (2018) had BART set standards for its station land, at least 75 homes
+          per acre and 7 stories in city-center areas, which became the zoning on BART parcels where
+          cities hadn't matched them by July 1, 2022.
+      sources:
+        - title: AB 2923 technical guide (BART)
+          url: https://www.bart.gov/sites/default/files/docs/BART_AB2923_FinalTechGuide_Full.pdf
 
 - id: land-tax
   order: 6
   name: Land & Taxes
   color: '#a0522d'
-  summary: How land is taxed shapes what gets built on it, or whether anything does.
+  summary: >-
+    How land, buildings, and new homes are taxed decides whether it pays to build or to wait.
   actions:
-    - title: Shift property taxes toward land value
-      summary: Tax land more and buildings less, through a split-rate tax or a land value tax.
-      detail: >
-        A conventional property tax penalizes improvements: build something better and
-        your taxes go up. Taxing land value instead encourages owners to put valuable
-        land to productive use rather than holding it vacant or as surface parking,
-        and it can't be passed on to tenants the way building taxes can.
+    - title: Tax land more than buildings
+      summary: A revenue-neutral split rate lowers the tax on buildings and raises it on land.
+      today: >-
+        The conventional property tax applies one rate to land and buildings, so improving a
+        property raises the bill, while a vacant lot or surface parking lot on equally valuable
+        land pays little.
+      change: >-
+        Authorize split rates and tax land at several times the building rate (about 5 to 1 is
+        typical), phased in and revenue-neutral. Most assessors already value land and buildings
+        separately.
       examples:
-        - Pittsburgh taxed land at a higher rate than buildings from 1913 until 2001.
-    - title: Capture the value transit creates
-      summary: Fund transit with a share of the land value it creates around stations.
-      detail: >
-        New transit raises nearby land values, often dramatically. Value capture tools
-        like special assessments, tax increment financing, and joint development let
-        the public recoup part of that gain to pay for the line.
+        - >-
+          Pennsylvania is the only state that lets its cities do this. Pittsburgh and Scranton
+          adopted split rates in 1913, and Allentown has taxed land at about 5 times buildings
+          since 1996.
+        - >-
+          Detroit's plan to tax land more and cut building taxes about 30% stalled in the Michigan
+          House in 2024.
+      sources:
+        - title: Why so little Georgism in America? (Lincoln Institute)
+          url: https://www.lincolninst.edu/publications/working-papers/why-so-little-georgism-america
+        - title: Land value tax plan (City of Detroit)
+          url: https://detroitmi.gov/departments/office-chief-financial-officer/land-value-tax-plan
+
+    - title: Stop taxing new buildings more than old ones
+      summary: >-
+        Assessment caps tax a new building at full value and the identical one next door at a
+        fraction.
+      today: >-
+        Under California's Prop 13 (1978), property is taxed at 1% of its purchase value plus at
+        most 2% a year, and reassessed only on sale or new construction. New apartments pay tax on
+        today's value while older neighbors pay on decades-old values, and holding underused land
+        costs little.
+      change: >-
+        Reassess non-residential property at market value on a regular cycle, and protect
+        homeowners with a capped exemption rather than a frozen assessment.
       examples:
-        - Hong Kong's MTR funds much of its rail system through its "Rail plus Property" model, developing land above and around stations.
-    - title: Discourage vacant land and surface parking
-      summary: Stop letting well-located land sit empty at a low tax bill.
-      detail: >
-        Vacant lots and surface parking in downtowns and near transit are often taxed
-        lightly because the buildings on them are worth little. Vacancy fees, land
-        value taxation, and ending parking mandates all push this land toward uses
-        that add homes, jobs, and tax revenue.
-    - title: Put public land to work for housing
-      summary: Use surplus public land for housing and neighborhood-serving uses.
-      detail: >
-        Cities, transit agencies, and school districts own large amounts of
-        underused land. Making it available for housing, particularly mixed-income
-        and affordable housing, is one of the most direct levers a city has.
+        - >-
+          California's Prop 15 (2020) would have reassessed commercial property every three years,
+          exempting owners with under $3 million in property. It failed, 48% to 52%.
+      sources:
+        - title: Quick guide to Proposition 15 (EdSource)
+          url: https://edsource.org/2020/quick-guide-proposition-15-the-proposed-split-roll-tax-on-commercial-property/640728
+
+    - title: Scale impact fees to home size and collect at occupancy
+      summary: >-
+        Charge by the square foot instead of per unit, and collect when the building opens.
+      today: >-
+        Many impact fees and utility connection charges are flat per unit, so a 600 sq ft apartment
+        pays the same as a 4,000 sq ft house, and they're often due at permit, carried as interest
+        through construction.
+      change: >-
+        Calculate fees in proportion to floor area, waive them for small ADUs, and defer collection
+        to final inspection or certificate of occupancy.
+      examples:
+        - >-
+          California AB 602 (2021) requires impact fee studies adopted after July 1, 2022 to scale
+          housing fees to square footage or justify why not, and Government Code 66007 generally
+          bars collecting residential impact fees before final inspection.
+        - >-
+          Portland waived its $7,000–$12,000 system development charges for ADUs in 2010 and made
+          the waiver permanent in 2018. ADU permits went from 25 in 2009 to roughly 500 a year.
+      sources:
+        - title: AB 602, bill text (California Legislature)
+          url: https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202120220AB602
+        - title: Government Code 66007
+          url: https://california.public.law/codes/government_code_section_66007
+        - title: Portland makes ADU incentives permanent (Planetizen)
+          url: https://www.planetizen.com/news/2018/05/98593-portland-makes-adu-incentives-permanent
+
+    - title: Tax vacant and blighted property
+      summary: Raise the cost of holding well-located land or buildings empty.
+      today: >-
+        Vacant lots are taxed lightly because there's little building to assess, so owners can hold
+        well-located land for years at almost no cost while waiting for prices to rise.
+      change: >-
+        Put vacant and blighted property in a higher tax class, with a public registry and
+        exemptions for active construction, as a step toward taxing land itself.
+      examples:
+        - >-
+          Washington, D.C. taxes vacant property at $5 per $100 of value and blighted property at
+          $10, against $0.85 for homes and $1.65–$1.89 for commercial property.
+      sources:
+        - title: Real property tax rates (D.C. Office of Tax and Revenue)
+          url: https://otr.cfo.dc.gov/page/real-property-tax-rates
+
+    - title: Fund stations from the land value they create
+      summary: >-
+        Special assessment districts let landowners near new stations pay a share of the line.
+      today: >-
+        New rail raises land values near stations, but the gain goes to landowners while fares and
+        general taxes pay for the line.
+      change: >-
+        Form assessment districts on commercial land around new stations, with landowner support,
+        and pair them with upzoning so the added value is real.
+      examples:
+        - >-
+          Fairfax County's Phase 1 Silver Line district added $0.19 per $100 of value on commercial
+          and industrial property, raising $400 million of Phase 1's $2.9 billion cost. Tysons was
+          then rezoned for urban density.
+      sources:
+        - title: Silver Line special assessment district (FHWA)
+          url: https://www.fhwa.dot.gov/ipd/value_capture/case_studies/silver_line_dulles_metrorail_special_assessment_district.aspx
 
 - id: finance
   order: 7
   name: Finance
   color: '#3b5a8a'
-  summary: Who pays for growth, who profits, and whether the math works for the long run.
+  summary: >-
+    Lending rules shape buildings as much as zoning does. Home mortgages stop at four units,
+    storefronts are hard to finance, and bank capital rules favor large projects.
   actions:
-    - title: Measure tax value per acre
-      summary: Compare how much tax revenue different development patterns produce per acre of land.
-      detail: >
-        Walkable, mixed-use blocks often generate far more tax revenue per acre than
-        big-box stores or low-density subdivisions, while needing less infrastructure
-        per dollar of value. Mapping value per acre shows cities which development
-        patterns actually pay their way.
-    - title: Account for long-term infrastructure costs
-      summary: Weigh the lifetime maintenance cost of new roads and pipes before approving growth.
-      detail: >
-        New subdivisions often arrive with streets, pipes, and pumps paid for up front
-        by developers, but the city inherits the cost of maintaining and eventually
-        replacing them. Development that doesn't generate enough revenue to cover
-        those long-term obligations becomes a hidden liability.
-    - title: Support small-scale developers
-      summary: Make it possible for local people to build small infill projects.
-      detail: >
-        Small buildings used to be built by local tradespeople and small investors.
-        Today, financing, codes, and approvals favor large projects by large firms.
-        Training, small-project lending, and simpler rules can rebuild a local
-        development ecosystem.
+    - title: Fix the five-unit financing cliff
+      summary: >-
+        Up to four units, an owner-occupant gets a 30-year fixed loan with 5% down. At five, it
+        becomes a commercial loan.
+      today: >-
+        Fannie Mae, Freddie Mac, and FHA finance 1–4 units as homes, with 30-year fixed rates,
+        3.5–5% down for an owner who lives there, and 2026 loan limits up to $1,601,750 for a
+        fourplex. At five units, financing turns commercial: typically at most 80% of value, a
+        1.25× debt service coverage test, and from banks, shorter terms, adjustable rates, and
+        personal recourse.
+      change: >-
+        Pilot a 30-year fixed, low-down-payment loan for owner-occupied 5–8 unit buildings through
+        FHA or the GSEs, and keep agency small-loan programs open to loans under $2 million.
       examples:
-        - The Incremental Development Alliance trains small developers to build modest infill projects in their own neighborhoods.
-    - title: Build public and mixed-income housing
-      summary: Use public financing to build permanently mixed-income homes, as Vienna does.
-      detail: >
-        A public developer can build high-quality mixed-income housing that stays
-        affordable permanently, recycling rents and financing into more projects.
-        Vienna's long tradition of municipal and limited-profit housing shows what the
-        model can do at scale.
+        - >-
+          Fannie Mae (November 2023) and Freddie Mac (September 2025) cut minimum down payments on
+          owner-occupied 2–4 unit homes to 5%, from 15–25%.
+        - >-
+          Freddie Mac retired its Small Balance Loan program on April 15, 2026. Its replacement
+          starts at $2 million, up from $1 million.
+      sources:
+        - title: 2026 conforming loan limits (FHFA)
+          url: https://www.fhfa.gov/news/news-release/fhfa-announces-conforming-loan-limit-values-for-2026
+        - title: Freddie Mac small balance redesign (Walker & Dunlop)
+          url: https://www.walkerdunlop.com/insights/freddie-mac-small-balance-redesign
+        - title: Access to capital for smaller multifamily properties (Harvard JCHS)
+          url: https://www.jchs.harvard.edu/research-areas/working-papers/enhancing-access-capital-smaller-unsubsidized-multifamily-rental
+
+    - title: Underwrite small rentals on their rents
+      summary: >-
+        Drop FHA's self-sufficiency test for 3–4 unit homes, and loosen the caps on counting ADU
+        rent.
+      today: >-
+        For a 3- or 4-unit home, FHA requires 75% of the appraiser's market rent for every unit,
+        including the one the owner will live in, to cover the full payment with taxes, insurance,
+        and mortgage insurance, which is hard to pass with 3.5% down in expensive markets. Fannie
+        Mae, Freddie Mac, and FHA count ADU rent only on one-unit homes, capped at 30% of
+        qualifying income.
+      change: >-
+        Replace the test with standard underwriting that counts 75% of the rental units' income
+        toward the borrower's qualifying income, as FHA already does for duplexes, and raise the
+        ADU income cap for documented rents.
       examples:
-        - Montgomery County, Maryland's Housing Production Fund uses a revolving fund to build mixed-income apartments.
-    - title: Make mixed-use buildings financeable
-      summary: Fix lending rules that penalize buildings with shops below and homes above.
-      detail: >
-        Many mortgage and loan programs are built for single-use buildings and limit
-        how much commercial space a residential building can have. That makes the
-        classic main-street building, with a storefront below and apartments above,
-        harder to finance than it should be.
+        - >-
+          Since 2023, FHA has counted 75% of market rent for an existing ADU and 50% for one not
+          yet built.
+      sources:
+        - title: FHA self-sufficiency test (Mortgage Research Center)
+          url: https://www.mortgageresearch.com/articles/fha-self-sufficiency-test/
+        - title: Mortgagee Letter 2023-17, ADU rental income (HUD)
+          url: https://www.hud.gov/sites/dfiles/OCHCO/documents/2023-17hsgml.pdf
+
+    - title: Make shops-below, homes-above buildings financeable
+      summary: >-
+        Home mortgages exclude most storefront buildings, and agency apartment loans cap commercial
+        space.
+      today: >-
+        Fannie Mae and Freddie Mac buy mixed-use mortgages only on one-unit homes whose owner lives
+        there and runs the business, so a storefront with two apartments above can't get a
+        conforming loan. FHA allows up to 49% commercial floor area. Fannie Mae apartment loans cap
+        commercial space at 35% of rentable area and 20% of income, HUD 221(d)(4) at 25% and 15%,
+        and condo buildings over 35% commercial are ineligible for Fannie Mae.
+      change: >-
+        Let GSE 2–4 unit loans include a ground-floor storefront, underwriting its rent at a
+        discount instead of excluding the building, and raise commercial caps for street-level
+        retail in walkable districts.
+      examples:
+        - >-
+          FHA raised its mixed-use limit to 49% commercial floor area in 2015, and its condo
+          commercial limit from 25% to 35% (49% with an exception) in 2019.
+      sources:
+        - title: Special property eligibility, B2-3-04 (Fannie Mae Selling Guide)
+          url: https://selling-guide.fanniemae.com/sel/b2-3-04/special-property-eligibility-considerations
+        - title: Ineligible projects, B4-2.1-03 (Fannie Mae Selling Guide)
+          url: https://selling-guide.fanniemae.com/sel/b4-2.1-03/ineligible-projects
+        - title: FHA 221(d)(4) term sheet (Lument)
+          url: https://www.lument.com/wp-content/uploads/2025/11/fha-section-221d4_10.21.25.pdf
+
+    - title: Ease construction-loan capital rules for small apartments
+      summary: >-
+        Bank capital rules penalize construction loans for five or more units in ways 1–4 unit
+        homes avoid.
+      today: >-
+        Federal guidelines cap construction loans at 80% of value for apartments and 85% for 1–4
+        family homes. Under the HVCRE rule, a construction loan for 5+ units carries a 150% risk
+        weight, 1.5 times the bank capital of an ordinary loan, unless the borrower puts in cash or
+        land worth 15% of the completed value. 1–4 family construction is exempt.
+      change: >-
+        Extend the HVCRE exemption to small multifamily, for example up to 20 units, so local
+        builders with land but little cash can borrow on normal terms.
+      examples:
+        - >-
+          Congress exempted 1–4 family construction from HVCRE in the 2018 Economic Growth Act
+          (Section 214), and regulators finalized it in 2019.
+      sources:
+        - title: Interagency guidelines for real estate lending (Federal Reserve)
+          url: https://www.federalreserve.gov/frrs/guidance/interagency-guidelines-on-policies.htm
+        - title: Navigating HVCRE exposure (Amundsen Davis)
+          url: https://www.amundsendavislaw.com/alert-NavigatingHighVolatilityCommercialRealEstateExposureJustGotEasier
+
+    - title: Make small condos buildable again
+      summary: >-
+        Limit open-ended defect liability so small condo projects can get insurance and buyers can
+        get loans.
+      today: >-
+        Condo builders can face defect claims for up to 10 years in states like California, which
+        drives up insurance and steers builders toward rentals. FHA's single-unit condo approval
+        also requires at least five units and 50% owner occupancy.
+      change: >-
+        Shorten statutes of repose, require inspections and a right to repair before a lawsuit, and
+        lower FHA's five-unit minimum for single-unit approval.
+      examples:
+        - >-
+          Oregon HB 3746 (effective January 1, 2026) cut the repose period for condo defect claims
+          from 10 to 7 years and added required moisture-intrusion inspections.
+      sources:
+        - title: Oregon HB 3746 redefines construction defect timelines (Miller Nash)
+          url: https://www.millernash.com/industry-news/oregon-hb-3746-redefining-construction-defect-timelines-for-hoas-and-condos
+        - title: FHA condominium rule assessment (NAR)
+          url: https://www.nar.realtor/condominiums/fha-condominium-rule-assessment
+
+    - title: Put the expanded housing tax credit to work
+      summary: >-
+        The 2025 tax law cut the bond test for 4% credits from 50% to 25%, so each project needs
+        half the bond cap.
+      today: >-
+        A 4% LIHTC project has had to finance at least 50% of land and building cost with
+        tax-exempt private activity bonds, and in many states the bond cap runs out before the
+        projects do.
+      change: >-
+        Adopt the new 25% test in state allocation plans, steer the freed bond cap to housing, and
+        pair it with the permanent 12% increase in 9% credits.
+      examples:
+        - >-
+          The One Big Beautiful Bill Act (2025) permanently raised 9% allocations 12% starting in
+          2026, and set a 25% bond test for projects placed in service after 2025 with at least 5%
+          of cost financed by bonds issued after 2025.
+      sources:
+        - title: LIHTC and NMTC changes after OBBBA (JMCO)
+          url: https://www.jmco.com/articles/tax/obbba-for-lihtc-and-nmtc-sponsors/
+
+    - title: Judge growth by tax value per acre
+      summary: >-
+        Compare development by the revenue it produces per acre against the infrastructure it adds.
+      today: >-
+        Cities approve growth by total value or job counts, while the roads and pipes that
+        spread-out, low-value development needs become maintenance liabilities decades later.
+      change: >-
+        Map property and sales tax per acre, require lifecycle cost estimates before accepting new
+        public roads and utilities, and favor patterns that pay for their own upkeep.
+      examples:
+        - >-
+          In Asheville, a 0.2-acre downtown mixed-use building yields $634,000 per acre in property
+          tax, against $6,500 per acre for a 34-acre Walmart.
+      sources:
+        - title: What's the value of a great downtown? (Smart Growth America)
+          url: https://www.smartgrowthamerica.org/knowledge-hub/news/whats-the-value-of-a-great-downtown-joe-minicozzi-can-tell-you-exactly-in-dollars-and-cents/
 
 - id: governance
   order: 8
   name: Governance & Permitting
   color: '#6b6b8e'
-  summary: The process can matter as much as the rules. Delay and discretion kill good projects.
+  summary: >-
+    Every month of review is interest, carrying cost, and risk. The fixes are deadlines, objective
+    standards, and fewer veto points.
   actions:
-    - title: Approve code-compliant projects by right
-      summary: If a project meets the rules, approve it administratively, without a hearing.
-      detail: >
-        Discretionary review lets a handful of objectors delay or kill projects that
-        already comply with the code, adding cost and risk to every building. By-right
-        approval gives builders certainty and gives the public a real say where it
-        belongs: in writing the rules.
+    - title: Approve code-compliant housing ministerially
+      summary: If a project meets objective standards, staff approve it without a hearing.
+      today: >-
+        Discretionary review lets subjective standards like "compatibility" and repeated hearings
+        stall or kill projects that already meet the code, and each hearing adds months of
+        carrying cost.
+      change: >-
+        Limit review of compliant housing to objective, measurable standards decided by staff on a
+        deadline, and cap design review at one meeting.
       examples:
-        - California's SB 35 (2017) created streamlined, ministerial approval for qualifying housing in cities that fall short of their housing goals.
-    - title: Set permit deadlines
-      summary: Require cities to decide on permits within a fixed time, or the permit is deemed approved.
-      detail: >
-        Months of waiting translate directly into higher costs and fewer projects.
-        Clear deadlines, published review times, and consequences for missing them
-        make permitting predictable.
-    - title: Reform environmental review for infill
-      summary: Stop using environmental review laws to block homes where they do the most good.
-      detail: >
-        Infill housing near jobs and transit is among the best things a region can do
-        for the environment, yet laws like California's CEQA have often been used to
-        delay it. Exempting infill homes from project-by-project review aligns the
-        process with the environmental goal.
-    - title: Hold cities to state housing goals
-      summary: Set housing targets at the state level, with real consequences for cities that ignore them.
-      detail: >
-        Every city benefits when its neighbors build housing, but each one faces local
-        pressure not to. State targets with enforcement, such as losing local control
-        over approvals, correct that imbalance.
+        - >-
+          California SB 330 (2019, extended to 2030) allows at most five hearings on compliant
+          housing, applies only objective standards, and freezes the rules when a preliminary
+          application is filed.
+        - >-
+          California SB 423 (extended to 2036) gives ministerial approval in cities behind on their
+          housing goals, decided within 90 days for 150 units or fewer and 180 days above that.
+        - >-
+          Washington HB 1293 (2023) limits design review to clear and objective standards and one
+          public meeting.
+      sources:
+        - title: The five-hearing rule (California HCD)
+          url: https://www.hcd.ca.gov/sites/default/files/docs/planning-and-community/five-hearing-rule.pdf
+        - title: Washington HB 1293, session law
+          url: https://lawfilesext.leg.wa.gov/biennium/2023-24/Htm/Bills/Session%20Laws/House/1293-S.SL.htm
+
+    - title: Put deadlines on permits, with outside review as the penalty
+      summary: >-
+        Fixed review clocks, and if the city misses one, a qualified third party can do the review.
+      today: >-
+        Building permits for approved projects often cycle through rounds of comments with no
+        deadline, and each resubmittal restarts the wait.
+      change: >-
+        Set review deadlines by project size, deem applications complete if the city doesn't
+        respond in time, and let applicants hire qualified third-party reviewers when it misses a
+        deadline.
       examples:
-        - California's "builder's remedy" allows projects to bypass local zoning in cities without a compliant housing plan.
-    - title: Pilot changes quickly and cheaply
-      summary: Test street redesigns with paint, posts, and planters before rebuilding in concrete.
-      detail: >
-        Quick-build projects let cities try a protected bike lane, plaza, or road diet
-        in weeks instead of years, measure the results, and adjust before investing in
-        permanent construction.
-    - title: Publish the results
-      summary: Track and publish permit times, housing production, and traffic safety by neighborhood.
-      detail: >
-        What gets measured gets managed. Public dashboards of permit timelines, homes
-        built, and injuries on each street make progress visible and hold officials
-        accountable.
+        - >-
+          California AB 2234 (2022) requires decisions on post-entitlement permits within 30
+          business days for 25 or fewer units and 60 for larger projects, and deems applications
+          complete if not reviewed within 15 days.
+        - >-
+          Texas HB 3699 (2023) requires plats to be approved or denied within 30 days, and Texas
+          HB 14 (2023) lets a qualified third party, such as a licensed engineer, do the review if a
+          city runs 15 days past its deadline.
+      sources:
+        - title: AB 2234 (NYU Furman Center)
+          url: https://www.furmancenter.org/enacted-legislation/ab-2234/
+        - title: HB 14 (NYU Furman Center)
+          url: https://www.furmancenter.org/enacted-legislation/hb-14/
+        - title: HB 3699 bill analysis (Texas Legislature)
+          url: https://capitol.texas.gov/tlodocs/88R/analysis/html/HB03699E.htm
+
+    - title: Exempt infill housing from environmental review
+      summary: >-
+        Code-compliant homes on urban infill sites shouldn't face project-by-project environmental
+        lawsuits.
+      today: >-
+        Laws like CEQA let anyone challenge an infill project's environmental review in court,
+        adding years and legal risk even when the project matches the general plan and zoning.
+      change: >-
+        Exempt housing that complies with zoning on urban infill sites by statute, and settle
+        environmental questions once, when the plan and zoning are adopted.
+      examples:
+        - >-
+          California AB 130 (signed June 30, 2025) exempts code-compliant multifamily and mixed-use
+          infill on urban sites of 20 acres or less from CEQA. Most projects under 85 feet face no
+          affordability or wage conditions.
+      sources:
+        - title: AB 130 and SB 131 CEQA reform (Greenberg Traurig)
+          url: https://www.gtlaw.com/en/insights/2025/7/ab-130-and-sb-131-california-legislature-enacts-ceqa-reform-to-accelerate-housing-development
+
+    - title: Enforce state housing targets
+      summary: >-
+        Give every city a housing target, and take zoning control from cities that won't plan for
+        it.
+      today: >-
+        Each city gains when its neighbors build but faces local pressure not to, so regional
+        housing needs go unmet unless the state enforces them.
+      change: >-
+        Set targets by statute, review local plans, and attach automatic consequences, such as lost
+        funding, state-imposed zoning, or by-right approval for projects with affordable units.
+      examples:
+        - >-
+          California's builder's remedy lets projects in cities without a compliant housing plan
+          bypass local zoning if 7% of homes are for extremely low incomes, 10% very low, or 13%
+          lower, or all are for moderate incomes. AB 1893 (2024) set its density limits.
+        - >-
+          Massachusetts' highest court upheld the MBTA Communities Act, and the Attorney General's
+          power to enforce it against noncompliant towns, in January 2025.
+      sources:
+        - title: Updates to the builder's remedy, AB 1893 (Burke, Williams & Sorensen)
+          url: https://www.bwslaw.com/insights/public-law-update-updates-to-the-housing-accountability-act-and-builders-remedy-ab-1893-2024/
+        - title: MBTA Communities Act next steps (National Law Review)
+          url: https://natlawreview.com/article/mbta-communities-act-next-steps

@@ -2,7 +2,8 @@
 // Categories sit around a disc seen in perspective: the front of the disc (bottom) is closer, so
 // those categories draw larger. Drag anywhere on the disc to spin it. Clicking a category hides the
 // disc and flies its bubble to the top left, with the category's actions laid out beside it like an
-// essay; each action expands to show what it means and examples. The X brings the disc back.
+// essay; each action expands to the rule as it stands today, the change, precedents, and sources.
+// The X brings the disc back.
 // Content lives in src/content/roadmap.yaml.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
@@ -92,16 +93,36 @@ const DOTS = 48;
                     <span class="chevron" aria-hidden="true" />
                   </summary>
                   <div class="action-body">
-                    <p>{a.detail}</p>
-                    {a.examples.length > 0 && (
-                      <>
-                        <p class="examples-label">In practice</p>
-                        <ul class="examples">
-                          {a.examples.map((e) => (
-                            <li>{e}</li>
-                          ))}
-                        </ul>
-                      </>
+                    <dl class="rule">
+                      <dt>Today</dt>
+                      <dd>{a.today}</dd>
+                      <dt>Change</dt>
+                      <dd>{a.change}</dd>
+                      {a.examples.length > 0 && (
+                        <>
+                          <dt>Precedents</dt>
+                          <dd>
+                            <ul class="examples">
+                              {a.examples.map((e) => (
+                                <li>{e}</li>
+                              ))}
+                            </ul>
+                          </dd>
+                        </>
+                      )}
+                    </dl>
+                    {a.sources.length > 0 && (
+                      <p class="sources">
+                        Sources:{' '}
+                        {a.sources.map((s, i) => (
+                          <>
+                            {i > 0 && <span aria-hidden="true"> · </span>}
+                            <a href={s.url} target="_blank" rel="noopener">
+                              {s.title}
+                            </a>
+                          </>
+                        ))}
+                      </p>
                     )}
                   </div>
                 </details>
@@ -707,28 +728,51 @@ const DOTS = 48;
     line-height: 1.7;
   }
 
-  .action-body p {
-    margin: 0 0 0.8rem;
+  /* Today / Change / Precedents: labels in a narrow column beside the text. */
+  .rule {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 0.75rem 1.25rem;
+    margin: 0 0 1rem;
   }
 
-  .examples-label {
+  .rule dt {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-weight: 700;
+    line-height: 1.7rem;
     color: color-mix(in srgb, var(--c) 75%, var(--ink));
-    margin-bottom: 0.4rem !important;
+  }
+
+  .rule dd {
+    margin: 0;
   }
 
   .examples {
     margin: 0;
     padding-left: 1.1rem;
-    color: var(--muted);
-    font-size: 0.95rem;
+    font-size: 0.98rem;
   }
 
-  .examples li {
-    margin-bottom: 0.35rem;
+  .examples li + li {
+    margin-top: 0.4rem;
+  }
+
+  .sources {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .sources a {
+    color: inherit;
+    text-underline-offset: 2px;
+  }
+
+  .sources a:hover {
+    color: var(--ink);
   }
 
   @media (max-width: 700px) {
@@ -764,6 +808,16 @@ const DOTS = 48;
 
     .action-body {
       padding-left: 0;
+    }
+
+    /* Labels stack above their text on phones. */
+    .rule {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
+
+    .rule dd + dt {
+      margin-top: 0.8rem;
     }
   }
 </style>
