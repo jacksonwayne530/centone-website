@@ -45,12 +45,12 @@ const { src, alt, poster } = Astro.props;
 <script>
   import '@google/model-viewer';
 
-  // On phones the viewer is short, so frame the building closer than model-viewer's default, which
-  // leaves room for the whole bounding sphere and so wastes space above and below.
+  // Frame the building closer than model-viewer's default, which leaves room for the whole bounding
+  // sphere and so wastes space above and below; closer still on phones, where the viewer is short.
   const narrow = matchMedia('(max-width: 959px)');
 
   document.querySelectorAll<HTMLElement & { cameraOrbit: string }>('.viewer model-viewer').forEach((mv) => {
-    const frame = () => (mv.cameraOrbit = narrow.matches ? 'auto auto 80%' : 'auto auto auto');
+    const frame = () => (mv.cameraOrbit = narrow.matches ? 'auto auto 80%' : 'auto auto 88%');
     frame();
     narrow.addEventListener('change', frame);
 
@@ -85,8 +85,9 @@ const { src, alt, poster } = Astro.props;
   }
 
   @media (min-width: 960px) {
+    /* Fits below the title without scrolling (the rest of the page above it is ~15rem). */
     model-viewer {
-      height: min(80vh, 720px);
+      height: clamp(420px, calc(100dvh - 15.5rem), 720px);
     }
   }
 

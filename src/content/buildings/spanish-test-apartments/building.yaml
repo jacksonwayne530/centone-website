@@ -1,7 +1,7 @@
 # Building #6. Specs below are estimates; replace them with real values when known.
 number: 6
 name: Spanish Test Apartments
-location: Santa Monica, CA
+location: Portland, OR
 type: Apartment building (8 units)
 style: Spanish Revival
 # Estimated from the floor plans. Totals for the building: each unit has 2 bedrooms and 2 baths.

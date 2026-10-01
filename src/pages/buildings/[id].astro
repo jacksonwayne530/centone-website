@@ -17,16 +17,24 @@ interface Props {
 
 const { data } = Astro.props.building;
 
-const facts: Array<[string, string]> = [
-  ['Style', data.style],
-  ['Location', data.location],
-  ...(data.units ? ([['Units', data.units.toLocaleString('en-US')]] as Array<[string, string]>) : []),
-  ['Stories', String(data.stories)],
-  ['Bedrooms', data.bedrooms.toLocaleString('en-US')],
-  ['Bathrooms', data.bathrooms.toLocaleString('en-US')],
-  ['Square footage', formatSquareFeet(data.squareFeet)!],
-  ['Lot', formatLot(data.lotWidth, data.lotDepth)],
-  ['Type', data.type],
+// Facts in compact rows of related values, so the whole list fits beside the model.
+type Fact = [string, string];
+const factRows: Fact[][] = [
+  [
+    ['Style', data.style],
+    ['Location', data.location],
+  ],
+  [
+    ...(data.units ? ([['Units', data.units.toLocaleString('en-US')]] as Fact[]) : []),
+    ['Stories', String(data.stories)],
+    ['Bedrooms', data.bedrooms.toLocaleString('en-US')],
+    ['Bathrooms', data.bathrooms.toLocaleString('en-US')],
+  ],
+  [
+    ['Type', data.type],
+    ['Square footage', formatSquareFeet(data.squareFeet)!],
+  ],
+  [['Lot', formatLot(data.lotWidth, data.lotDepth)]],
 ];
 
 // Floor plans are drawn as masks filled with the text color, so the linework matches the theme.
@@ -47,11 +55,9 @@ const planMax = widest[0]?.width ?? 0;
 ---
 
 <Base title={data.name} description={data.description} wide>
-  <a href="/" class="back">← All buildings</a>
-
   <header class="head">
-    <span class="num">{formatNumber(data.number)}</span>
-    <h1>{data.name}</h1>
+    <a href="/" class="back">← All buildings</a>
+    <h1><span class="num">{formatNumber(data.number)}</span> {data.name}</h1>
   </header>
 
   <div class="layout">
@@ -90,10 +96,14 @@ const planMax = widest[0]?.width ?? 0;
     <aside class="details">
       <dl>
         {
-          facts.map(([label, value]) => (
-            <div>
-              <dt>{label}</dt>
-              <dd>{value}</dd>
+          factRows.map((row) => (
+            <div class="row" style={`--cols: ${row.length}`}>
+              {row.map(([label, value]) => (
+                <div>
+                  <dt>{label}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
             </div>
           ))
         }
@@ -106,24 +116,28 @@ const planMax = widest[0]?.width ?? 0;
 </Base>
 
 <style>
+  .head {
+    margin: -0.75rem 0 0.75rem;
+  }
+
   .back {
     font-size: 0.9rem;
     text-decoration: none;
   }
 
-  .head {
-    margin: 1rem 0 1.5rem;
+  .head h1 {
+    margin: 0.3rem 0 0;
+    font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+    line-height: 1.15;
   }
 
   .num {
     color: var(--muted);
-    font-size: 0.85rem;
+    font-size: 0.45em;
+    font-weight: 500;
     font-variant-numeric: tabular-nums;
-  }
-
-  .head h1 {
-    margin: 0.2rem 0 0;
-    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    vertical-align: 0.35em;
+    margin-right: 0.2em;
   }
 
   .layout {
@@ -165,10 +179,14 @@ const planMax = widest[0]?.width ?? 0;
   dl {
     margin: 0 0 1.25rem;
     display: grid;
-    gap: 0.75rem;
+    gap: 0.65rem;
   }
 
-  dl div {
+  /* One line per group of related facts, each fact in an equal column. */
+  .row {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: 1rem;
     border-bottom: 1px solid var(--line);
     padding-bottom: 0.6rem;
   }

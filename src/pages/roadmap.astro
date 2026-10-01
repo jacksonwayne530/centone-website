@@ -315,7 +315,9 @@ const DOTS = 48;
     );
   }
 
-  function open(id: string, updateHash = true) {
+  // Opening from the disc adds a history entry, so the back button or back swipe returns to the
+  // disc instead of leaving the page. Deep links open without one.
+  function open(id: string, push = true) {
     const focus = focuses.get(id);
     if (!focus) return;
     const from = roadmap.hidden ? null : nodeFor(id)?.querySelector('.disc')?.getBoundingClientRect();
@@ -329,7 +331,7 @@ const DOTS = 48;
     window.scrollTo(0, 0);
     if (from) fly(focus.querySelector('.focus-bubble .disc')!, from);
     focus.querySelector<HTMLButtonElement>('[data-close]')!.focus({ preventScroll: true });
-    if (updateHash) history.replaceState(null, '', `#${id}`);
+    if (push) history.pushState({ focus: id }, '', `#${id}`);
   }
 
   function close() {
@@ -348,13 +350,30 @@ const DOTS = 48;
       node.focus({ preventScroll: true });
     }
     current = null;
-    history.replaceState(null, '', location.pathname);
   }
 
+  // The X and Escape step back through history when we added the entry, so back and forward stay in
+  // sync; a deep-linked category has none, so just drop the hash.
+  function leave() {
+    if (!current) return;
+    if (history.state?.focus) {
+      history.back();
+    } else {
+      close();
+      history.replaceState(null, '', location.pathname);
+    }
+  }
+
+  window.addEventListener('popstate', () => {
+    const id = location.hash.slice(1);
+    if (focuses.has(id)) open(id, false);
+    else close();
+  });
+
   nodes.forEach((btn) => btn.addEventListener('click', () => open(btn.dataset.open!)));
-  focuses.forEach((f) => f.querySelector('[data-close]')!.addEventListener('click', close));
+  focuses.forEach((f) => f.querySelector('[data-close]')!.addEventListener('click', leave));
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && current) close();
+    if (e.key === 'Escape' && current) leave();
   });
 
   // Deep links like /roadmap/#parking open that category.
@@ -775,35 +794,49 @@ const DOTS = 48;
     color: var(--ink);
   }
 
+  /* Phones: the bubble and the X share the top row, just below the header. The back button also
+     closes a category (see script). */
   @media (max-width: 700px) {
     .focus {
-      grid-template-columns: 1fr;
-      gap: 1.25rem;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      margin-top: -1rem;
     }
 
     .focus-bubble {
       position: relative;
-      width: 130px;
-      height: 130px;
+      top: 0;
+      width: 112px;
+      height: 112px;
+      margin: 0.75rem 0 0 0.75rem;
     }
 
     .focus-bubble .node-name {
-      font-size: 1.05rem;
+      font-size: 0.95rem;
+      padding: 0 0.4rem;
     }
 
-    /* Pinned to the corner of the screen so it's always in reach. */
     .close {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 10;
-      box-shadow: 0 4px 16px rgb(0 0 0 / 0.25);
+      grid-column: 2;
+      position: static;
+      justify-self: end;
+      width: 2.75rem;
+      height: 2.75rem;
+      font-size: 1.7rem;
+    }
+
+    .panel-kicker {
+      display: none;
     }
 
     .focus-body {
       grid-column: 1 / -1;
       grid-row: 2;
       padding-top: 0;
+    }
+
+    .focus-body h2 {
+      margin-top: 0;
     }
 
     .action-body {
