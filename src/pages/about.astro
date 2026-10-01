@@ -1,132 +1,616 @@
 ---
-import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import portrait from '../content/about/jackson.jpg';
 
-const buildings = (await getCollection('buildings')).sort((a, b) => a.data.number - b.data.number);
+// Colors from the logo's quilt block. Each seam patch is a half-square triangle of two of them.
+const quilt = ['#7d4d68', '#b8892a', '#165870', '#e57a59', '#c0674a', '#b9e2d0', '#f3ecd0', '#d9c8e4'];
+const patches = Array.from({ length: 48 }, (_, i) => [quilt[(i * 3) % quilt.length], quilt[(i * 3 + (i % 2 ? 3 : 5)) % quilt.length]]);
+
+const lifecycle = [
+  { phase: 'Find & plan', tasks: ['Site selection', 'Financial pro formas', 'Site planning'] },
+  { phase: 'Entitle & fund', tasks: ['Entitlements', 'Contractor bids', 'Construction financing'] },
+  { phase: 'Build & lease', tasks: ['Budget management', 'Investor reporting', 'Lease-up and marketing strategy'] },
+  { phase: 'Hold or sell', tasks: ['Permanent financing through HUD and Fannie Mae / Freddie Mac', 'Disposition analysis'] },
+];
+
+const guide = [
+  {
+    href: '/',
+    name: 'The Design Book',
+    text: 'An open-source architectural design book. The designs span every era, pairing buildings that have stood the test of time with the best work of our own. Find plans by your needs, your lot, and your climate.',
+  },
+  {
+    href: '/roadmap/',
+    name: 'The Roadmap',
+    text: 'A map of the common struggles we face in building better neighborhoods. It defines each issue and lays out both broad solutions and individual actions we can take.',
+  },
+  {
+    href: '/knowledge/',
+    name: 'The Knowledge Base',
+    text: 'My personal thoughts and philosophies on development, urban design, architecture, and history. A personal journey for anyone interested, with articles linked to building designs where relevant.',
+  },
+];
 ---
 
-<Base title="About" description="Who's behind Centone, and why it exists.">
-  <article class="prose">
-    <header class="hero">
+<Base title="About" description="What Centone means, why it exists, and who's behind it.">
+  <!-- The name: a dictionary entry beside the reason for it, joined by a patchwork seam. -->
+  <section class="meaning" aria-labelledby="headword">
+    <div class="entry">
+      <h1 id="headword" class="headword">cen·to·ne</h1>
+      <p class="pron">
+        <span class="ipa">\ chen-ˈtō-nā \</span>
+        <span class="pos">noun</span>
+        <span class="plural">plural <b>centoni</b></span>
+      </p>
+      <p class="etym">
+        <span class="label">Etymology</span>
+        Italian, from Latin <i>cento, centōnis</i>: a garment or coverlet made of many pieces, scraps of
+        various colors sewn together.
+      </p>
+      <ol class="senses">
+        <li>A patchwork; a quilt or cloak pieced together from remnants of many colors.</li>
+        <li>
+          A poem composed of lines and phrases drawn from celebrated authors and set in a new order.
+        </li>
+        <li>
+          <span class="field">music</span> A collection of chants or melodic formulas; later, a medley or
+          fantasia assembled from existing pieces.
+        </li>
+      </ol>
+      <p class="source">Adapted from Treccani and Merriam-Webster.</p>
+    </div>
+
+    <div class="seam-track" aria-hidden="true">
+      <div class="seam">
+        {patches.map(([a, b]) => <span style={`--a: ${a}; --b: ${b}`}></span>)}
+      </div>
+    </div>
+
+    <div class="why">
+      <h2 class="kicker">Why the name</h2>
+      <p>
+        No neighborhood worth loving was built by a single hand. The best ones are pieced together over
+        generations by many builders, each leaving a little of their own character behind, the way a
+        quilt is made one square at a time.
+      </p>
+      <p>
+        A quilt can be torn and mended. Worn pieces come out, and beautiful new ones are stitched in
+        their place. Its eclecticism is its strength: an unusual piece is at home there among its
+        neighbors, where in a field of sameness it would be an outcast. And a well-made quilt only
+        improves with use. It softens, takes on a patina, and is handed down and loved for
+        generations.
+      </p>
+      <p>That is how we should build our cities.</p>
+    </div>
+  </section>
+
+  <!-- Profile -->
+  <section class="profile" aria-labelledby="profile-name">
+    <h2 class="section-label">About me</h2>
+    <div class="profile-grid">
       <Image
         src={portrait}
-        alt="Jackson"
-        widths={[240, 480]}
-        sizes="(min-width: 640px) 200px, 160px"
+        alt="Jackson Wayne"
+        widths={[320, 640]}
+        sizes="(min-width: 800px) 280px, 200px"
         class="portrait"
         loading="eager"
       />
-      <div>
-        <h1 class="sr-only">About</h1>
-        <p class="lede">
-          Hi, I'm Jackson. Centone is where I collect buildings worth learning from, and the ideas
-          that make places like them possible.
+      <div class="profile-main">
+        <h3 id="profile-name" class="name">Jackson Wayne</h3>
+        <p class="role">Development Finance Analyst, Ocean Atlantic · Rehoboth Beach, Delaware</p>
+        <p>
+          Jackson works on real estate development at Ocean Atlantic, a family-office developer, on
+          commercial, mixed-use, multifamily, master-planned community, and affordable workforce
+          housing projects. On a small team, he has been involved in every stage of a project, and
+          in <strong>$500 million of transactions</strong> over the past three years.
+        </p>
+        <p>
+          He came to development through finance. After studying finance at BYU, he worked as an
+          analyst at Elevation Venture Capital and in technology investment banking at Cohen &amp;
+          Company. Over the years a passion for urban design and architecture took hold. Living in
+          Phnom Penh, Mexico City, and Nairobi, and in cities across the United States, he has seen
+          what different cities do well and documented the strengths each one offers.
         </p>
       </div>
-    </header>
+    </div>
 
-    <h2>Why buildings, and why rules</h2>
-    <p>
-      Good buildings don't happen by accident. Whether a corner store, a rowhouse, or a small
-      apartment building can exist on a given block is decided long before anyone draws it, by
-      zoning codes, building codes, street standards, and the way we pay for all of it. Many of the
-      neighborhoods people love most would be illegal to build in most American cities today.
-    </p>
-    <p>
-      I'm interested in both halves of that: the buildings themselves, room by room, and the rules
-      that decide whether we get more of them.
-    </p>
+    <ol class="lifecycle" aria-label="Work across the life of a project">
+      {
+        lifecycle.map(({ phase, tasks }, i) => (
+          <li>
+            <span class="step">{String(i + 1).padStart(2, '0')}</span>
+            <h4>{phase}</h4>
+            <ul>
+              {tasks.map((t) => (
+                <li>{t}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ol>
 
-    <h2>What's here</h2>
-    <ul>
-      <li>
-        <a href="/">Buildings</a>. A growing catalog of houses I admire, each with an isometric
-        drawing, scaled floor plans, and a 3D model you can spin. So far:{' '}
-        {
-          buildings.map((b, i) => (
-            <>
-              <a href={`/buildings/${b.id}/`}>{b.data.name}</a> ({b.data.location})
-              {i < buildings.length - 2 ? ', ' : i === buildings.length - 2 ? ', and ' : '.'}
-            </>
-          ))
-        }
-      </li>
-      <li>
-        <a href="/roadmap/">Roadmap</a>. The policy changes that would make well-designed places
-        normal again, organized by category, from zoning and building codes to parking, transit,
-        and finance.
-      </li>
-      <li>
-        <a href="/knowledge/">Knowledge</a>. Essays on the ideas behind the roadmap, with sources.
-      </li>
+    <dl class="facts">
+      <div>
+        <dt>Experience</dt>
+        <dd>Ocean Atlantic, Development Finance Analyst</dd>
+        <dd>Cohen &amp; Company, Technology Investment Banking</dd>
+        <dd>Elevation Venture Capital, Analyst</dd>
+      </div>
+      <div>
+        <dt>Education</dt>
+        <dd>Brigham Young University, Finance</dd>
+      </div>
+      <div>
+        <dt>Has lived in</dt>
+        <dd>Phnom Penh · Mexico City · Nairobi · cities across the US</dd>
+      </div>
+      <div>
+        <dt>Home</dt>
+        <dd>Rehoboth Beach, Delaware, with his wife</dd>
+      </div>
+      <div>
+        <dt>Off the clock</dt>
+        <dd>Distance running · Gravel biking · Open-ocean swimming</dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- Thesis and guide -->
+  <section class="thesis" aria-labelledby="thesis-title">
+    <h2 class="section-label" id="thesis-title">Thesis</h2>
+
+    <div class="tenets">
+      <article>
+        <span class="numeral">I</span>
+        <h3>Cities are alive</h3>
+        <p>
+          Cities are complex, living, evolving organisms that serve as the substrate for our lives and
+          culture. They grow to meet our needs and take care of us as we take care of them. Our
+          cities, our neighborhoods, and the built environment as a whole shape our social
+          interactions, our health, and virtually every aspect of our lives.
+        </p>
+      </article>
+      <article>
+        <span class="numeral">II</span>
+        <h3>Built as a product</h3>
+        <p>
+          As society has evolved, growth at the edges of our cities, and altogether new cities, have
+          been erected as financial products, in stark contrast to the organic cities and
+          neighborhoods of the past. Through depressions and world wars, civil rights struggles and
+          natural disasters, the advent of the automobile and the rise of modern bureaucracy, we have
+          witnessed divergent ways of building and equally divergent outcomes.
+        </p>
+      </article>
+      <article>
+        <span class="numeral">III</span>
+        <h3>The right ingredients</h3>
+        <p>
+          If we want the right outcomes, we have to build with the right ingredients and tools. In
+          recent decades, urban cores that were hollowed out have received substantial and
+          accelerating attention. Still, many barriers stand between us and well-built neighborhoods
+          and communities that make full use of the technology of our era. Centone aims to be a
+          toolbox and resource for overcoming those barriers, so we can build on the shoulders of
+          those who came before us.
+        </p>
+      </article>
+    </div>
+
+    <h3 class="guide-title">A guide to the site</h3>
+    <ul class="guide">
+      {
+        guide.map(({ href, name, text }) => (
+          <li>
+            <a href={href}>
+              <span class="guide-name">{name} →</span>
+              <span class="guide-text">{text}</span>
+            </a>
+          </li>
+        ))
+      }
     </ul>
-
-    <h2>What I believe</h2>
-    <ul>
-      <li>
-        Streets are a city's largest public space, and they should be designed first for the
-        people walking, cycling, and living along them.
-      </li>
-      <li>A car should be an option, not a requirement for everyday life.</li>
-      <li>
-        Neighborhoods should be allowed to grow gradually, one small building at a time, the way
-        the best ones always have.
-      </li>
-      <li>Good design shouldn't be a luxury. The rules should make it the default.</li>
-    </ul>
-  </article>
+  </section>
 </Base>
 
 <style>
-  /* Wider than the default reading column, and left-aligned with the other pages. */
-  article.prose {
-    max-width: 58rem;
-    margin-left: 0;
+  section {
+    --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
   }
 
-  .hero {
+  /* ---- The name ---- */
+  .meaning {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) auto minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
+    padding: clamp(1rem, 4vw, 3rem) 0 clamp(3rem, 7vw, 5.5rem);
+  }
+
+  .headword {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(3.75rem, 10vw, 7.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem;
+  }
+
+  .pron {
     display: flex;
-    align-items: center;
-    gap: 2rem;
-    margin: 1rem 0 2rem;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 1.1rem;
+    margin: 0 0 1.75rem;
+    font-family: var(--serif);
+    font-size: 1.3rem;
+  }
+
+  .pos {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .plural {
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  .plural b {
+    color: var(--ink);
+  }
+
+  .etym {
+    margin: 0 0 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .label,
+  .field {
+    font-family: system-ui, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-right: 0.5em;
+  }
+
+  .senses {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: sense;
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    line-height: 1.55;
+  }
+
+  .senses li {
+    counter-increment: sense;
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .senses li::before {
+    content: counter(sense);
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .source {
+    margin: 1.5rem 0 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  /* A column of half-square-triangle patches in the logo's colors, with a stitched edge. */
+  /* The track takes no height of its own, so the seam just runs the length of the text beside it. */
+  .seam-track {
+    position: relative;
+    align-self: stretch;
+    width: 30px;
+  }
+
+  .seam {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    gap: 3px;
+    align-content: start;
+    overflow: hidden;
+    padding: 0 3px;
+    border-left: 1px dashed var(--muted);
+    border-right: 1px dashed var(--muted);
+  }
+
+  .seam span {
+    display: block;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, var(--a) 50%, var(--b) 50%);
+  }
+
+  .seam span:nth-child(even) {
+    background: linear-gradient(45deg, var(--a) 50%, var(--b) 50%);
+  }
+
+  .why {
+    padding-top: 0.5rem;
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    line-height: 1.65;
+  }
+
+  .why p {
+    margin: 0 0 1.1rem;
+  }
+
+  .why p:last-child {
+    font-style: italic;
+    font-size: 1.35rem;
+    color: var(--accent);
+  }
+
+  .kicker,
+  .section-label {
+    font-family: system-ui, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 1.25rem;
+  }
+
+  /* ---- Profile ---- */
+  .profile,
+  .thesis {
+    padding: 2.5rem 0 1rem;
+    border-top: 1px solid var(--ink);
+  }
+
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
   }
 
   .portrait {
-    flex: none;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
+    width: 100%;
+    aspect-ratio: 1;
     object-fit: cover;
+    border-radius: var(--radius);
   }
 
-  /* The page title stays for screen readers but isn't shown. */
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
+  .profile-main {
+    max-width: 44rem;
+    font-size: 1.1rem;
+    line-height: 1.7;
   }
 
-  .lede {
-    font-size: 1.35rem;
-    line-height: 1.55;
+  .profile-main p {
+    margin: 0 0 1.1rem;
+  }
+
+  .name {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    line-height: 1;
+    margin: 0 0 0.6rem;
+  }
+
+  .role {
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  .lifecycle {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin: 2.75rem 0 2.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .lifecycle > li {
+    padding: 1rem 1.25rem 0.5rem;
+    border-top: 3px solid var(--accent);
+    border-left: 1px solid var(--line);
+  }
+
+  .lifecycle > li:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .step {
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+
+  .lifecycle h4 {
+    margin: 0.2rem 0 0.6rem;
+    font-size: 1.05rem;
+  }
+
+  .lifecycle ul {
     margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .lifecycle ul li {
+    margin-bottom: 0.35rem;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 1.5rem 2.5rem;
+    margin: 0 0 2rem;
+  }
+
+  .facts dt {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .facts dd {
+    margin: 0 0 0.25rem;
+    line-height: 1.45;
+  }
+
+  /* ---- Thesis ---- */
+  .thesis {
+    margin-top: 2rem;
+  }
+
+  .tenets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .numeral {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    line-height: 1;
+    color: var(--accent);
+  }
+
+  .tenets h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.6rem;
+    margin: 0.5rem 0 0.75rem;
+  }
+
+  .tenets p {
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .guide-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.6rem;
+    margin: 3.5rem 0 1rem;
+  }
+
+  .guide {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .guide a {
+    display: block;
+    height: 100%;
+    padding: 1.25rem 1.35rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+
+  .guide a:hover {
+    border-color: var(--accent);
+  }
+
+  .guide-name {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 650;
+    color: var(--accent);
+  }
+
+  .guide-text {
+    font-size: 0.97rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  /* ---- Smaller screens ---- */
+  @media (max-width: 900px) {
+    .meaning {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    /* The seam turns into a horizontal strip between the two halves. */
+    .seam-track {
+      width: auto;
+      height: 30px;
+    }
+
+    .seam {
+      grid-auto-flow: column;
+      justify-content: start;
+      padding: 3px 0;
+      border: 0;
+      border-top: 1px dashed var(--muted);
+      border-bottom: 1px dashed var(--muted);
+      overflow: hidden;
+    }
+
+    .tenets,
+    .guide {
+      grid-template-columns: 1fr;
+    }
+
+    .lifecycle {
+      grid-template-columns: repeat(2, 1fr);
+      row-gap: 1.25rem;
+    }
+
+    .lifecycle > li:nth-child(3) {
+      border-left: 0;
+      padding-left: 0;
+    }
   }
 
   @media (max-width: 640px) {
-    .hero {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1.25rem;
+    .profile-grid {
+      grid-template-columns: 1fr;
     }
 
     .portrait {
-      width: 160px;
-      height: 160px;
+      max-width: 220px;
+    }
+
+    .lifecycle {
+      grid-template-columns: 1fr;
+    }
+
+    .lifecycle > li {
+      border-left: 0;
+      padding-left: 0;
     }
   }
 </style>
