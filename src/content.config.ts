@@ -22,6 +22,12 @@ const buildings = defineCollection({
       bedrooms: z.number().int().nonnegative(),
       bathrooms: z.number().nonnegative(), // 2.5 = two full baths and a half bath
       stories: z.number().positive(), // above-grade floors (count a tower or tall attic); sets homepage size
+      // Overall height in feet, when known. Sets homepage size more precisely than stories alone.
+      height: z.number().positive().optional(),
+      // Number of homes, for apartment buildings.
+      units: z.number().int().positive().optional(),
+      // Shown under the specs. Defaults to saying they're estimated from the floor plans.
+      specsNote: z.string().default('Specs are estimates based on the floor plans.'),
       squareFeet: z.number().positive(),
       lotWidth: z.number().positive(), // feet
       lotDepth: z.number().positive(), // feet

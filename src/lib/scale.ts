@@ -15,13 +15,14 @@ const ROOF_AND_BASE = 10; // feet for roof, foundation, and parapets
 
 interface Sized {
   stories: number;
+  height?: number; // feet; estimated from stories when missing
   lotWidth: number;
   lotDepth: number;
 }
 
 /** Relative on-screen width for a building's image (arbitrary units; compare between buildings). */
-export function displaySize({ stories, lotWidth, lotDepth }: Sized): number {
-  const height = stories * FLOOR_HEIGHT + ROOF_AND_BASE;
+export function displaySize({ stories, height: knownHeight, lotWidth, lotDepth }: Sized): number {
+  const height = knownHeight ?? stories * FLOOR_HEIGHT + ROOF_AND_BASE;
   const sceneWidth = (lotWidth + lotDepth) * Math.cos(Math.PI / 6); // isometric projection of the lot
   const pixelsPerFoot = height ** (EXPONENT - 1); // compress: taller buildings get fewer px per foot
   return sceneWidth * pixelsPerFoot;

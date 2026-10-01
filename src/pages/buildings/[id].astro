@@ -20,8 +20,10 @@ const { data } = Astro.props.building;
 const facts: Array<[string, string]> = [
   ['Style', data.style],
   ['Location', data.location],
-  ['Bedrooms', String(data.bedrooms)],
-  ['Bathrooms', String(data.bathrooms)],
+  ...(data.units ? ([['Units', data.units.toLocaleString('en-US')]] as Array<[string, string]>) : []),
+  ['Stories', String(data.stories)],
+  ['Bedrooms', data.bedrooms.toLocaleString('en-US')],
+  ['Bathrooms', data.bathrooms.toLocaleString('en-US')],
   ['Square footage', formatSquareFeet(data.squareFeet)!],
   ['Lot', formatLot(data.lotWidth, data.lotDepth)],
   ['Type', data.type],
@@ -96,7 +98,7 @@ const planMax = widest[0]?.width ?? 0;
           ))
         }
       </dl>
-      <p class="note">Specs are estimates based on the floor plans.</p>
+      <p class="note">{data.specsNote}</p>
       <p class="description">{data.description}</p>
     </aside>
   </div>
