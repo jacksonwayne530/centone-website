@@ -443,3 +443,64 @@ body.full-bleed main {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
+
+/* Technical drawings: an SVG on a paper-colored sheet (the same in light and dark mode), with an
+   optional numbered legend that matches the callouts in the drawing. */
+.prose figure.drawing img {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: clamp(0.75rem, 3vw, 1.75rem);
+  background: #f5f0e6;
+  border-radius: var(--radius);
+}
+
+.prose .legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 0.85rem 1.75rem;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: callout;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.prose .legend li {
+  counter-increment: callout;
+  position: relative;
+  margin: 0;
+  padding-left: 2.2rem;
+}
+
+/* Numbered like the green callouts in the drawing. */
+.prose .legend li::before {
+  content: counter(callout);
+  position: absolute;
+  left: 0;
+  top: 0.05rem;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 50%;
+  background: #2f5d50;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.prose .legend .layer {
+  display: inline-block;
+  margin: 0 0.3rem 0 0.1rem;
+  padding: 0 0.4rem;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 0.1em;
+}
