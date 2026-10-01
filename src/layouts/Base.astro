@@ -32,6 +32,10 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Script face for the header tagline. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet" />
     <title>{fullTitle}</title>
   </head>
   <body class:list={{ 'full-bleed': fullBleed, wide }}>
@@ -41,7 +45,7 @@ const nav = [
           <Image src={logo} alt="" width={128} height={128} class="logo" loading="eager" />
           <span>Centone</span>
         </a>
-        <span class="tagline">A catalog of well-designed buildings</span>
+        <span class="tagline">Only the good stuff</span>
         <nav class="site-nav" aria-label="Main">
           {
             nav.map(({ href, label, active }) => (

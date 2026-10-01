@@ -120,8 +120,11 @@ body.full-bleed main {
 }
 
 .tagline {
-  color: var(--muted);
-  font-size: 1.25rem;
+  font-family: 'Yellowtail', 'Snell Roundhand', cursive;
+  color: var(--accent);
+  font-size: 1.9rem;
+  line-height: 1;
+  transform: rotate(-4deg) translateY(0.1em);
 }
 
 .site-nav {
