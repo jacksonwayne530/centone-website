@@ -1,7 +1,8 @@
 ---
 // Categories sit around a disc seen in perspective: the front of the disc (bottom) is closer, so
-// those categories draw larger. Drag anywhere on the disc to spin it. Clicking a category opens a
-// centered window listing its actions; each action expands to show what it means and examples.
+// those categories draw larger. Drag anywhere on the disc to spin it. Clicking a category hides the
+// disc and flies its bubble to the top left, with the category's actions laid out beside it like an
+// essay; each action expands to show what it means and examples. The X brings the disc back.
 // Content lives in src/content/roadmap.yaml.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
@@ -49,7 +50,7 @@ const DOTS = 48;
             class="node"
             data-open={c.id}
             data-angle={baseAngle(i)}
-            aria-haspopup="dialog"
+            aria-controls={`focus-${c.id}`}
             style={`${place(baseAngle(i))}; --c: ${c.data.color}`}
           >
             <span class="disc">
@@ -63,47 +64,52 @@ const DOTS = 48;
 
   {
     categories.map((c) => (
-      <dialog class="panel" id={`panel-${c.id}`} data-category={c.id} aria-labelledby={`title-${c.id}`} style={`--c: ${c.data.color}`}>
-        <div class="panel-head">
-          <div>
-            <p class="panel-kicker">Roadmap</p>
-            <h2 id={`title-${c.id}`}>{c.data.name}</h2>
-            <p class="panel-summary">{c.data.summary}</p>
-          </div>
-          <button type="button" class="close" data-close aria-label="Close">
-            ×
-          </button>
+      <section class="focus" id={`focus-${c.id}`} data-category={c.id} aria-labelledby={`title-${c.id}`} style={`--c: ${c.data.color}`} hidden>
+        <div class="focus-bubble" aria-hidden="true">
+          <span class="disc">
+            <span class="node-name">{c.data.name}</span>
+          </span>
         </div>
-        <ol class="actions">
-          {c.data.actions.map((a, i) => (
-            <li>
-              <details class="action">
-                <summary>
-                  <span class="num">{i + 1}</span>
-                  <span class="action-text">
-                    <span class="action-title">{a.title}</span>
-                    <span class="action-summary">{a.summary}</span>
-                  </span>
-                  <span class="chevron" aria-hidden="true" />
-                </summary>
-                <div class="action-body">
-                  <p>{a.detail}</p>
-                  {a.examples.length > 0 && (
-                    <>
-                      <p class="examples-label">In practice</p>
-                      <ul class="examples">
-                        {a.examples.map((e) => (
-                          <li>{e}</li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
-                </div>
-              </details>
-            </li>
-          ))}
-        </ol>
-      </dialog>
+
+        <button type="button" class="close" data-close aria-label="Back to the roadmap">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <article class="focus-body">
+          <p class="panel-kicker">Roadmap</p>
+          <h2 id={`title-${c.id}`}>{c.data.name}</h2>
+          <p class="panel-summary">{c.data.summary}</p>
+          <ol class="actions">
+            {c.data.actions.map((a, i) => (
+              <li>
+                <details class="action">
+                  <summary>
+                    <span class="num">{i + 1}</span>
+                    <span class="action-text">
+                      <span class="action-title">{a.title}</span>
+                      <span class="action-summary">{a.summary}</span>
+                    </span>
+                    <span class="chevron" aria-hidden="true" />
+                  </summary>
+                  <div class="action-body">
+                    <p>{a.detail}</p>
+                    {a.examples.length > 0 && (
+                      <>
+                        <p class="examples-label">In practice</p>
+                        <ul class="examples">
+                          {a.examples.map((e) => (
+                            <li>{e}</li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                  </div>
+                </details>
+              </li>
+            ))}
+          </ol>
+        </article>
+      </section>
     ))
   }
 </Base>
@@ -234,32 +240,66 @@ const DOTS = 48;
   }).observe(stage);
   render();
 
-  // ---- Category windows ----
-  const panels = new Map(
-    [...document.querySelectorAll<HTMLDialogElement>('dialog.panel')].map((d) => [d.dataset.category!, d]),
+  // ---- Category focus view ----
+  // Opening hides the disc and flies the bubble from its spot on the disc to the top left (a FLIP
+  // animation); closing flies it back.
+  const roadmap = document.querySelector<HTMLElement>('.roadmap')!;
+  const focuses = new Map(
+    [...document.querySelectorAll<HTMLElement>('section.focus')].map((f) => [f.dataset.category!, f]),
   );
+  const nodeFor = (id: string) => document.querySelector<HTMLButtonElement>(`.node[data-open="${id}"]`);
+  let current: string | null = null;
+
+  function fly(el: Element, from: DOMRect, duration = 520) {
+    if (reduceMotion) return;
+    const to = el.getBoundingClientRect();
+    if (!to.width) return;
+    el.animate(
+      [
+        { transformOrigin: 'top left', transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width})` },
+        { transformOrigin: 'top left', transform: 'none' },
+      ],
+      { duration, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' },
+    );
+  }
 
   function open(id: string, updateHash = true) {
-    const panel = panels.get(id);
-    if (!panel) return;
-    panels.forEach((p) => p.open && p.close());
-    panel.showModal();
-    panel.scrollTop = 0;
+    const focus = focuses.get(id);
+    if (!focus) return;
+    const from = roadmap.hidden ? null : nodeFor(id)?.querySelector('.disc')?.getBoundingClientRect();
+    roadmap.hidden = true;
+    // Use the wide page layout so the bubble lines up under the logo.
+    document.body.classList.add('wide');
+    focuses.forEach((f) => (f.hidden = f !== focus));
+    current = id;
+    window.scrollTo(0, 0);
+    if (from) fly(focus.querySelector('.focus-bubble .disc')!, from);
+    focus.querySelector<HTMLButtonElement>('[data-close]')!.focus({ preventScroll: true });
     if (updateHash) history.replaceState(null, '', `#${id}`);
   }
 
-  nodes.forEach((btn) => btn.addEventListener('click', () => open(btn.dataset.open!)));
+  function close() {
+    if (!current) return;
+    const focus = focuses.get(current)!;
+    window.scrollTo(0, 0);
+    const from = focus.querySelector('.focus-bubble .disc')!.getBoundingClientRect();
+    focus.hidden = true;
+    document.body.classList.remove('wide');
+    roadmap.hidden = false;
+    render();
+    const node = nodeFor(current);
+    if (node) {
+      fly(node.querySelector('.disc')!, from, 450);
+      node.focus({ preventScroll: true });
+    }
+    current = null;
+    history.replaceState(null, '', location.pathname);
+  }
 
-  panels.forEach((panel) => {
-    panel.querySelector('[data-close]')?.addEventListener('click', () => panel.close());
-    // Clicking the dimmed backdrop (outside the window) closes it.
-    panel.addEventListener('click', (e) => {
-      if (e.target === panel) panel.close();
-    });
-    panel.addEventListener('close', () => {
-      if (location.hash === `#${panel.dataset.category}`) history.replaceState(null, '', location.pathname);
-      document.querySelector<HTMLButtonElement>(`.node[data-open="${panel.dataset.category}"]`)?.focus({ preventScroll: true });
-    });
+  nodes.forEach((btn) => btn.addEventListener('click', () => open(btn.dataset.open!)));
+  focuses.forEach((f) => f.querySelector('[data-close]')!.addEventListener('click', close));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && current) close();
   });
 
   // Deep links like /roadmap/#parking open that category.
@@ -437,55 +477,71 @@ const DOTS = 48;
     }
   }
 
-  /* ---- Category window (centered) ---- */
-
-  .panel {
-    margin: auto;
-    width: min(700px, calc(100vw - 2rem));
-    max-height: min(85dvh, 900px);
-    padding: 0;
-    border: 1.5px solid color-mix(in srgb, var(--c) 55%, var(--line));
-    border-radius: 14px;
-    background: var(--bg);
-    color: var(--ink);
-    box-shadow: 0 24px 70px rgb(0 0 0 / 0.25);
-    overflow-y: auto;
-    overscroll-behavior: contain;
+  .roadmap[hidden],
+  .focus[hidden] {
+    display: none;
   }
 
-  .panel[open] {
-    animation: pop-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* ---- Category focus view: bubble top left, actions beside it, X top right ---- */
+
+  .focus {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr) auto;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
   }
 
-  .panel::backdrop {
-    background: rgb(0 0 0 / 0.35);
-    backdrop-filter: blur(2px);
+  .focus-bubble {
+    position: sticky;
+    top: 1.5rem;
+    width: 220px;
+    height: 220px;
   }
 
-  @keyframes pop-in {
+  /* The bubble is larger here and glows more. */
+  .focus-bubble .disc {
+    border-width: 3px;
+    animation: glow 3.2s ease-in-out infinite alternate;
+  }
+
+  .focus-bubble .node-name {
+    font-size: 1.6rem;
+    padding: 0 0.75rem;
+  }
+
+  @keyframes glow {
+    from {
+      box-shadow:
+        0 0 26px 6px color-mix(in srgb, var(--c) 45%, transparent),
+        inset 0 0 18px color-mix(in srgb, var(--c) 32%, transparent);
+    }
+    to {
+      box-shadow:
+        0 0 44px 12px color-mix(in srgb, var(--c) 60%, transparent),
+        inset 0 0 24px color-mix(in srgb, var(--c) 42%, transparent);
+    }
+  }
+
+  .focus-body {
+    grid-column: 2;
+    grid-row: 1;
+    max-width: 60rem;
+    padding-top: 0.5rem;
+    animation: rise 0.45s 0.1s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  }
+
+  @keyframes rise {
     from {
       opacity: 0;
-      transform: scale(0.96);
+      transform: translateY(14px);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .panel[open] {
+    .focus-bubble .disc,
+    .focus-body {
       animation: none;
     }
-  }
-
-  .panel-head {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1.5rem 1.5rem 1.25rem;
-    background: var(--bg);
-    border-bottom: 1px solid var(--line);
   }
 
   .panel-kicker {
@@ -497,49 +553,66 @@ const DOTS = 48;
     font-weight: 700;
   }
 
-  .panel h2 {
-    margin: 0.2rem 0 0.4rem;
-    font-size: 1.8rem;
+  .focus-body h2 {
+    margin: 0.3rem 0 0.6rem;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    line-height: 1.05;
   }
 
   .panel-summary {
-    margin: 0;
+    margin: 0 0 1.5rem;
     color: var(--muted);
-    line-height: 1.5;
+    font-size: 1.2rem;
+    line-height: 1.55;
   }
 
+  /* A big, obvious X that stays in reach while scrolling. */
   .close {
-    flex: none;
-    width: 2.25rem;
-    height: 2.25rem;
+    grid-column: 3;
+    grid-row: 1;
+    position: sticky;
+    top: 1.5rem;
+    width: 3.25rem;
+    height: 3.25rem;
     border-radius: 50%;
-    border: 1px solid var(--line);
-    background: none;
+    border: 2px solid var(--ink);
+    background: var(--bg);
     color: var(--ink);
-    font-size: 1.4rem;
+    font-size: 2rem;
     line-height: 1;
     cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition:
+      background 0.2s,
+      color 0.2s,
+      transform 0.2s;
   }
 
-  .close:hover {
-    background: var(--line);
+  .close:hover,
+  .close:focus-visible {
+    background: var(--ink);
+    color: var(--bg);
+    transform: rotate(90deg);
+    outline: none;
   }
 
   .actions {
     list-style: none;
     margin: 0;
-    padding: 0.5rem 1.5rem 1.5rem;
+    padding: 0;
+    border-top: 1px solid var(--line);
   }
 
-  .actions li + li {
+  .actions > li + li {
     border-top: 1px solid var(--line);
   }
 
   .action summary {
     display: flex;
     align-items: flex-start;
-    gap: 0.9rem;
-    padding: 1rem 0;
+    gap: 1rem;
+    padding: 1.25rem 0;
     cursor: pointer;
     list-style: none;
   }
@@ -569,13 +642,14 @@ const DOTS = 48;
 
   .action-title {
     font-weight: 650;
+    font-size: 1.2rem;
     line-height: 1.3;
   }
 
   .action-summary {
     color: var(--muted);
-    font-size: 0.92rem;
-    line-height: 1.45;
+    font-size: 1rem;
+    line-height: 1.5;
   }
 
   .chevron {
@@ -594,8 +668,9 @@ const DOTS = 48;
   }
 
   .action-body {
-    padding: 0 0 1.1rem 2.6rem;
-    line-height: 1.6;
+    padding: 0 0 1.4rem 2.75rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
   }
 
   .action-body p {
@@ -623,12 +698,34 @@ const DOTS = 48;
   }
 
   @media (max-width: 700px) {
-    .panel-head {
-      padding: 1.25rem 1.1rem 1rem;
+    .focus {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
     }
 
-    .actions {
-      padding: 0.25rem 1.1rem 1.25rem;
+    .focus-bubble {
+      position: relative;
+      width: 130px;
+      height: 130px;
+    }
+
+    .focus-bubble .node-name {
+      font-size: 1.05rem;
+    }
+
+    /* Pinned to the corner of the screen so it's always in reach. */
+    .close {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 10;
+      box-shadow: 0 4px 16px rgb(0 0 0 / 0.25);
+    }
+
+    .focus-body {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      padding-top: 0;
     }
 
     .action-body {
