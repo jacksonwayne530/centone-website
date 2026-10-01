@@ -7,6 +7,18 @@ import portrait from '../content/about/jackson.jpg';
 const quilt = ['#7d4d68', '#b8892a', '#165870', '#e57a59', '#c0674a', '#b9e2d0', '#f3ecd0', '#d9c8e4'];
 const patches = Array.from({ length: 48 }, (_, i) => [quilt[(i * 3) % quilt.length], quilt[(i * 3 + (i % 2 ? 3 : 5)) % quilt.length]]);
 
+const places = [
+  'Phnom Penh, Cambodia',
+  'Mexico City, Mexico',
+  'Nairobi, Kenya',
+  'Redding, California',
+  'Palo Alto, California',
+  'Olympia, Washington',
+  'Salt Lake City, Utah',
+  'Phoenix, Arizona',
+  'Rehoboth Beach, Delaware',
+];
+
 const lifecycle = [
   { phase: 'Find & plan', tasks: ['Site selection', 'Financial pro formas', 'Site planning'] },
   { phase: 'Entitle & fund', tasks: ['Entitlements', 'Contractor bids', 'Construction financing'] },
@@ -111,9 +123,10 @@ const guide = [
         <p>
           He came to development through finance. After studying finance at BYU, he worked as an
           analyst at Elevation Venture Capital and in technology investment banking at Cohen &amp;
-          Company. Over the years a passion for urban design and architecture took hold. Living in
-          Phnom Penh, Mexico City, and Nairobi, and in cities across the United States, he has seen
-          what different cities do well and documented the strengths each one offers.
+          Company. Over the years a passion for urban design and architecture took hold. Growing up in
+          Northern California and the Pacific Northwest, then living in Phnom Penh, Mexico City, and
+          Nairobi, and in cities across the United States, he has seen what different cities do well
+          and documented the strengths each one offers.
         </p>
       </div>
     </div>
@@ -147,7 +160,7 @@ const guide = [
       </div>
       <div>
         <dt>Has lived in</dt>
-        <dd>Phnom Penh · Mexico City · Nairobi · cities across the US</dd>
+        {places.map((p) => <dd>{p}</dd>)}
       </div>
       <div>
         <dt>Home</dt>
