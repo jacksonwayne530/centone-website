@@ -87,8 +87,12 @@ const guide = [
 
   <!-- Profile -->
   <section class="profile" aria-labelledby="profile-name">
-    <h2 class="section-label">About me</h2>
     <div class="profile-grid">
+      <h2 class="section-label profile-label">About me</h2>
+      <div class="profile-head">
+        <h3 id="profile-name" class="name">Jackson Wayne</h3>
+        <p class="role">Development Finance Analyst, Ocean Atlantic · Rehoboth Beach, Delaware</p>
+      </div>
       <Image
         src={portrait}
         alt="Jackson Wayne"
@@ -98,8 +102,6 @@ const guide = [
         loading="eager"
       />
       <div class="profile-main">
-        <h3 id="profile-name" class="name">Jackson Wayne</h3>
-        <p class="role">Development Finance Analyst, Ocean Atlantic · Rehoboth Beach, Delaware</p>
         <p>
           Jackson works on real estate development at Ocean Atlantic, a family-office developer, on
           commercial, mixed-use, multifamily, master-planned community, and affordable workforce
@@ -229,12 +231,13 @@ const guide = [
   }
 
   .headword {
+    margin-top: -0.5rem;
     font-family: var(--serif);
     font-weight: 400;
     font-size: clamp(3.75rem, 10vw, 7.5rem);
     line-height: 0.95;
     letter-spacing: -0.02em;
-    margin: 0 0 1rem;
+    margin-bottom: 1rem;
   }
 
   .pron {
@@ -344,8 +347,9 @@ const guide = [
     background: linear-gradient(45deg, var(--a) 50%, var(--b) 50%);
   }
 
+  /* Starts a little lower than the headword, so the big word leads. */
   .why {
-    padding-top: 0.5rem;
+    padding-top: 2.25rem;
     font-family: var(--serif);
     font-size: 1.2rem;
     line-height: 1.65;
@@ -364,7 +368,7 @@ const guide = [
   .kicker,
   .section-label {
     font-family: system-ui, sans-serif;
-    font-size: 0.78rem;
+    font-size: 0.95rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -378,11 +382,25 @@ const guide = [
     border-top: 1px solid var(--ink);
   }
 
+  /* Label and name share the first row (baseline-aligned); photo and bio share the second. */
   .profile-grid {
     display: grid;
     grid-template-columns: 280px minmax(0, 1fr);
-    gap: clamp(1.5rem, 4vw, 3.5rem);
+    gap: 1.5rem clamp(1.5rem, 4vw, 3.5rem);
     align-items: start;
+  }
+
+  .profile-label,
+  .profile-head {
+    align-self: baseline;
+  }
+
+  .profile-label {
+    margin: 0;
+  }
+
+  .profile-head .role {
+    margin: 0;
   }
 
   .portrait {
@@ -392,7 +410,8 @@ const guide = [
     border-radius: var(--radius);
   }
 
-  .profile-main {
+  .profile-main,
+  .profile-head {
     max-width: 44rem;
     font-size: 1.1rem;
     line-height: 1.7;
@@ -598,6 +617,14 @@ const guide = [
   @media (max-width: 640px) {
     .profile-grid {
       grid-template-columns: 1fr;
+    }
+
+    .profile-head {
+      order: 1;
+    }
+
+    .profile-main {
+      order: 2;
     }
 
     .portrait {
