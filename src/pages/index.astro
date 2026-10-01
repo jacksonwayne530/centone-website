@@ -22,6 +22,7 @@ const sizes = relativeSizes(buildings.map((b) => b.data));
           <div
             data-canvas-item
             data-size={sizes[i].toFixed(3)}
+            data-tower={data.stories >= 8 ? 'true' : undefined}
             data-style={data.style}
             data-beds={data.bedrooms}
             data-baths={data.bathrooms}

@@ -3,7 +3,7 @@
 //
 // - Items (children with [data-canvas-item]) are packed organically, like the Apple Watch app
 //   grid: each is treated as an oval matching its drawing, the biggest (data-size) goes in the
-//   middle, and every next one takes the free spot nearest the center that sits exactly one gap
+//   middle (towers, data-tower, go along the back edge instead), and every next one takes the free spot nearest the center that sits exactly one gap
 //   from its neighbors. The result is a loose honeycomb with even spacing, whatever the sizes.
 // - Drag with mouse or touch; releases keep some momentum.
 // - Scroll wheel / trackpad zooms around the cursor; on touch screens, pinch with two fingers.
@@ -48,8 +48,11 @@
 
   // Organic packing: biggest first at the center, then each oval at the closest free spot
   // (with sideways growth favored) that keeps a gap of `gap` from every oval already placed.
-  function pack(shapes: Array<{ rx: number; ry: number }>, gap: number): Array<{ x: number; y: number }> {
-    const order = shapes.map((_, i) => i).sort((a, b) => shapes[b].rx * shapes[b].ry - shapes[a].rx * shapes[a].ry);
+  function pack(shapes: Array<{ rx: number; ry: number; tower?: boolean }>, gap: number): Array<{ x: number; y: number }> {
+    // Towers go last, so they land on the edge rather than front and center.
+    const order = shapes
+      .map((_, i) => i)
+      .sort((a, b) => Number(!!shapes[a].tower) - Number(!!shapes[b].tower) || shapes[b].rx * shapes[b].ry - shapes[a].rx * shapes[a].ry);
     const placed: Oval[] = [];
     const out: Array<{ x: number; y: number }> = [];
     const fits = (o: Oval) =>
@@ -77,7 +80,8 @@
             else lo = mid;
           }
           const cand = { x: dx * hi, y: dy * hi, rx, ry };
-          const score = Math.hypot(cand.x, cand.y * WIDE);
+          // Towers prefer the back (top) edge, where they rise behind the houses like a skyline.
+          const score = Math.hypot(cand.x, cand.y * WIDE) + (shapes[i].tower ? Math.max(0, cand.y) * 4 : 0);
           if (score < bestScore) {
             best = cand;
             bestScore = score;
@@ -187,7 +191,7 @@
       const shapes = items.map((el, i) => {
         const img = el.querySelector('img');
         const aspect = img && img.offsetWidth ? img.offsetHeight / img.offsetWidth : 0.75;
-        return { rx: (sizes[i] * ART_SCALE) / 2, ry: (sizes[i] * aspect * ART_SCALE) / 2 };
+        return { rx: (sizes[i] * ART_SCALE) / 2, ry: (sizes[i] * aspect * ART_SCALE) / 2, tower: el.dataset.tower === 'true' };
       });
       const spots = pack(shapes, GAP);
       // Phones start on the building packed at the center.
