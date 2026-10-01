@@ -504,3 +504,123 @@ body.full-bleed main {
   text-transform: uppercase;
   vertical-align: 0.1em;
 }
+
+/* Three-step version of the cause-and-effect chain. */
+.prose .chain.three {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 720px) {
+  .prose .chain.three {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Stat tiles: a big number with a short explanation under it. */
+.prose .stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+  gap: 1.1rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.prose .stats li {
+  margin: 0;
+  padding-top: 0.6rem;
+  border-top: 2px solid var(--accent);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.prose .stats strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+/* Inline SVG diagrams, colored from the theme so they work in light and dark mode. */
+.prose .diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: inherit;
+}
+
+.prose .diagram .road {
+  fill: none;
+  stroke: color-mix(in srgb, var(--muted) 45%, transparent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.prose .diagram .lane {
+  fill: color-mix(in srgb, var(--muted) 30%, transparent);
+}
+
+.prose .diagram .walk {
+  fill: color-mix(in srgb, var(--muted) 12%, transparent);
+}
+
+.prose .diagram .bike {
+  fill: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.prose .diagram .turn {
+  fill: color-mix(in srgb, #c89b3c 35%, transparent);
+}
+
+.prose .diagram .stripe {
+  stroke: var(--bg);
+  stroke-width: 2;
+  stroke-dasharray: 10 8;
+}
+
+.prose .diagram .route {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 4;
+  stroke-dasharray: 2 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.prose .diagram .node {
+  fill: var(--ink);
+}
+
+.prose .diagram .fence {
+  stroke: #c0392b;
+  stroke-width: 2.5;
+  stroke-dasharray: 5 4;
+}
+
+.prose .diagram text {
+  fill: var(--ink);
+  font-size: 13px;
+}
+
+.prose .diagram text.small {
+  fill: var(--muted);
+  font-size: 11px;
+}
+
+.prose .diagram text.label {
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.prose .diagram .home {
+  fill: var(--ink);
+}
+
+.prose .diagram .store {
+  fill: #c89b3c;
+}

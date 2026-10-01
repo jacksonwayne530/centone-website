@@ -10,6 +10,15 @@ Transportation is the largest source of greenhouse gas emissions in the United S
 
 To be clear from the start, that swap is worth making. The International Council on Clean Transportation's life-cycle analysis, which counts battery manufacturing and the power grid, found that battery-electric cars in the U.S. produce 60 to 68 percent less greenhouse gas over their lifetimes than comparable gasoline cars.[^icct] Every car trip that has to happen should happen in an electric vehicle.
 
+<figure class="graphic">
+  <p class="g-title">Lifetime greenhouse gas emissions of a new U.S. car</p>
+  <ul class="bars">
+    <li><span>Gasoline car</span><span class="bar-track"><span class="bar" style="--v: 100">100%</span></span></li>
+    <li><span>Battery electric</span><span class="bar-track"><span class="bar accent" style="--v: 36">32–40%</span></span></li>
+  </ul>
+  <figcaption>Including battery manufacturing and the power grid, battery-electric cars produce 60 to 68 percent less over their lifetimes. Source: ICCT.</figcaption>
+</figure>
+
 But that's the problem with treating EVs as the solution: it assumes the car trips have to happen. Most of the damage cars do has nothing to do with what comes out of the tailpipe. An electric car fixes the fuel and leaves everything else about car dependence in place.
 
 ## The climate math doesn't close with EVs alone
@@ -18,9 +27,29 @@ Fleet turnover is slow. Even the most aggressive adoption scenarios leave gasoli
 
 California, the state most committed to EVs, reached the same conclusion. Its 2022 climate plan calls for per-person driving to fall 25 percent below 2019 levels by 2030 and 30 percent by 2045, alongside its zero-emission vehicle mandates.[^carb] The Intergovernmental Panel on Climate Change frames the same idea as "avoid, shift, improve": avoid unnecessary trips, shift the rest to efficient modes, and improve the technology of what remains. It estimates that demand-side strategies like these could cut emissions 40 to 70 percent by 2050 across sectors.[^ipcc]
 
+<figure class="graphic">
+  <p class="g-title">California's goal for miles driven per person (2019 = 100)</p>
+  <ul class="bars">
+    <li><span>2019</span><span class="bar-track"><span class="bar" style="--v: 100">100</span></span></li>
+    <li><span>2030 goal</span><span class="bar-track"><span class="bar accent" style="--v: 75">75</span></span></li>
+    <li><span>2045 goal</span><span class="bar-track"><span class="bar accent" style="--v: 70">70</span></span></li>
+  </ul>
+  <figcaption>The state with the most aggressive EV mandates still plans to cut driving by a quarter. Source: California Air Resources Board, 2022 Scoping Plan.</figcaption>
+</figure>
+
 ## An electric SUV is still an SUV
 
 **Safety.** EVs are heavy. In 2023, the chair of the National Transportation Safety Board warned about the risks. The electric GMC Hummer weighs about 9,000 pounds, and its battery alone weighs about 2,900, roughly a whole Honda Civic. Electric versions of popular models often weigh hundreds or thousands of pounds more than their gasoline twins.[^npr] Size matters as much as weight. The Insurance Institute for Highway Safety found that vehicles with hoods taller than 40 inches are about 45 percent more likely to kill a pedestrian they hit than cars with low, sloped fronts.[^iihs] SUVs and pickups already account for 54 percent of U.S. pedestrian deaths where the vehicle type is known.[^ghsa] Swapping the engine for a battery doesn't change the geometry, the speed, or the street design that kill people. It can make the weight problem worse.
+
+<figure class="graphic">
+  <p class="g-title">How heavy is an electric SUV?</p>
+  <ul class="bars">
+    <li><span>GMC Hummer EV</span><span class="bar-track"><span class="bar low" style="--v: 100">≈ 9,000 lb</span></span></li>
+    <li><span>Its battery alone</span><span class="bar-track"><span class="bar" style="--v: 32">≈ 2,900 lb</span></span></li>
+    <li><span>A Honda Civic</span><span class="bar-track"><span class="bar" style="--v: 32">≈ 2,900 lb</span></span></li>
+  </ul>
+  <figcaption>The Hummer EV's battery weighs about as much as an entire compact car. Source: NTSB chair Jennifer Homendy, via NPR (2023).</figcaption>
+</figure>
 
 **Air pollution.** Exhaust isn't the only thing cars put in the air. Brakes, tires, and road surfaces wear down into fine particles. The OECD projects that this "non-exhaust" pollution will soon overtake tailpipe emissions as the leading source of fine particles from road traffic. It estimates that lighter EVs emit somewhat less of it than comparable gasoline cars, while heavier, long-range EVs emit slightly more.[^oecd] Electrification helps, but it doesn't bring road pollution to zero.
 
@@ -29,6 +58,17 @@ California, the state most committed to EVs, reached the same conclusion. Its 20
 **Traffic.** Congestion doesn't care what powers the car. Adding road capacity induces roughly proportional new driving, whatever's under the hood.[^duranton] A single urban lane moves 600 to 1,600 people an hour in private cars. That same lane moves up to 8,000 as a bus lane, and a two-way protected bike lane moves about 7,500.[^nacto] A city of electric cars has the same traffic, the same parking lots, and the same wide, dangerous roads as a city of gasoline cars.
 
 **Cost.** AAA estimates that owning and operating a new vehicle costs about $11,577 a year.[^aaa] Car dependence makes that cost unavoidable for nearly every household, and it shuts out the people who can't drive at all: kids, many older adults, people with disabilities, and people who can't afford a car. An EV may be cheaper to fuel. It doesn't make driving optional.
+
+<figure class="graphic">
+  <p class="g-title">What electrification doesn't change</p>
+  <ul class="stats">
+    <li><strong>+45%</strong>Likelihood of killing a pedestrian for vehicles with hoods taller than 40 inches</li>
+    <li><strong>54%</strong>Share of U.S. pedestrian deaths caused by SUVs and pickups, where the vehicle is known</li>
+    <li><strong>6×</strong>Mineral inputs for a typical electric car, compared with a conventional one</li>
+    <li><strong>$11,577</strong>Yearly cost of owning and operating a new vehicle</li>
+  </ul>
+  <figcaption>Sources: IIHS; GHSA; IEA; AAA.</figcaption>
+</figure>
 
 ## Why EVs get the attention anyway
 
@@ -41,6 +81,16 @@ The harder work is building places where fewer trips need a car at all. That's a
 ## What the real goal looks like
 
 Using the IPCC's framework, in order of priority:
+
+<figure class="graphic">
+  <p class="g-title">Avoid, shift, improve</p>
+  <ol class="chain three">
+    <li><strong>1 · Avoid</strong>Make trips shorter, so fewer need a car at all.</li>
+    <li><strong>2 · Shift</strong>Move trips to walking, cycling, and transit.</li>
+    <li><strong>3 · Improve</strong>Electrify the trips that still need a vehicle.</li>
+  </ol>
+  <figcaption>The IPCC's order of priority for cutting transport emissions. EVs are step three.</figcaption>
+</figure>
 
 1. **Avoid: make trips shorter.** Allow homes, shops, schools, and jobs near each other. Build [connected street networks](/knowledge/count-the-intersections/) so the corner store is actually around the corner. End parking mandates that spread everything apart.
 2. **Shift: make the alternatives good.** Run frequent buses in dedicated lanes, build connected networks of protected bike lanes, make e-bikes easy to buy and park, and build sidewalks everywhere. Design [streets for 25 mph](/knowledge/three-lanes-25-mph/) so walking and cycling feel safe.

@@ -16,6 +16,28 @@ Intersection density is exactly what it sounds like: how many places streets mee
 
 The difference shows up in the most ordinary trip. In a connected grid, the corner store two blocks away really is two blocks away. In a disconnected pod, the store behind your back fence might be a mile's drive: out the cul-de-sac, down the collector, onto the arterial, and back in. The houses are the same distance apart. The network isn't.
 
+<figure class="graphic diagram">
+  <p class="g-title">Same distance, different network</p>
+  <svg viewBox="0 0 560 300" role="img" aria-label="Two street maps. Left: a connected grid with 25 intersections, where the walk from home to the store is two blocks. Right: a cul-de-sac subdivision with 5 intersections, where the store is just past the back fence but the trip goes out the cul-de-sac, down the collector road, along the arterial, and back in.">
+    <g class="road" stroke-width="9"><line x1="20" y1="20" x2="20" y2="240"/><line x1="20" y1="20" x2="240" y2="20"/><line x1="75" y1="20" x2="75" y2="240"/><line x1="20" y1="75" x2="240" y2="75"/><line x1="130" y1="20" x2="130" y2="240"/><line x1="20" y1="130" x2="240" y2="130"/><line x1="185" y1="20" x2="185" y2="240"/><line x1="20" y1="185" x2="240" y2="185"/><line x1="240" y1="20" x2="240" y2="240"/><line x1="20" y1="240" x2="240" y2="240"/></g>
+    <circle class="node" cx="20" cy="20" r="4"/><circle class="node" cx="20" cy="75" r="4"/><circle class="node" cx="20" cy="130" r="4"/><circle class="node" cx="20" cy="185" r="4"/><circle class="node" cx="20" cy="240" r="4"/><circle class="node" cx="75" cy="20" r="4"/><circle class="node" cx="75" cy="75" r="4"/><circle class="node" cx="75" cy="130" r="4"/><circle class="node" cx="75" cy="185" r="4"/><circle class="node" cx="75" cy="240" r="4"/><circle class="node" cx="130" cy="20" r="4"/><circle class="node" cx="130" cy="75" r="4"/><circle class="node" cx="130" cy="130" r="4"/><circle class="node" cx="130" cy="185" r="4"/><circle class="node" cx="130" cy="240" r="4"/><circle class="node" cx="185" cy="20" r="4"/><circle class="node" cx="185" cy="75" r="4"/><circle class="node" cx="185" cy="130" r="4"/><circle class="node" cx="185" cy="185" r="4"/><circle class="node" cx="185" cy="240" r="4"/><circle class="node" cx="240" cy="20" r="4"/><circle class="node" cx="240" cy="75" r="4"/><circle class="node" cx="240" cy="130" r="4"/><circle class="node" cx="240" cy="185" r="4"/><circle class="node" cx="240" cy="240" r="4"/>
+    <path class="route" d="M102 150V130H157V112"/>
+    <path class="home" d="M94 163V155L102 148L110 155V163Z"/>
+    <rect class="store" x="145" y="88" width="24" height="18" rx="2"/>
+    <text x="0" y="272" class="label">CONNECTED GRID</text>
+    <text x="0" y="290" class="small">25 intersections · a 2-block walk</text>
+    <g class="road"><path d="M300 240H560" stroke-width="14"/><path d="M330 240V50H520M330 110H400M330 170H400M450 50V120M480 240V192" stroke-width="9"/><circle cx="400" cy="110" r="6" stroke-width="12"/><circle cx="400" cy="170" r="6" stroke-width="12"/><circle cx="450" cy="120" r="6" stroke-width="12"/></g>
+    <circle class="node" cx="330" cy="110" r="4"/><circle class="node" cx="330" cy="170" r="4"/><circle class="node" cx="330" cy="240" r="4"/><circle class="node" cx="450" cy="50" r="4"/><circle class="node" cx="480" cy="240" r="4"/>
+    <line class="fence" x1="448" y1="142" x2="448" y2="206"/>
+    <path class="route" d="M420 170H330V240H480V196"/>
+    <path class="home" d="M416 178V170L424 163L432 170V178Z"/>
+    <rect class="store" x="468" y="168" width="24" height="18" rx="2"/>
+    <text x="300" y="272" class="label">CUL-DE-SAC POD</text>
+    <text x="300" y="290" class="small">5 intersections · a drive all the way around</text>
+  </svg>
+  <figcaption>The home and the store are about the same distance apart in both. In the pod, the back fence (red) blocks the direct route, so the trip goes out the cul-de-sac, down the collector, along the arterial, and back in. Dots mark intersections.</figcaption>
+</figure>
+
 ## Why it matters
 
 ### People walk where the streets connect
@@ -28,9 +50,29 @@ Connected networks make walking trips shorter and give people more route choices
 
 The same research found that intersection density and the share of four-way intersections each have a measurable effect on how much people drive. In Ewing and Cervero's weighted averages, each carried an elasticity of about −0.12 for vehicle miles traveled. That's three times the effect of household density, which came in at −0.04.[^ewing2017] Density gets most of the attention in debates about driving. Street design quietly does more.
 
+<figure class="graphic">
+  <p class="g-title">How much less people drive, per 10% increase</p>
+  <ul class="bars">
+    <li><span>Intersection density</span><span class="bar-track"><span class="bar accent" style="--v: 100">−1.2%</span></span></li>
+    <li><span>Share of 4-way intersections</span><span class="bar-track"><span class="bar accent" style="--v: 100">−1.2%</span></span></li>
+    <li><span>Household density</span><span class="bar-track"><span class="bar" style="--v: 33">−0.4%</span></span></li>
+  </ul>
+  <figcaption>Change in vehicle miles traveled for a 10% increase in each factor, from weighted-average elasticities of −0.12, −0.12, and −0.04. Source: Ewing &amp; Cervero (2010; restated 2017).</figcaption>
+</figure>
+
 ### Streets get safer
 
 Wesley Marshall and Norman Garrick studied 11 years of crash data, more than 230,000 crashes, across 24 California cities. Denser street networks with more intersections per square mile were associated with fewer crashes at every level of severity: total, severe-injury, and fatal. Moving from average to the highest intersection density was associated with about 30 percent fewer total crashes.[^marshall2011] In their earlier comparison of the same cities, the safer cities had far more intersections per square mile and about a third as many traffic deaths per capita as the most dangerous ones.[^marshall2010]
+
+<figure class="graphic">
+  <p class="g-title">Connected streets and crashes in 24 California cities</p>
+  <ul class="stats">
+    <li><strong>230,000+</strong>Crashes studied over 11 years</li>
+    <li><strong>~30%</strong>Fewer total crashes going from average to the highest intersection density</li>
+    <li><strong>~⅓</strong>The traffic deaths per capita in the safest cities, compared with the most dangerous</li>
+  </ul>
+  <figcaption>Sources: Marshall &amp; Garrick (2010, 2011).</figcaption>
+</figure>
 
 That may seem backwards, since intersections are where cars collide. But connected networks spread traffic across many small streets, keeping speeds low. Disconnected networks funnel everything onto a few wide, fast arterials. Marshall and Garrick found that more travel lanes on major streets went with *more* crashes. That's a big part of why this site also argues that [city streets rarely need more than three lanes](/knowledge/three-lanes-25-mph/).
 
@@ -49,6 +91,17 @@ If connectivity matters this much, why isn't it at the center of land-use policy
 **The rules were written against the grid.** In the late 1930s, the Federal Housing Administration's guidance for developers seeking federally insured mortgages presented curving streets and cul-de-sacs as good design and the traditional grid as bad.[^fha1938] What began as advice became the national default. Jane Jacobs was already pushing back in 1961, with a whole chapter of *The Death and Life of Great American Cities* titled "The Need for Small Blocks."[^jacobs1961]
 
 **It's easy to lose politically.** In 2009, Virginia began requiring new subdivision streets to meet a minimum "connectivity index" before the state would take over their maintenance, a first-of-its-kind rule.[^ggwash] Home builders fought it from the start.[^bizsense] After the legislature ordered a review, the state dropped the index entirely, effective January 2012. What remained was a much weaker rule requiring extra external connections only for large subdivisions.[^vdot2011]
+
+<figure class="graphic">
+  <p class="g-title">How the grid lost, and keeps losing</p>
+  <ol class="timeline">
+    <li class="key"><span class="year">1938</span><span>FHA's <em>Planning Profitable Neighborhoods</em> promotes curving streets and cul-de-sacs over the grid for federally insured developments.</span></li>
+    <li><span class="year">1961</span><span>Jane Jacobs argues for "The Need for Small Blocks" in <em>The Death and Life of Great American Cities</em>.</span></li>
+    <li class="key"><span class="year">1994</span><span>Street-network sprawl in new U.S. development peaks.</span></li>
+    <li><span class="year">2009</span><span>Virginia requires new subdivision streets to meet a connectivity index.</span></li>
+    <li class="key"><span class="year">2012</span><span>After pushback from home builders, Virginia drops the index.</span></li>
+  </ol>
+</figure>
 
 ## What to do about it
 
