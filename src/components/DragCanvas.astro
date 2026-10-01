@@ -1,10 +1,10 @@
 ---
 // A draggable canvas in the style of the Apple Watch app grid.
 //
-// - Items (children with [data-canvas-item]) are laid out in balanced, slightly staggered rows
-//   with even gaps between them. Bigger items (data-size) sit toward the middle. Tall items
-//   (data-tall, e.g. towers) take the bottom-left spots instead and rise up past the row above,
-//   so one skyscraper doesn't push the rows apart.
+// - Items (children with [data-canvas-item]) are packed organically, like the Apple Watch app
+//   grid: each is treated as an oval matching its drawing, the biggest (data-size) goes in the
+//   middle, and every next one takes the free spot nearest the center that sits exactly one gap
+//   from its neighbors. The result is a loose honeycomb with even spacing, whatever the sizes.
 // - Drag with mouse or touch; releases keep some momentum.
 // - Scroll wheel / trackpad zooms around the cursor; on touch screens, pinch with two fingers.
 // - Items shrink the farther they are from the middle of the screen (the fisheye effect).
@@ -20,9 +20,9 @@
 
 <script>
   // Tuning
-  const GAP_X = 0.12; // space between neighbors in a row, as a fraction of a median item's width
-  const GAP_Y = 0.04; // space between rows, same units
-  const STAGGER = 0.2; // alternate rows shift by this much, so the layout doesn't look like a table
+  const GAP = 0.1; // space between neighboring buildings, as a fraction of a median building's width
+  const ART_SCALE = 0.85; // buildings draw at this fraction of their box (see FloatingBuilding .art)
+  const WIDE = 1.5; // how strongly the cluster prefers to grow sideways rather than up and down
   const KEEP_VISIBLE = 0.32; // at the pan limit, the outermost item's center stays this far inside the screen (fraction of width/height)
   const FISHEYE_MIN = 0.8; // smallest scale an item shrinks to near the edges (kept mild so sizes stay comparable)
   const FRICTION = 0.94; // momentum decay per frame after release
@@ -33,11 +33,61 @@
   const WHEEL_ZOOM_SPEED = 0.0015; // per pixel of mouse-wheel scroll
   const PINCH_ZOOM_SPEED = 0.01; // per pixel of trackpad pinch (reported as ctrl + wheel)
 
-  // Balanced rows for n items: wider than tall, counts differing by at most one (e.g. 6 → 3+3, 7 → 4+3).
-  function rowCounts(n: number): number[] {
-    const perRow = Math.ceil(Math.sqrt(n * 1.5));
-    const rows = Math.ceil(n / perRow);
-    return Array.from({ length: rows }, (_, r) => Math.floor(n / rows) + (r < n % rows ? 1 : 0));
+  // Distance from a shape's center to its edge in direction (dx, dy). The shape is a "squircle"
+  // (superellipse): squarer than an oval, so it covers the corners of an isometric drawing,
+  // whose outline is closer to a hexagon than an ellipse.
+  const ROUNDNESS = 3; // 2 = ellipse; higher = boxier
+  function ovalReach(rx: number, ry: number, dx: number, dy: number): number {
+    const len = Math.hypot(dx, dy) || 1;
+    const c = Math.abs(dx / len);
+    const s = Math.abs(dy / len);
+    return ((c / rx) ** ROUNDNESS + (s / ry) ** ROUNDNESS) ** (-1 / ROUNDNESS);
+  }
+
+  type Oval = { x: number; y: number; rx: number; ry: number };
+
+  // Organic packing: biggest first at the center, then each oval at the closest free spot
+  // (with sideways growth favored) that keeps a gap of `gap` from every oval already placed.
+  function pack(shapes: Array<{ rx: number; ry: number }>, gap: number): Array<{ x: number; y: number }> {
+    const order = shapes.map((_, i) => i).sort((a, b) => shapes[b].rx * shapes[b].ry - shapes[a].rx * shapes[a].ry);
+    const placed: Oval[] = [];
+    const out: Array<{ x: number; y: number }> = [];
+    const fits = (o: Oval) =>
+      placed.every((p) => {
+        const dx = o.x - p.x;
+        const dy = o.y - p.y;
+        return Math.hypot(dx, dy) >= ovalReach(p.rx, p.ry, dx, dy) + ovalReach(o.rx, o.ry, dx, dy) + gap - 1e-6;
+      });
+    for (const i of order) {
+      const { rx, ry } = shapes[i];
+      let best: Oval = { x: 0, y: 0, rx, ry };
+      if (placed.length) {
+        let bestScore = Infinity;
+        // Try many directions; in each, find how far out from the center the oval first fits.
+        for (let k = 0; k < 120; k++) {
+          const a = (k / 120) * Math.PI * 2;
+          const dx = Math.cos(a);
+          const dy = Math.sin(a);
+          let lo = 0;
+          let hi = 1;
+          while (!fits({ x: dx * hi, y: dy * hi, rx, ry })) hi *= 2;
+          for (let step = 0; step < 30; step++) {
+            const mid = (lo + hi) / 2;
+            if (fits({ x: dx * mid, y: dy * mid, rx, ry })) hi = mid;
+            else lo = mid;
+          }
+          const cand = { x: dx * hi, y: dy * hi, rx, ry };
+          const score = Math.hypot(cand.x, cand.y * WIDE);
+          if (score < bestScore) {
+            best = cand;
+            bestScore = score;
+          }
+        }
+      }
+      placed.push(best);
+      out[i] = { x: best.x, y: best.y };
+    }
+    return out;
   }
 
   // Resistance past the bounds: grows slower the farther you pull.
@@ -132,69 +182,47 @@
       const sizes = items.map((el) => Number(el.dataset.size) || 1);
       maxSize = Math.max(...sizes);
 
-      // Spots in balanced rows, ranked from the middle outward; the biggest items take the most
-      // central spots (ties keep catalog order).
-      const counts = rowCounts(items.length);
-      const spots = counts.flatMap((k, r) =>
-        Array.from({ length: k }, (_, c) => ({ r, c, d: Math.hypot(c - (k - 1) / 2, (r - (counts.length - 1) / 2) * 1.2) })),
-      );
-      const tall = items.map((el) => el.dataset.tall === 'true');
-      const bySize = items.map((_, i) => i).sort((a, b) => sizes[b] - sizes[a]);
-      const spotOf: number[] = [];
-      // Tall items first, into the bottom row from the left.
-      const lastRow = counts.length - 1;
-      const bottomLeft = spots.map((_, i) => i).filter((i) => spots[i].r === lastRow).sort((a, b) => spots[a].c - spots[b].c);
-      bySize.filter((i) => tall[i]).forEach((item, k) => (spotOf[item] = bottomLeft[k]));
-      // Everything else by size, from the middle outward.
-      const taken = new Set(spotOf.filter((x) => x !== undefined));
-      const rankedSpots = spots.map((_, i) => i).filter((i) => !taken.has(i)).sort((a, b) => spots[a].d - spots[b].d);
-      bySize.filter((i) => !tall[i]).forEach((item, rank) => (spotOf[item] = rankedSpots[rank]));
-      // Phones start on whatever sits in the most central spot.
-      const center = spots.map((_, i) => i).sort((a, b) => spots[a].d - spots[b].d)[0];
-      focusIndex = Math.max(0, spotOf.indexOf(center));
+      // Each building's oval, in units of one median building width, from its drawn proportions.
+      items.forEach((el, i) => (el.style.width = `${100 * sizes[i]}px`));
+      const shapes = items.map((el, i) => {
+        const img = el.querySelector('img');
+        const aspect = img && img.offsetWidth ? img.offsetHeight / img.offsetWidth : 0.75;
+        return { rx: (sizes[i] * ART_SCALE) / 2, ry: (sizes[i] * aspect * ART_SCALE) / 2 };
+      });
+      const spots = pack(shapes, GAP);
+      // Phones start on the building packed at the center.
+      focusIndex = spots.reduce((best, p, i) => (Math.hypot(p.x, p.y) < Math.hypot(spots[best].x, spots[best].y) ? i : best), 0);
 
-      // Place items for a given median item width w: rows of actual widths with even gaps,
-      // stacked by actual heights. Items hang from their ground line so tall ones grow upward.
+      // Center the cluster and measure its extent (in median-width units).
+      const minX = Math.min(...spots.map((p, i) => p.x - shapes[i].rx));
+      const maxX = Math.max(...spots.map((p, i) => p.x + shapes[i].rx));
+      const minY = Math.min(...spots.map((p, i) => p.y - shapes[i].ry));
+      const maxY = Math.max(...spots.map((p, i) => p.y + shapes[i].ry));
+      const cx = (minX + maxX) / 2;
+      const cy = (minY + maxY) / 2;
+
+      // Place items for a median width w. Positions mark each drawing's center; items hang from
+      // their ground line, so the label under a drawing doesn't move where the art sits.
       const arrange = (w: number) => {
         items.forEach((el, i) => (el.style.width = `${w * sizes[i]}px`));
-        const heights = items.map((el) => el.offsetHeight);
-        const rows = counts.map((_, r) => items.map((_, i) => i).filter((i) => spots[spotOf[i]].r === r).sort((a, b) => spots[spotOf[a]].c - spots[spotOf[b]].c));
-        // Tall items don't set their row's height; they overlap the row above instead.
-        const rowHeights = rows.map((row) => {
-          const regular = row.filter((i) => !tall[i]);
-          return Math.max(...(regular.length ? regular : row).map((i) => heights[i]));
+        return items.map((el, i) => {
+          const img = el.querySelector('img');
+          const artH = img ? img.offsetHeight : el.offsetHeight;
+          const x = (spots[i].x - cx) * w;
+          const y = (spots[i].y - cy) * w;
+          el.style.left = `${x}px`;
+          el.style.top = `${y + el.offsetHeight - artH / 2}px`;
+          el.style.zIndex = String(Math.round(1000 + y)); // nearer the bottom = closer, so drawn in front
+          return { x, y };
         });
-        const totalH = rowHeights.reduce((a, b) => a + b, 0) + GAP_Y * w * (rows.length - 1);
-        const pos: Array<{ x: number; y: number }> = [];
-        let maxRowW = 0;
-        let top = Infinity;
-        let baseline = -totalH / 2;
-        rows.forEach((row, r) => {
-          baseline += rowHeights[r] + (r ? GAP_Y * w : 0);
-          const rowW = row.reduce((sum, i) => sum + w * sizes[i], 0) + GAP_X * w * (row.length - 1);
-          const shift = rows.length > 1 ? (r % 2 ? 1 : -1) * STAGGER * w * 0.5 : 0;
-          maxRowW = Math.max(maxRowW, rowW + Math.abs(shift) * 2);
-          let x = -rowW / 2 + shift;
-          row.forEach((i) => {
-            const iw = w * sizes[i];
-            items[i].style.left = `${x + iw / 2}px`;
-            items[i].style.top = `${baseline}px`;
-            items[i].style.zIndex = String(r + 1); // lower rows are closer, so they draw in front
-            pos[i] = { x: x + iw / 2, y: baseline - heights[i] / 2 };
-            top = Math.min(top, baseline - heights[i]);
-            x += iw + GAP_X * w;
-          });
-        });
-        return { pos, width: maxRowW, height: baseline - top };
       };
 
       // Phones: buildings stay large and the rest of the cluster is a drag away.
       // Larger screens: shrink buildings (down to a floor) so the whole cluster fits if it can.
       const preferred = phone ? vw * 0.62 : Math.min(vw * 0.36, vh * 0.6);
-      const trial = arrange(preferred);
-      const fitW = preferred * Math.min((vw * 0.94) / trial.width, (vh * 0.92) / trial.height);
-      itemW = clamp(phone ? preferred : Math.min(preferred, fitW), phone ? 160 : 200, 460);
-      positions = arrange(itemW).pos;
+      const fitW = Math.min((vw * 0.92) / (maxX - minX), (vh * 0.84) / (maxY - minY));
+      itemW = clamp(phone ? preferred : Math.min(preferred, fitW), 160, 460);
+      positions = arrange(itemW);
 
       computeBounds();
       vel = recenter ? { x: 0, y: 0 } : vel;

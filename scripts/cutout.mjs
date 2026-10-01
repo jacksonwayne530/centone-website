@@ -1,6 +1,10 @@
 // Removes the plain background around an isometric illustration so it can float on the page.
 //
-//   npm run cutout -- "src/content/buildings/<slug>/<image>.jpg"
+//   npm run cutout -- "src/content/buildings/<slug>/<image>.jpg" [--no-pockets]
+//
+// --no-pockets skips clearing enclosed background-colored areas (gaps between branches). Use it
+// when the building itself is close to the background color (e.g. cream stucco on an off-white
+// background), which that pass would otherwise punch holes in.
 //
 // Writes `cutout.png` next to the source image. Works by flood-filling inward from the image
 // edges through pixels close to the corner color, so light areas inside the drawing (which are
@@ -11,7 +15,8 @@ import path from 'node:path';
 const HARD = 16; // max channel difference from the background that is fully removed
 const SOFT = 48; // edge pixels up to this difference get partial transparency (anti-aliasing)
 
-const input = process.argv[2];
+const input = process.argv.slice(2).find((a) => !a.startsWith('--'));
+const clearPockets = !process.argv.includes('--no-pockets');
 if (!input) {
   console.error('Usage: npm run cutout -- <path-to-image>');
   process.exit(1);
@@ -55,7 +60,7 @@ while (stack.length) {
 const POCKET = 9;
 const MIN_POCKET_PX = 12;
 const seen = new Uint8Array(w * h);
-for (let start = 0; start < w * h; start++) {
+for (let start = 0; clearPockets && start < w * h; start++) {
   if (removed[start] || seen[start] || diff(start) > POCKET) continue;
   const region = [];
   const s = [start];
