@@ -2,7 +2,9 @@
 // A draggable canvas in the style of the Apple Watch app grid.
 //
 // - Items (children with [data-canvas-item]) are laid out in balanced, slightly staggered rows
-//   with even gaps between them. Bigger items (data-size) sit toward the middle.
+//   with even gaps between them. Bigger items (data-size) sit toward the middle. Tall items
+//   (data-tall, e.g. towers) take the bottom-left spots instead and rise up past the row above,
+//   so one skyscraper doesn't push the rows apart.
 // - Drag with mouse or touch; releases keep some momentum.
 // - Scroll wheel / trackpad zooms around the cursor; on touch screens, pinch with two fingers.
 // - Items shrink the farther they are from the middle of the screen (the fisheye effect).
@@ -136,11 +138,20 @@
       const spots = counts.flatMap((k, r) =>
         Array.from({ length: k }, (_, c) => ({ r, c, d: Math.hypot(c - (k - 1) / 2, (r - (counts.length - 1) / 2) * 1.2) })),
       );
-      const rankedSpots = spots.map((_, i) => i).sort((a, b) => spots[a].d - spots[b].d);
+      const tall = items.map((el) => el.dataset.tall === 'true');
       const bySize = items.map((_, i) => i).sort((a, b) => sizes[b] - sizes[a]);
       const spotOf: number[] = [];
-      bySize.forEach((item, rank) => (spotOf[item] = rankedSpots[rank]));
-      focusIndex = bySize[0];
+      // Tall items first, into the bottom row from the left.
+      const lastRow = counts.length - 1;
+      const bottomLeft = spots.map((_, i) => i).filter((i) => spots[i].r === lastRow).sort((a, b) => spots[a].c - spots[b].c);
+      bySize.filter((i) => tall[i]).forEach((item, k) => (spotOf[item] = bottomLeft[k]));
+      // Everything else by size, from the middle outward.
+      const taken = new Set(spotOf.filter((x) => x !== undefined));
+      const rankedSpots = spots.map((_, i) => i).filter((i) => !taken.has(i)).sort((a, b) => spots[a].d - spots[b].d);
+      bySize.filter((i) => !tall[i]).forEach((item, rank) => (spotOf[item] = rankedSpots[rank]));
+      // Phones start on whatever sits in the most central spot.
+      const center = spots.map((_, i) => i).sort((a, b) => spots[a].d - spots[b].d)[0];
+      focusIndex = Math.max(0, spotOf.indexOf(center));
 
       // Place items for a given median item width w: rows of actual widths with even gaps,
       // stacked by actual heights. Items hang from their ground line so tall ones grow upward.
@@ -148,10 +159,15 @@
         items.forEach((el, i) => (el.style.width = `${w * sizes[i]}px`));
         const heights = items.map((el) => el.offsetHeight);
         const rows = counts.map((_, r) => items.map((_, i) => i).filter((i) => spots[spotOf[i]].r === r).sort((a, b) => spots[spotOf[a]].c - spots[spotOf[b]].c));
-        const rowHeights = rows.map((row) => Math.max(...row.map((i) => heights[i])));
+        // Tall items don't set their row's height; they overlap the row above instead.
+        const rowHeights = rows.map((row) => {
+          const regular = row.filter((i) => !tall[i]);
+          return Math.max(...(regular.length ? regular : row).map((i) => heights[i]));
+        });
         const totalH = rowHeights.reduce((a, b) => a + b, 0) + GAP_Y * w * (rows.length - 1);
         const pos: Array<{ x: number; y: number }> = [];
         let maxRowW = 0;
+        let top = Infinity;
         let baseline = -totalH / 2;
         rows.forEach((row, r) => {
           baseline += rowHeights[r] + (r ? GAP_Y * w : 0);
@@ -163,11 +179,13 @@
             const iw = w * sizes[i];
             items[i].style.left = `${x + iw / 2}px`;
             items[i].style.top = `${baseline}px`;
+            items[i].style.zIndex = String(r + 1); // lower rows are closer, so they draw in front
             pos[i] = { x: x + iw / 2, y: baseline - heights[i] / 2 };
+            top = Math.min(top, baseline - heights[i]);
             x += iw + GAP_X * w;
           });
         });
-        return { pos, width: maxRowW, height: totalH };
+        return { pos, width: maxRowW, height: baseline - top };
       };
 
       // Phones: buildings stay large and the rest of the cluster is a drag away.
