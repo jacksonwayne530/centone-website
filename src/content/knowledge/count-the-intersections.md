@@ -2,8 +2,8 @@
 title: Count the Intersections
 description: Street connectivity may be the most important number in neighborhood design, and almost nobody regulates it.
 cover: ./covers/count-the-intersections.svg
-date: 2026-09-30
-order: 1
+date: 2026-09-21
+order: 0
 ---
 
 When a neighborhood is proposed, the arguments are almost always about the buildings: how tall, how dense, how many parking spaces, what they'll look like. Those things matter. But one of the strongest predictors of whether people will walk, how much they'll drive, and how safe they'll be getting around is something much plainer, and it gets decided long before anyone argues about a building.

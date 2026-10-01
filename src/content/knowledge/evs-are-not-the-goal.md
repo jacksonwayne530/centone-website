@@ -2,8 +2,8 @@
 title: EVs Are Necessary. They Aren't the Goal.
 description: Electric cars cut tailpipe emissions. Cities built for walking, cycling, and transit solve the problems electrification can't touch.
 cover: ./covers/evs-are-not-the-goal.svg
-date: 2026-09-30
-order: 3
+date: 2026-09-14
+order: 0
 ---
 
 Transportation is the largest source of greenhouse gas emissions in the United States, about 28 percent of the total, and cars and light trucks are the biggest part of it.[^epa] The dominant policy answer has been simple: replace gasoline cars with electric ones.

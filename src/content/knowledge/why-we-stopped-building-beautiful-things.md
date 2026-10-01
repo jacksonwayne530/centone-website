@@ -2,7 +2,7 @@
 title: Why We Stopped Building Beautiful Things
 description: Baumol's cost disease helps explain how ornament priced itself out of American architecture, and why robots, CNC routers, and new craft could bring it back.
 cover: ./covers/why-we-stopped-building-beautiful-things.svg
-date: 2026-09-30
+date: 2026-09-27
 order: 0
 ---
 

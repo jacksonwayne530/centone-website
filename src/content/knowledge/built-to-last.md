@@ -3,7 +3,7 @@ title: Built to Last
 description: Stewart Brand's layers of a building, why money, culture, and habit keep us building for thirty years instead of three hundred, and a case study of a ten-story building designed for the long haul.
 cover: ./covers/built-to-last.svg
 date: 2026-09-30
-order: -1
+order: 0
 ---
 
 The buildings people love most are, almost by definition, the ones that survived. The brick warehouse turned into lofts, the main street storefront on its fifth business, the church that became a library. Nobody planned for any of that. The buildings simply lasted long enough, and were sturdy and simple enough, for each new generation to find a use for them.
