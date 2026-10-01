@@ -120,9 +120,10 @@ body.full-bleed main {
 }
 
 .tagline {
-  font-family: 'Yellowtail', 'Snell Roundhand', cursive;
+  /* A thin monoline script, so it doesn't compete with the wordmark. */
+  font-family: 'Sacramento', 'Snell Roundhand', cursive;
   color: var(--accent);
-  font-size: 1.9rem;
+  font-size: 2.1rem;
   line-height: 1;
   transform: rotate(-4deg) translateY(0.1em);
 }

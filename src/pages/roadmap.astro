@@ -121,6 +121,7 @@ const DOTS = 48;
   const FRONT_FOCUS = 8; // how narrowly that boost is focused on the front (higher = narrower)
   const FRICTION = 0.95; // spin momentum decay per frame after release
   const DRAG_THRESHOLD = 6; // px before a press counts as a drag rather than a click
+  const DRIFT = (Math.PI * 2) / 180; // idle spin in radians per second: one slow turn every 3 minutes
 
   const stage = document.querySelector<HTMLElement>('.stage')!;
   const nodes = [...stage.querySelectorAll<HTMLButtonElement>('.node')];
@@ -156,14 +157,43 @@ const DOTS = 48;
     dots.forEach((el, i) => position(el, dotAngles[i] + spin, false));
   }
 
-  function tick() {
-    frame = 0;
-    if (Math.abs(vel) < 0.0004) return;
-    spin += vel;
-    vel *= FRICTION;
+  // The disc drifts slowly on its own, pausing while a category is hovered so it's easy to click.
+  // A flick adds momentum on top of the drift, which friction then bleeds away.
+  let lastTime = 0;
+  let hovering = false;
+
+  function tick(time: number) {
+    const dt = lastTime ? Math.min(time - lastTime, 50) : 16;
+    lastTime = time;
+    if (!press) {
+      spin += vel;
+      vel = Math.abs(vel) < 0.0004 ? 0 : vel * FRICTION;
+      if (!hovering && !reduceMotion) spin += (DRIFT * dt) / 1000;
+    }
     render();
+    // With reduced motion there's no drift, so stop once the disc comes to rest.
+    if (reduceMotion && !vel && !press) {
+      frame = 0;
+      lastTime = 0;
+      return;
+    }
     frame = requestAnimationFrame(tick);
   }
+
+  function startSpin() {
+    if (!frame) frame = requestAnimationFrame(tick);
+  }
+
+  function stopSpin() {
+    cancelAnimationFrame(frame);
+    frame = 0;
+    lastTime = 0;
+  }
+
+  nodes.forEach((btn) => {
+    btn.addEventListener('pointerenter', () => (hovering = true));
+    btn.addEventListener('pointerleave', () => (hovering = false));
+  });
 
   // The pointer's angle around the disc, so dragging "grabs" the disc and turns it.
   function angleAt(e: PointerEvent) {
@@ -215,7 +245,7 @@ const DOTS = 48;
     if (dragging) {
       dragging = false;
       stage.classList.remove('spinning');
-      if (!frame) frame = requestAnimationFrame(tick);
+      startSpin();
     }
   }
   stage.addEventListener('pointerup', endPress);
@@ -239,6 +269,7 @@ const DOTS = 48;
     render();
   }).observe(stage);
   render();
+  startSpin();
 
   // ---- Category focus view ----
   // Opening hides the disc and flies the bubble from its spot on the disc to the top left (a FLIP
@@ -268,6 +299,8 @@ const DOTS = 48;
     if (!focus) return;
     const from = roadmap.hidden ? null : nodeFor(id)?.querySelector('.disc')?.getBoundingClientRect();
     roadmap.hidden = true;
+    stopSpin();
+    hovering = false;
     // Use the wide page layout so the bubble lines up under the logo.
     document.body.classList.add('wide');
     focuses.forEach((f) => (f.hidden = f !== focus));
@@ -287,6 +320,7 @@ const DOTS = 48;
     document.body.classList.remove('wide');
     roadmap.hidden = false;
     render();
+    startSpin();
     const node = nodeFor(current);
     if (node) {
       fly(node.querySelector('.disc')!, from, 450);
