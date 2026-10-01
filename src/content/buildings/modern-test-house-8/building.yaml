@@ -1,7 +1,7 @@
 # Building #8. Specs below are estimates; replace them with real values when known.
 number: 8
 name: Modern Test House
-location: Location TBD # TODO: set the city
+location: Seattle, WA
 type: Single-family residence
 style: Modern
 # Estimated from the floor plans (marked "not to scale"; stair treads set the scale).

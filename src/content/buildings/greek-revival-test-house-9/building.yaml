@@ -1,7 +1,7 @@
 # Building #9. Specs below are estimates; replace them with real values when known.
 number: 9
-name: Greek Revival Test House
-location: Location TBD # TODO: set the city
+name: J. Neely Johnson House
+location: Sacramento, CA
 type: Single-family residence
 style: Greek Revival
 # Estimated from the floor plans (marked "not to scale"; stair treads set the scale).
@@ -12,7 +12,10 @@ squareFeet: 1800
 lotWidth: 40 # feet
 lotDepth: 100 # feet
 description: >
-  A plum clapboard Greek Revival with a full-height pedimented front, stacked
+  Built in 1853, this Greek Revival house would look at home in New England, and
+  that's no accident: it was built for William Cozzens, a horticulturalist from the
+  Northeast. It soon passed to J. Neely Johnson, the fourth governor of California.
+  This rendering shows a plum clapboard Greek Revival with a full-height pedimented front, stacked
   galleries on tall columns, Chinese Chippendale railings on the upper porch and turned
   balusters below, black shutters, and an iron fence around a small front garden. A
   side-hall foyer holds the stair and leads past the front parlor to the dining room,
@@ -39,4 +42,4 @@ floorPlans:
 
 model:
   src: /models/greek-revival-house.glb
-  alt: 3D model of the Greek Revival Test House
+  alt: 3D model of the J. Neely Johnson House
