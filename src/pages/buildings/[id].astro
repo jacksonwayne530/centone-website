@@ -140,6 +140,23 @@ const planMax = widest[0]?.width ?? 0;
     }
   }
 
+  /* Phones and tablets: model, then the building info, then the floor plans. */
+  @media (max-width: 959px) {
+    .primary {
+      display: contents;
+    }
+
+    .details {
+      order: 1;
+    }
+
+    /* .layout raises specificity over the base .plans margin below. */
+    .layout .plans {
+      order: 2;
+      margin-top: 0;
+    }
+  }
+
   .hero {
     width: 100%;
     border-radius: var(--radius);
